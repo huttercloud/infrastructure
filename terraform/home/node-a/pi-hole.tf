@@ -57,8 +57,6 @@ resource "kubernetes_daemonset" "pi_hole" {
       }
 
       spec {
-        service_account_name = kubernetes_service_account.external_dns.metadata[0].name
-        automount_service_account_token = true
         container {
           image = "pihole/pihole:${local.pi_hole_version}"
           name  = "pi-hole"
