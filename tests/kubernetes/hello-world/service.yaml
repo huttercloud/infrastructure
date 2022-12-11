@@ -9,4 +9,4 @@ spec:
   - port: 80
     targetPort: 5678
   selector:
-    app: echo1
+    app.kubernetes.io/name: "hello-world"

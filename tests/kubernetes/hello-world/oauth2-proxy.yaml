@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hello-world-oauth2-proxy
+  name: hello-world-oauth2-proxy
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    app: hello-world-oauth2-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: "hello-world"
+  name: hello-world-oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: hello-world-oauth2-proxy
+    spec:
+      containers:
+      # there seems to be a bug in 6+ keycloak provider which doesnt work well with jwt tokens
+      # instead using the more standard oidc provider is required.
+      # see: https://github.com/oauth2-proxy/oauth2-proxy/issues/773
+      - args:
+        # general config
+        - --http-address=0.0.0.0:4180
+        - --email-domain=*
+        - --upstream=file:///dev/null
+        # pass auth headers
+        - --pass-basic-auth=false
+        - --pass-access-token=true
+        - --set-xauthrequest=true
+        - --set-authorization-header=true
+        - --pass-authorization-header=true
+        - --skip-provider-button=true
+        - --skip-auth-preflight=true
+        - --pass-host-header=true
+        # if jwt bearer token exists dont do a new authentication
+        # but verify auth (e.g. for scripts)
+        - --skip-jwt-bearer-tokens=true
+
+        # oidc keycloak configuration
+        - --provider=oidc
+        - --skip-oidc-discovery=false
+        - --oidc-issuer-url=https://hutter-cloud.eu.auth0.com/
+        #- --oidc-issuer-url={{ .Values.oauth2_proxy.oidc.issuer_url }}
+        #- --login-url={{ .Values.oauth2_proxy.oidc.login_url }}
+        #- --redeem-url={{ .Values.oauth2_proxy.oidc.redeem_url }}
+        #- --profile-url={{ .Values.oauth2_proxy.oidc.profile_url }}
+        #- --validate-url={{ .Values.oauth2_proxy.oidc.validate_url }}
+        #- --oidc-jwks-url={{ .Values.oauth2_proxy.oidc.jwks_url }}
+        - --scope=openid profile email
+       # - --allowed-group={{ .Values.oauth2_proxy.authorization.group }}
+
+
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-secrets
+                key: client_id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-secrets
+                key: client_secret
+        # docker run -ti --rm python:3-alpine python -c 'import secrets,base64; print(base64.b64encode(base64.b64encode(secrets.token_bytes(16))));'
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+              secretKeyRef:
+                name: oauth2-proxy-secrets
+                key: cookie_secret
+        image: quay.io/oauth2-proxy/oauth2-proxy:v7.4.0
+        imagePullPolicy: Always
+        name: oauth2-proxy
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+
