@@ -1,0 +1,13 @@
+# environment variables 
+
+## terraform/home/mikrotik
+MIKROTIK_USER="op://hutter.cloud/mikrotik user terraform/username"
+MIKROTIK_PASSWORD="op://hutter.cloud/mikrotik user terraform/password"
+
+## terraform/home/node-a
+TF_VAR_external_dns_aws_access_key_id="op://hutter.cloud/AWS route53 user/username"
+TF_VAR_external_dns_aws_secret_access_key="op://hutter.cloud/AWS route53 user/password"
+TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
+
+## terraform/home/pi-hole
+PIHOLE_PASSWORD="op://hutter.cloud/pi-hole admin/password"

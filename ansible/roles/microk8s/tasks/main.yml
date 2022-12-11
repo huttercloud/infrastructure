@@ -1,0 +1,49 @@
+---
+# tasks file for microk8s
+
+- name: Install microk8s
+  community.general.snap:
+    name: microk8s
+    channel: "{{ channel }}"
+    classic: true
+  register: installation
+
+- name: Install dns addon
+  shell: "microk8s enable dns:{{ dns_server }}"
+  
+- name: Install rbac addon
+  shell: "microk8s enable rbac"
+
+- name: Install hostpath-storage addon
+  shell: "microk8s enable hostpath-storage"
+
+- name: Install ingress addon
+  shell: "microk8s enable ingress"
+
+- name: Install cert-manager addon
+  shell: "microk8s enable cert-manager"
+
+- name: Setup node ports
+  ansible.builtin.lineinfile:
+    path: /var/snap/microk8s/current/args/kube-apiserver
+    regexp: '^--service-node-port-range'
+    line: "--service-node-port-range {{service_node_port_range}}"
+  register: node_ports
+
+- name: stop microk8s
+  shell: "microk8s stop"
+  when: installation.changed or node_ports.changed
+
+- name: start microk8s
+  shell: "microk8s start"
+  when: installation.changed or node_ports.changed
+
+- name: render microk8s configuration file
+  shell: "microk8s config"
+  register: microk8s_config
+
+- name: write microk8s config to localhost
+  ansible.builtin.copy:
+    content: "{{ microk8s_config.stdout }}"
+    dest: "../../{{ inventory_hostname }}.kubeconfig"
+  delegate_to: localhost

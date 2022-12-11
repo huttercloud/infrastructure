@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-world-external
+  labels:
+    app.kubernetes.io/name: "hello-world"
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hello-world.hutter.cloud
+    hutter.cloud/dns-service: "aws"
+spec:
+  type: ExternalName
+  externalName: home.hutter.cloud

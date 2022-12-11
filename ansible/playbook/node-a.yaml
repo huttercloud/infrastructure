@@ -1,0 +1,67 @@
+---
+
+- name: Configure node-a
+  hosts: node-a.hutter.cloud
+  become: true
+  become_user: root
+
+  vars:
+    vg: ubuntu-vg
+    lv: data
+    mountpoint: /data
+    netplan: |
+      network:
+        ethernets:
+          eno1:
+            dhcp4: false
+            addresses:
+              - 192.168.30.61/24
+              - 192.168.30.253/24
+            gateway4: 192.168.30.254
+            nameservers:
+              addresses:
+                - 1.1.1.1
+                - 8.8.8.8
+        version: 2
+
+  pre_tasks:
+  - name: ensure lvm is setup 
+    community.general.lvol:
+      vg: "{{ vg }}"
+      lv: "{{ lv }}"
+      size: 374.93g #100%FREE only worked once, so lv size is just hardcoded to the available space
+
+  - name: ensure partition is around
+    community.general.filesystem:
+      fstype: ext4
+      dev: "/dev/{{ vg }}/{{ lv }}"
+
+  - name: create mountpoint for data partition
+    ansible.builtin.file: 
+      path: "{{ mountpoint }}"
+      state: directory
+      mode: 0755
+
+  - name: Mount up device by label
+    ansible.posix.mount:
+      path: "{{ mountpoint }}"
+      src: "/dev/{{ vg }}/{{ lv }}"
+      fstype: ext4
+      state: mounted
+
+  - name: setup nic with two static ips - required for runnig pihole in k8s
+    ansible.builtin.copy:
+      content: "{{ netplan }}"
+      dest: /etc/netplan/00-installer-config.yaml
+      owner: root
+      group: root
+      mode: '0644'
+    register: netplan
+
+  - name: update netplan
+    shell: netplan apply
+    when: netplan.changed
+
+  roles:
+  - role: microk8s
+    dns_server: 1.1.1.1

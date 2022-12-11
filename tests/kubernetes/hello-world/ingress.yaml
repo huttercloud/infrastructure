@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo-ingress
+  labels:
+    app.kubernetes.io/name: "hello-world"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns
+    kubernetes.io/ingress.class: public
+spec:
+  tls:
+    - hosts: [hello-world.hutter.cloud]
+      secretName: echo-tls
+  rules:
+    - host: hello-world.hutter.cloud 
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: echo1
+              port:
+                number: 80

@@ -1,0 +1,13 @@
+---
+# vars file for microk8s
+
+
+# channel to use for installation
+channel: latest/stable
+
+# dns server to use for dns addon
+dns_server: 192.168.30.61
+
+# service node port range
+# allow services running in kubernetes to pretty much use any node port
+service_node_port_range: 53-32767
