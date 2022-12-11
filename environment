@@ -1,5 +1,8 @@
 # environment variables 
 
+## terraform/auth0
+AUTH0_CLIENT_ID="op://hutter.cloud/auth0 terraform application/username"
+AUTH0_CLIENT_SECRET="op://hutter.cloud/auth0 terraform application/password"
 ## terraform/home/mikrotik
 MIKROTIK_USER="op://hutter.cloud/mikrotik user terraform/username"
 MIKROTIK_PASSWORD="op://hutter.cloud/mikrotik user terraform/password"
@@ -8,6 +11,7 @@ MIKROTIK_PASSWORD="op://hutter.cloud/mikrotik user terraform/password"
 TF_VAR_external_dns_aws_access_key_id="op://hutter.cloud/AWS route53 user/username"
 TF_VAR_external_dns_aws_secret_access_key="op://hutter.cloud/AWS route53 user/password"
 TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
+TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
 
 ## terraform/home/pi-hole
 PIHOLE_PASSWORD="op://hutter.cloud/pi-hole admin/password"
