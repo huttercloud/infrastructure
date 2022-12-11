@@ -19,6 +19,8 @@ TF_VAR_external_dns_aws_access_key_id="op://hutter.cloud/AWS route53 user/userna
 TF_VAR_external_dns_aws_secret_access_key="op://hutter.cloud/AWS route53 user/password"
 TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
 TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
+TF_VAR_wireguard_server_private_key="op://hutter.cloud/wireguard server private-key/password"
+TF_VAR_wireguard_client_sebastian_public_key="op://hutter.cloud/wireguard mac client/username"
 
 ## terraform/home/pi-hole
 PIHOLE_PASSWORD="op://hutter.cloud/pi-hole admin/password"
