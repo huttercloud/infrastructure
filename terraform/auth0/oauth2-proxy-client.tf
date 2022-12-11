@@ -1,18 +1,18 @@
 locals {
     callbacks = [
-        "https://hello-world/oauth2/callback"
+        "https://hello-world.hutter.cloud/oauth2/callback"
     ]
 }
 
 resource "auth0_client" "oauth2_proxy" {
-  name                                = "Oauth2 Proxy Client"
+  name                                = "hutter.cloud"
   description                         = "Allow"
   app_type                            = "non_interactive"
   custom_login_page_on                = true
   is_first_party                      = true
   is_token_endpoint_ip_header_trusted = true
   token_endpoint_auth_method          = "client_secret_post"
-  oidc_conformant                     = false
+  oidc_conformant                     = true
   callbacks                           = local.callbacks
   grant_types = [
     "authorization_code",
@@ -21,6 +21,13 @@ resource "auth0_client" "oauth2_proxy" {
     "password",
     "refresh_token"
   ]
+
+  jwt_configuration {
+    lifetime_in_seconds = 36000
+    secret_encoded      = false
+    alg                 = "RS256"
+    scopes = {}
+  }
 }
 
 output oauth2_proxy_client_id {
