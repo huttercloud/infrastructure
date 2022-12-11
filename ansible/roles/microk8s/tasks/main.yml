@@ -10,6 +10,7 @@
 
 - name: Install dns addon
   shell: "microk8s enable dns:{{ dns_server }}"
+  when: execute_dns
   
 - name: Install rbac addon
   shell: "microk8s enable rbac"
