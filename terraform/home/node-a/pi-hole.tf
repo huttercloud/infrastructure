@@ -91,7 +91,7 @@ resource "kubernetes_daemonset" "pi_hole" {
           }
           volume_mount {
             name = "etc"
-            mount_path = "/etc/pihhole"
+            mount_path = "/etc/pihole"
           }
           volume_mount {
             name = "dnsmasq"
