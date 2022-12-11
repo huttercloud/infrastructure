@@ -18,3 +18,15 @@ terraform {
     }
   }
 }
+
+# external datasource containing auth0 
+data "terraform_remote_state" "auth0" {
+  backend = "remote"
+
+  config = {
+    organization = "hutter-cloud"
+    workspaces = {
+      name = "auth0"
+    }
+  }
+}
