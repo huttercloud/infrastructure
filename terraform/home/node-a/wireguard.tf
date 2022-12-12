@@ -201,6 +201,6 @@ resource "kubernetes_service" "wireguard_external_name" {
   }
   spec {
     type = "ExternalName"
-    external_name = "home.hutter.cloud"
+    external_name = local.externalname_hostname
   }
 }
