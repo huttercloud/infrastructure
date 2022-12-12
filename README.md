@@ -20,8 +20,8 @@
 ## using terraform with one password
 ```bash
 # example execution for mikrotik
-cd home/mikrotik
-op run --env-file="../../../environment" -- terraform apply
+cd terraform/home/mikrotik
+op run --env-file=".environment" -- terraform apply
 ```
 
 ## node-a

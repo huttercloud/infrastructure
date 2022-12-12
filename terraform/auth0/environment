@@ -4,24 +4,9 @@
 AUTH0_CLIENT_ID="op://hutter.cloud/auth0 terraform application/username"
 AUTH0_CLIENT_SECRET="op://hutter.cloud/auth0 terraform application/password"
 
-## terraform/aws
-AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS terraform credentials/username"
-AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS terraform credentials/password"
-AWS_REGION="eu-central-1"
-
 ### auth0 user passwords (copied from nas setup)
 TF_VAR_user_password_sebastian="op://hutter.cloud/auth0 user sebastian/password"
 TF_VAR_user_password_christoph="op://hutter.cloud/auth0 user christoph/password"
 TF_VAR_user_password_jacek="op://hutter.cloud/auth0 user jacek/password"
 TF_VAR_user_password_katharina="op://hutter.cloud/auth0 user katharina/password"
 TF_VAR_user_password_pascal="op://hutter.cloud/auth0 user pascal/password"
-## terraform/home/mikrotik
-MIKROTIK_USER="op://hutter.cloud/mikrotik user terraform/username"
-MIKROTIK_PASSWORD="op://hutter.cloud/mikrotik user terraform/password"
-
-## terraform/home/node-a
-TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
-TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
-
-## terraform/home/pi-hole
-PIHOLE_PASSWORD="op://hutter.cloud/pi-hole admin/password"
