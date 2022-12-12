@@ -1,5 +1,1 @@
 # environment variables 
-
-## terraform/home/node-a
-TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
-TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
