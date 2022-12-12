@@ -19,7 +19,6 @@ terraform {
   }
 }
 
-# external datasource containing auth0 
 data "terraform_remote_state" "auth0" {
   backend = "remote"
 
@@ -27,6 +26,16 @@ data "terraform_remote_state" "auth0" {
     organization = "hutter-cloud"
     workspaces = {
       name = "auth0"
+    }
+  }
+}
+data "terraform_remote_state" "aws-root-global" {
+  backend = "remote"
+
+  config = {
+    organization = "hutter-cloud"
+    workspaces = {
+      name = "aws-root-global"
     }
   }
 }

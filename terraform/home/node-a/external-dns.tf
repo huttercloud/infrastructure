@@ -10,8 +10,8 @@ resource "kubernetes_secret" "external_dns_aws" {
     credentials = <<EOT
 
 [default]
-aws_access_key_id = ${var.external_dns_aws_access_key_id}
-aws_secret_access_key = ${var.external_dns_aws_secret_access_key}
+aws_access_key_id = ${local.access_key_id_dns}
+aws_secret_access_key = ${local.secret_access_key_dns}
 EOT
   }
 }

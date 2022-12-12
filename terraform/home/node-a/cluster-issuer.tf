@@ -7,7 +7,7 @@ resource "kubernetes_secret" "cert_manager_cluster_issuer_dns" {
   }
 
   data = {
-    secret-access-key = var.external_dns_aws_secret_access_key
+    secret-access-key = local.secret_access_key_dns
   }
 } 
 
@@ -30,7 +30,7 @@ resource "kubernetes_manifest" "cert_manager_cluster_issuer_dns" {
                     cnameStrategy = "Follow"
                     route53 = {
                         region = "eu-central-1"
-                        accessKeyID = var.external_dns_aws_access_key_id
+                        accessKeyID = local.access_key_id_dns
                         hostedZoneID = local.cert_manager_zone_id
                         secretAccessKeySecretRef = {
                             name = kubernetes_secret.cert_manager_cluster_issuer_dns.metadata[0].name

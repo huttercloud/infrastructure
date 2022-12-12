@@ -76,11 +76,11 @@ resource "kubernetes_cron_job_v1" "externalname" {
             }
             env {
               name = "AWS_ACCESS_KEY_ID"
-              value = var.external_dns_aws_access_key_id
+              value = local.access_key_id_dns
             }
             env {
               name = "AWS_SECRET_ACCESS_KEY"
-              value = var.external_dns_aws_secret_access_key
+              value = local.secret_access_key_dns
             }
             volume_mount {
               name = "script"
