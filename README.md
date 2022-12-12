@@ -32,7 +32,7 @@ one of the old nucs. this system will mainly serve pi-hole and handle http/s red
 - username: node
 
 ### setup 
-- install ubuntu server with `openssh` and `microk8s`
+- install ubuntu server with `openssh`
 - add public ssh key to the system `ssh-copy-id -i .ssh/id_rsa.home node@192.168.30.61`
 - allow node user full sudo rights without password (for ansible) `sudo /bin/sh -c "echo 'node ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/node"`
 - change password of user
