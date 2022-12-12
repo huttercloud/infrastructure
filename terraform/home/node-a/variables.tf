@@ -17,13 +17,3 @@ variable "oauth2_proxy_cookie_secret" {
     sensitive = true
     type = string
 }
-
-variable "wireguard_server_private_key" {
-    sensitive = true
-    type = string
-}
-
-variable "wireguard_client_sebastian_public_key" {
-    sensitive = true
-    type = string
-}

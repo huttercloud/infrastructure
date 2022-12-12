@@ -1,30 +1,56 @@
 # https://www.perdian.de/blog/2022/02/21/setting-up-a-wireguard-vpn-using-kubernetes/
+# https://hub.docker.com/r/linuxserver/wireguard
 
-resource "kubernetes_secret" "wireguard" {
+resource "kubernetes_config_map" "wireguard" {
   metadata {
     name = "wireguard"
     labels = {
       "app.kubernetes.io/name" = "wireguard"
     }
   }
-  
+
   data = {
-    "wg0.conf.template" = <<EOT
+    "peer.conf"             = <<EOT
+[Interface]
+Address = $${CLIENT_IP}
+PrivateKey = $(cat /config/$${PEER_ID}/privatekey-$${PEER_ID})
+ListenPort = 51820
+DNS = $${PEERDNS}
 
-    [Interface]
-    Address = 192.168.130.0/24
-    ListenPort = 51820
-    PrivateKey = ${var.wireguard_server_private_key}
-    PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ENI -j MASQUERADE
-    PostUp = sysctl -w -q net.ipv4.ip_forward=1
-    PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ENI -j MASQUERADE
-    PostDown = sysctl -w -q net.ipv4.ip_forward=0
-
-    [Peer]
-    # macbook
-    PublicKey = AOIzLd2C71DtY8DWgUfuMllRNa0iR1O3tO2WbFO7ICU=
-    AllowedIPs = ${var.wireguard_client_sebastian_public_key}
+[Peer]
+PublicKey = $(cat /config/server/publickey-server)
+PresharedKey = $(cat /config/$${PEER_ID}/presharedkey-$${PEER_ID})
+Endpoint = $${SERVERURL}:$${SERVERPORT}
+AllowedIPs = 192.168.30.0/24
 EOT
+    "server.conf"             = <<EOT
+[Interface]
+Address = $${INTERFACE}.1
+ListenPort = 51820
+PrivateKey = $(cat /config/server/privatekey-server)
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth+ -j MASQUERADE
+PostUp = sysctl -w -q net.ipv4.ip_forward=1
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth+ -j MASQUERADE
+PostDown = sysctl -w -q net.ipv4.ip_forward=0
+EOT
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "wireguard_conf" {
+  metadata {
+    name = "wireguard-conf"
+    labels = {
+      "app.kubernetes.io/name" = "wireguard"
+    }
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    storage_class_name = kubernetes_storage_class.persistent.metadata[0].name
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
   }
 }
 
@@ -58,14 +84,15 @@ resource "kubernetes_daemonset" "wireguard" {
         init_container {
           image = "busybox"
           name = "wg-init"
-          command = ["sh", "-c", "ENI=$(ip route get 192.168.30.254 | grep 192.168.30.254 | awk '{print $5}'); sed \"s/ENI/$ENI/g\" /etc/wireguard-secret/wg0.conf.template > /etc/wireguard/wg0.conf; chmod 400 /etc/wireguard/wg0.conf"]
+          # use cat instead of cp as configmap is mouted with softlinks.
+          command = ["sh", "-c", "mkdir -p /config/templates; cat /tmpl/peer.conf > /config/templates/peer.conf ; cat /tmpl/server.conf > /config/templates/server.conf"]
           volume_mount {
             name = "wg-conf"
-            mount_path = "/etc/wireguard/"
+            mount_path = "/config"
           }
           volume_mount {
-            name = "wg-secret"
-            mount_path = "/etc/wireguard-secret/"
+            name = "wg-templates"
+            mount_path = "/tmpl"
           }
         }
         container {
@@ -90,21 +117,42 @@ resource "kubernetes_daemonset" "wireguard" {
           }
           env {
             name = "PEERS"
-            value = "placeholder" # kept to drop into server mount
+            value = "mac,katharinamb,sebastianmb,test" # profiles to create on server start
           }
+          env {
+            name = "SERVERURL"
+            value = "wireguard.hutter.cloud"
+          }
+          env {
+            name = "SERVERPORT"
+            value = "32767"
+          }
+          env {
+            # fix subnet for vpn clients to allow routing on mikrotik 
+            # on mikrotik: /ip route add dst-address=192.168.130.0/24 gateway=192.168.30.61
+            name = "INTERNAL_SUBNET"
+            value = "192.168.130.0/24"
+          }
+          env {
+            name = "PEERDNS"
+            value = "192.168.30.253"
+          }
+          
           volume_mount {
             name = "wg-conf"
-            mount_path = "/etc/wireguard/"
+            mount_path = "/config"
           }
         }
         volume {
           name = "wg-conf"
-          empty_dir {}
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.wireguard_conf.metadata.0.name
+          }
         }
         volume {
-          name = "wg-secret"
-          secret {
-            secret_name = kubernetes_secret.wireguard.metadata.0.name
+          name = "wg-templates"
+          config_map {
+            name = kubernetes_config_map.wireguard.metadata.0.name
           }
         }
       }
@@ -124,11 +172,19 @@ resource "kubernetes_service" "wireguard" {
       "app.kubernetes.io/name" = "wireguard"
     }
     port {
-      port        = 51820
+      port        = 32767
       target_port = 51820
       protocol = "UDP"
       name = "wg"
+      # ensure we always assign the same physical port
+      # on the kubernetes cluster to allow port forwarding on
+      # mikrotik: 
+      # /ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
+      node_port = 32767
     }
+
+    type = "NodePort"
+
   }
 }
 
@@ -146,11 +202,5 @@ resource "kubernetes_service" "wireguard_external_name" {
   spec {
     type = "ExternalName"
     external_name = "home.hutter.cloud"
-    port {
-      port        = 51820
-      target_port = 51820
-      protocol = "UDP"
-      name = "wg"
-    }
   }
 }
