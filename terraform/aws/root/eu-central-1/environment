@@ -1,0 +1,10 @@
+# environment variables 
+
+## terraform/aws
+AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS terraform credentials/username"
+AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS terraform credentials/password"
+AWS_REGION="eu-central-1"
+
+## secrets for parameter store
+TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
+TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
