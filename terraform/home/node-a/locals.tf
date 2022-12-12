@@ -5,4 +5,6 @@ locals {
     pi_hole_external_ip = "192.168.30.253"
     cert_manager_email = "huttersebastian@gmail.com"
     cert_manager_zone_id = "Z3CBRYU3UXXFKT"
+    externalname_hostname = "infra.hutter.cloud"
+    externalname_zone_id = "Z3CBRYU3UXXFKT"
 }
