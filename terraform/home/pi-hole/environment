@@ -1,0 +1,4 @@
+# environment variables 
+
+## terraform/home/pi-hole
+PIHOLE_PASSWORD="op://hutter.cloud/pi-hole admin/password"
