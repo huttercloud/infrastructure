@@ -4,6 +4,8 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  config_path    = "../../../node-a.hutter.cloud.kubeconfig"
+  kubernetes {
+    config_path    = "../../../node-a.hutter.cloud.kubeconfig"
+  }
 }
 
