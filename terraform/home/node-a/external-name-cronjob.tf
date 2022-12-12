@@ -1,5 +1,56 @@
 # update the dns entry infra.hutter.cloud regularly
 
+resource "kubernetes_manifest" "externalname" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind" = "ExternalSecret"
+    "metadata" = {
+      "name" = "externalname"
+      "namespace" = "default"
+      "labels" = {
+        "app.kubernetes.io/name" = "externalname"
+      }
+    }
+    "spec" = {
+      "data" = [
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-zone-id"
+          }
+          "secretKey" = "zoneid"
+        },
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-access-key-id"
+          }
+          "secretKey" = "accesskey"
+        },
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-secret-access-key"
+          }
+          "secretKey" = "secretkey"
+        },
+      ]
+      "refreshInterval" = "5m"
+      "secretStoreRef" = {
+        "kind" = "ClusterSecretStore"
+        "name" = "ssm"
+      }
+      "target" = {
+        "template" = {
+          "data" = {
+            "zoneId" = "{{ .zoneid }}"
+            "accessKey" = "{{ .accesskey }}"
+            "secretKey" = "{{ .secretkey }}"
+          }
+          "engineVersion" = "v2"
+        }
+      }
+    }
+  }
+}
+
 resource "kubernetes_config_map" "externalname" {
   metadata {
     name = "externalname"
@@ -68,19 +119,34 @@ resource "kubernetes_cron_job_v1" "externalname" {
             command = [ "/bin/sh", "/script/script.sh" ]
             env {
               name = "HOSTED_ZONE_ID"
-              value = local.externalname_zone_id
+              value_from {
+                secret_key_ref {
+                  name = "externalname"
+                  key = "zoneId"
+                }
+              }
+            }
+            env {
+              name = "AWS_ACCESS_KEY_ID"
+              value_from {
+                secret_key_ref {
+                  name = "externalname"
+                  key = "accessKey"
+                }
+              }
+            }
+            env {
+              name = "AWS_SECRET_ACCESS_KEY"
+              value_from {
+                secret_key_ref {
+                  name = "externalname"
+                  key = "secretKey"
+                }
+              }
             }
             env {
               name = "AWS_DEFAULT_REGION"
               value = "eu-central-1"
-            }
-            env {
-              name = "AWS_ACCESS_KEY_ID"
-              value = local.access_key_id_dns
-            }
-            env {
-              name = "AWS_SECRET_ACCESS_KEY"
-              value = local.secret_access_key_dns
             }
             volume_mount {
               name = "script"

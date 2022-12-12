@@ -1,35 +1,64 @@
-resource "kubernetes_secret" "external_dns_aws" {
-  metadata {
-    name = "external-dns-aws"
-    labels = {
-      "app.kubernetes.io/name" = "external-dns"
+resource "kubernetes_manifest" "external_secrets" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind" = "ExternalSecret"
+    "metadata" = {
+      "name" = "external-dns"
+      "namespace" = "default"
+      "labels" = {
+        "app.kubernetes.io/name" = "external-dns"
+      }
+    }
+    "spec" = {
+      "data" = [
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-zone-id"
+          }
+          "secretKey" = "zoneid"
+        },
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-access-key-id"
+          }
+          "secretKey" = "accesskey"
+        },
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-dns-secret-access-key"
+          }
+          "secretKey" = "secretkey"
+        },
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-service-pihole-web-password"
+          }
+          "secretKey" = "pihole"
+        },
+      ]
+      "refreshInterval" = "5m"
+      "secretStoreRef" = {
+        "kind" = "ClusterSecretStore"
+        "name" = "ssm"
+      }
+      "target" = {
+        "template" = {
+          "data" = {
+            "aws" = <<EOT
+            [default]
+            aws_access_key_id = {{ .accesskey }}
+            aws_secret_access_key = {{ .secretkey }}
+            
+            EOT
+            "zoneId" = "{{ .zoneid }}"
+            "pihole" = "{{ .pihole }}"
+          }
+          "engineVersion" = "v2"
+        }
+      }
     }
   }
-
-  data = {
-    credentials = <<EOT
-
-[default]
-aws_access_key_id = ${local.access_key_id_dns}
-aws_secret_access_key = ${local.secret_access_key_dns}
-EOT
-  }
 }
-
-resource "kubernetes_secret" "external_dns_pi_hole" {
-  metadata {
-    name = "external-dns-pi-hole"
-    labels = {
-      "app.kubernetes.io/name" = "external-dns"
-    }
-  }
-
-  data = {
-    password = var.pi_hole_webpassword
-  }
-}
-
-
 
 resource "kubernetes_service_account" "external_dns" {
   metadata {
@@ -132,7 +161,7 @@ resource "kubernetes_deployment" "external_dns_aws" {
           }
           env {
             name = "AWS_SHARED_CREDENTIALS_FILE"
-            value = "/secrets/credentials"
+            value = "/secrets/aws"
           }
           volume_mount {
             name = "aws-credentials"
@@ -143,7 +172,8 @@ resource "kubernetes_deployment" "external_dns_aws" {
         volume {
           name = "aws-credentials"
           secret {
-            secret_name = kubernetes_secret.external_dns_aws.metadata[0].name
+            # secret is created via external-secretsad
+            secret_name = "external-dns"
           }
         }
       }

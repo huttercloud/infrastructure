@@ -1,3 +1,39 @@
+resource "kubernetes_manifest" "pi-hole" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind" = "ExternalSecret"
+    "metadata" = {
+      "name" = "pi-hole"
+      "namespace" = "default"
+      "labels" = {
+        "app.kubernetes.io/name" = "pi-hole"
+      }
+    }
+    "spec" = {
+      "data" = [
+        {
+          "remoteRef" = {
+            "key" = "hutter-cloud-service-pihole-web-password"
+          }
+          "secretKey" = "webpassword"
+        },
+      ]
+      "refreshInterval" = "5m"
+      "secretStoreRef" = {
+        "kind" = "ClusterSecretStore"
+        "name" = "ssm"
+      }
+      "target" = {
+        "template" = {
+          "data" = {
+            "webpassword" = "{{ .webpassword }}"
+          }
+          "engineVersion" = "v2"
+        }
+      }
+    }
+  }
+}
 
 resource "kubernetes_persistent_volume_claim" "pi_hole_etc" {
   metadata {
@@ -84,9 +120,14 @@ resource "kubernetes_daemonset" "pi_hole" {
             value = "Europe/Zurich"
           }
           env {
-            name = "WEBPASSWORD"
-            value = "${var.pi_hole_webpassword}"
-          }
+              name = "WEBPASSWORD"
+              value_from {
+                secret_key_ref {
+                  name = "pi-hole"
+                  key = "webpassword"
+                }
+              }
+            }
           volume_mount {
             name = "etc"
             mount_path = "/etc/pihole"
