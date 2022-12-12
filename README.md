@@ -21,7 +21,7 @@
 ```bash
 # example execution for mikrotik
 cd terraform/home/mikrotik
-op run --env-file=".environment" -- terraform apply
+op run --env-file="./environment" -- terraform apply
 ```
 
 ## node-a
