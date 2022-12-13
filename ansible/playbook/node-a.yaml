@@ -70,4 +70,10 @@
     # sudo microk8s enable dns:192.168.30.253
     execute_dns: false
     dns_server: 1.1.1.1
+    tags:
+      - services 
+      - microk8s
   - role: borgbase
+    tags:
+      - services
+      - borgbase

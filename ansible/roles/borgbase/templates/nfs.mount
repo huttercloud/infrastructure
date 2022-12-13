@@ -1,0 +1,12 @@
+[Unit]
+Description=NFS Mount Point for Borgmatic Backups of {{ name }}
+After=network.target
+
+[Mount]
+What={{ borgmatic_nfs_server }}:{{ path }}
+Where={{ borgmatic_nfs_root }}/{{ name }}
+Type=nfs
+Options=auto,ro
+
+[Install]
+WantedBy=multi-user.target
