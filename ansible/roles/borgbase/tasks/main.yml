@@ -1,2 +1,76 @@
 ---
 # tasks file for borgbase
+
+- name: install software packages for borgmatic
+  ansible.builtin.package:
+    name:
+      - python3-venv
+      - nfs-common
+
+- name: create ssh directory
+  ansible.builtin.file:
+    path: /root/.ssh
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: copy borgbase backup keys
+  ansible.builtin.copy:
+    content: "{{ item.key }}"
+    dest: "/root/.ssh/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0600
+  no_log: true
+  loop:
+    - { name: "id_rsa.borgbase.ars-pugnandi", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_ARS_PUGNANDI') }}" }
+    - { name: "id_rsa.borgbase.katharina", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_KATHARINA') }}" }
+    - { name: "id_rsa.borgbase.node-a", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}" }
+    - { name: "id_rsa.borgbase.node-b", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_B') }}" }
+    - { name: "id_rsa.borgbase.sebastian", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}" }
+
+- name: setup borgmatic installation directory
+  ansible.builtin.file:
+    path: "{{ borgmatic_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: setup virtualenv for borgmatic
+  ansible.builtin.pip:
+    name: borgmatic
+    virtualenv: "{{ borgmatic_venv }}"
+    virtualenv_command: "python3 -m venv"
+
+- name: setup mount directory
+  ansible.builtin.file:
+    path: "{{ borgmatic_nfs_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: setup systemd mount points
+  ansible.builtin.template:
+    src: nfs.mount
+    # name of unit must match file system path
+    dest: "/etc/systemd/system/{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
+    owner: root
+    group: root
+    mode: 0700
+  vars:
+    name: "{{ item.name }}"
+    path: "{{ item.path }}"
+  loop: "{{ borgmatc_nfs_mounts }}"
+  register: mounts
+
+- name: enable and reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: "{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
+    state: started
+    enabled: true
+  loop: "{{ borgmatc_nfs_mounts }}"
+  when: mounts.changed

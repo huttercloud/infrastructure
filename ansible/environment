@@ -1,0 +1,7 @@
+# environment variables for ansible
+
+BORGBASE_SSH_KEY_ARS_PUGNANDI="op://Personal/id_rsa.borgbase.ars-pugnandi/private key"
+BORGBASE_SSH_KEY_KATHARINA="op://Personal/id_rsa.borgbase.katharina/private key"
+BORGBASE_SSH_KEY_NODE_A="op://Personal/id_rsa.borgbase.node-a/private key"
+BORGBASE_SSH_KEY_NODE_B="op://Personal/id_rsa.borgbase.node-b/private key"
+BORGBASE_SSH_KEY_SEBASTIAN="op://Personal/id_rsa.borgbase.sebastian/private key"
