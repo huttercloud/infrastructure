@@ -12,5 +12,5 @@ even though depends_on is set for the store the terraform fails due to the crds 
 so circumvent this the helm chart needs to be installed first.
 
 ```bash
-op run --env-file="./environment" -- terraform apply -target helm_release.external_secrets
+op run --env-file="./environment" -- terraform apply -target module.external_secrets
 ```

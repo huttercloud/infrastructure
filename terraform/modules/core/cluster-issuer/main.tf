@@ -52,7 +52,7 @@ resource "kubernetes_manifest" "cert_manager_cluster_issuer_dns" {
     }
     spec = {
         acme = {
-            email = local.cert_manager_email
+            email = var.cert_manager_email
             server = "https://acme-v02.api.letsencrypt.org/directory"
             privateKeySecretRef = {
                 name = "letsencrypt-dns-secret"
@@ -67,7 +67,7 @@ resource "kubernetes_manifest" "cert_manager_cluster_issuer_dns" {
                         #     name = "cluster-issuer-aws"
                         #     key = "accessKey"
                         # }
-                        accessKeyID = local.access_key_id_dns
+                        accessKeyID = var.access_key_id_dns
                         secretAccessKeySecretRef = {
                             name = "cluster-issuer-aws"
                             key = "secretKey"

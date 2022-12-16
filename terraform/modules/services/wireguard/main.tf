@@ -45,7 +45,7 @@ resource "kubernetes_persistent_volume_claim" "wireguard_conf" {
   }
   spec {
     access_modes = ["ReadWriteOnce"]
-    storage_class_name = kubernetes_storage_class.persistent.metadata[0].name
+    storage_class_name = var.storage_class_name
     resources {
       requests = {
         storage = "5Gi"
@@ -70,7 +70,7 @@ resource "kubernetes_daemonset" "wireguard" {
     }
 
     strategy {
-      type = "OnDelete"
+      type = "RollingUpdate"
     }
 
     template {
@@ -96,7 +96,7 @@ resource "kubernetes_daemonset" "wireguard" {
           }
         }
         container {
-          image = "linuxserver/wireguard:${local.wireguard_version}"
+          image = "linuxserver/wireguard:${var.wireguard_version}"
           name  = "wireguard"
           security_context {
             privileged = true
@@ -117,11 +117,11 @@ resource "kubernetes_daemonset" "wireguard" {
           }
           env {
             name = "PEERS"
-            value = "mac,katharinamb,sebastianmb,test" # profiles to create on server start
+            value = var.wireguard_peers
           }
           env {
             name = "SERVERURL"
-            value = "wireguard.hutter.cloud"
+            value = var.wireguard_serverurl
           }
           env {
             name = "SERVERPORT"
@@ -131,11 +131,11 @@ resource "kubernetes_daemonset" "wireguard" {
             # fix subnet for vpn clients to allow routing on mikrotik 
             # on mikrotik: /ip route add dst-address=192.168.130.0/24 gateway=192.168.30.61
             name = "INTERNAL_SUBNET"
-            value = "192.168.130.0/24"
+            value = var.wireguard_internal_subnet
           }
           env {
             name = "PEERDNS"
-            value = "192.168.30.253"
+            value = var.wireguard_peerdns
           }
           
           volume_mount {
@@ -195,12 +195,12 @@ resource "kubernetes_service" "wireguard_external_name" {
       "app.kubernetes.io/name" = "wireguard"
     }
     annotations = {
-      "external-dns.alpha.kubernetes.io/hostname" = "wireguard.hutter.cloud"
+      "external-dns.alpha.kubernetes.io/hostname" = var.wireguard_serverurl
       "hutter.cloud/dns-service" =  "aws"
     }
   }
   spec {
     type = "ExternalName"
-    external_name = local.externalname_hostname
+    external_name = var.wireguard_external_hostname_target
   }
 }

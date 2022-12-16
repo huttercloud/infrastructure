@@ -106,10 +106,6 @@ resource "kubernetes_cluster_role_binding" "external_dns" {
   }
 }
 
-locals {
-  txt_owner_id="node-a-external-dns"
-}
-
 resource "kubernetes_deployment" "external_dns_aws" {
   metadata {
     name = "external-dns-aws"
@@ -142,7 +138,7 @@ resource "kubernetes_deployment" "external_dns_aws" {
         service_account_name = kubernetes_service_account.external_dns.metadata[0].name
         automount_service_account_token = true
         container {
-          image = "k8s.gcr.io/external-dns/external-dns:${local.external_dns_version}"
+          image = "k8s.gcr.io/external-dns/external-dns:${var.external_dns_version}"
           name  = "external-dns"
           args = [
               "--source=service", # only create dns names for services with externalname and annotation due to no loadbalancer with public ip!
@@ -151,7 +147,7 @@ resource "kubernetes_deployment" "external_dns_aws" {
               "--policy=sync",
               "--aws-zone-type=public",
               "--registry=txt",
-              "--txt-owner-id=${local.txt_owner_id}",
+              "--txt-owner-id=${var.txt_owner_id}",
               "--txt-prefix=extdns",
               "--annotation-filter=hutter.cloud/dns-service in (aws)"
           ]

@@ -1,16 +1,4 @@
-resource "helm_release" "external_secrets" {
-  name       = "external-secrets"
 
-  repository = "https://charts.external-secrets.io"
-  chart      = "external-secrets"
-  version    = local.external_secrets_version
-
-
-  set {
-    name  = "installCRDs"
-    value = true
-  }
-}
 
 resource "kubernetes_secret" "external_secrets" {
   metadata {
@@ -21,8 +9,8 @@ resource "kubernetes_secret" "external_secrets" {
   }
 
   data = {
-    access-key = local.access_key_id_parameter_store
-    secret-key = local.secret_access_key_parameter_store
+    access-key = var.access_key_id_parameter_store
+    secret-key = var.secret_access_key_parameter_store
   }
 }
 
@@ -57,9 +45,4 @@ resource "kubernetes_manifest" "external_secrets_cluster_secret_store" {
         }
       }
   }
-
-  depends_on = [
-    helm_release.external_secrets,
-    kubernetes_secret.external_secrets,
-  ]
 }
