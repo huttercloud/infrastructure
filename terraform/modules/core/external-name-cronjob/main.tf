@@ -78,7 +78,7 @@ EOT
         {
             "Action": "UPSERT",
             "ResourceRecordSet": {
-            "Name": "${local.externalname_hostname}",
+            "Name": "${var.externalname_hostname}",
             "Type": "A",
             "TTL": 300,
             "ResourceRecords": [

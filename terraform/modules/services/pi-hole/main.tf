@@ -41,7 +41,7 @@ resource "kubernetes_persistent_volume_claim" "pi_hole_etc" {
   }
   spec {
     access_modes = ["ReadWriteOnce"]
-    storage_class_name = kubernetes_storage_class.persistent.metadata[0].name
+    storage_class_name = var.storage_class_name
     resources {
       requests = {
         storage = "5Gi"
@@ -57,7 +57,7 @@ resource "kubernetes_persistent_volume_claim" "pi_hole_dnsmasq" {
   }
   spec {
     access_modes = ["ReadWriteOnce"]
-    storage_class_name = kubernetes_storage_class.persistent.metadata[0].name
+    storage_class_name = var.storage_class_name
     resources {
       requests = {
         storage = "5Gi"
@@ -82,7 +82,7 @@ resource "kubernetes_daemonset" "pi_hole" {
     }
 
     strategy {
-      type = "OnDelete"
+      type = "RollingUpdate"
     }
 
     template {
@@ -94,7 +94,7 @@ resource "kubernetes_daemonset" "pi_hole" {
 
       spec {
         container {
-          image = "pihole/pihole:${local.pi_hole_version}"
+          image = "pihole/pihole:${var.pi_hole_version}"
           name  = "pi-hole"
           security_context {
             privileged = true
@@ -169,7 +169,7 @@ resource "kubernetes_service" "pi_hole_http" {
       name = "http"
     }
 
-    external_ips = [ local.pi_hole_external_ip ]
+    external_ips = [ var.pi_hole_external_ip ]
   }
 }
 
@@ -194,7 +194,7 @@ resource "kubernetes_service" "pi_hole_dns" {
       name = "dnsu"
     }
 
-    external_ips = [ local.pi_hole_external_ip ]
+    external_ips = [ var.pi_hole_external_ip ]
   }
 }
 
@@ -208,11 +208,11 @@ resource "kubernetes_ingress_v1" "pi_hole" {
   }
   spec {
     tls {
-      hosts = [ "pihole.hutter.cloud" ]
+      hosts = [ var.pi_hole_hostname ]
       secret_name = "pihole-tls"
     }
     rule {
-      host = "pihole.hutter.cloud"
+      host = var.pi_hole_hostname
       http {
         path {
           path = "/admin"
