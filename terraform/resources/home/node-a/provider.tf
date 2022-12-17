@@ -1,11 +1,17 @@
-# kubeconfig is generated via ansible-playbook
+locals {
+  cluster_ca_certificate = base64decode(var.kubernetes_cluster_ca_cert_data)
+}
+
 provider "kubernetes" {
-  config_path    = "../../../../node-a.hutter.cloud.kubeconfig"
+  host = var.kubernetes_host
+  token = var.kubernetes_token
+  cluster_ca_certificate = local.cluster_ca_certificate
 }
 
 provider "helm" {
   kubernetes {
-    config_path    = "../../../../node-a.hutter.cloud.kubeconfig"
+    host = var.kubernetes_host
+    token = var.kubernetes_token
+    cluster_ca_certificate = local.cluster_ca_certificate
   }
 }
-
