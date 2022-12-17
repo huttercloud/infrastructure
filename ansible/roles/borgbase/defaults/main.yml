@@ -1,2 +1,43 @@
 ---
 # defaults file for borgbase
+
+borgmatic_root: /usr/local/borgmatic
+borgmatic_venv: "{{ borgmatic_root }}/venv"
+borgmatic_ssh: "{{ borgmatic_root }}/ssh"
+borgmatic_nfs_root: "{{ borgmatic_root }}/mounts"
+borgmatic_jobs: "{{ borgmatic_root }}/jobs"
+borgmatic_bin: "{{ borgmatic_root }}/bin"
+
+borgmatic_ssh_keys: []
+# example entry
+#  - name: "id_rsa.borgbase.node-a"
+#    key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
+
+borgmatic_backup_jobs: []
+# exmaple nfs entry
+# - name: sebastian
+#   username: uvk5c82u
+#   host: uvk5c82u.repo.borgbase.com
+#   passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_SEBASTIAN') }}"
+#   source_directories:
+#     - "{{ borgmatic_nfs_root }}/sebastian"
+#   before_backup:
+#     - "mount -o remount {{ borgmatic_nfs_root }}/sebastian"
+#   backup_hour: 4
+# example local entry
+# - name: node-a
+#   username: pi7vk5q8
+#   host: pi7vk5q8.repo.borgbase.com
+#   passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_A') }}"
+#   source_directories: 
+#     - /data
+#   before_backup: []
+#   backup_hour: 1
+
+borgmatic_nfs_enabled: false
+borgmatic_nfs_server: 192.168.30.17 # dont use dns for nfs mounts, dns may not be up and running when backup is executed
+
+borgmatc_nfs_mounts: []
+# example entry
+# - name: sebastian
+#   path: /volume1/homes/@LH-BARFOOT.LOCAL/61/sebastian-1000005/Drive

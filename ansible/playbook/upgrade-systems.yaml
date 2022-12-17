@@ -2,8 +2,8 @@
 
 # https://www.cyberciti.biz/faq/ansible-apt-update-all-packages-on-ubuntu-debian-linux/
 
-- name: Configure node-a
-  hosts: hosts
+- name: Upgrade and restart node-a
+  hosts: node-a
 
   tasks:
   - name: Update apt cache
