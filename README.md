@@ -38,3 +38,11 @@ one of the old nucs. this system will mainly serve pi-hole and handle http/s red
 - change password of user
 
 
+# borgmatic
+
+If a new borgbase repo is added:
+- add the borgbase configuration to the node from which to execute the backup
+- run the ansible playbook with `-t borgbase`
+- connect to the node via ssh
+- initialize the borgbase repository (as root): `borgmatic-<job name>.sh init -e repokey-blake2`
+- execute the initial backup (as root): `borgmatic-<job name>.sh create --verbosity 1 --list --stats`

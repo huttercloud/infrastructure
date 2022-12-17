@@ -6,6 +6,7 @@
   become_user: root
 
   vars:
+    # lvm and networking config
     vg: ubuntu-vg
     lv: data
     mountpoint: /data
@@ -23,6 +24,69 @@
                 - 1.1.1.1
                 - 8.8.8.8
         version: 2
+
+    # microk8s configuration (disable dns setup as its the pihole server)
+    execute_dns: false
+    dns_server: 1.1.1.1
+
+    # nfs mounts for borgmatic backup sources
+    borgmatic_nfs_enabled: true
+    borgmatc_nfs_mounts:
+    - name: arspugnandi
+      path: /volume1/ars-pugnandi
+    - name: katharina
+      path: /volume1/homes/@LH-BARFOOT.LOCAL/61/katharina-1000006/Drive
+    - name: sebastian
+      path: /volume1/homes/@LH-BARFOOT.LOCAL/61/sebastian-1000005/Drive
+
+    # ssh keys for borgmatic backups
+    borgmatic_ssh_keys:
+    - name: "arspugnandi"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_ARS_PUGNANDI') }}"
+    - name: "katharina"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_KATHARINA') }}"
+    - name: "node-a"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
+    - name: "sebastian"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
+    
+    # borgmatic backup definitions
+    borgmatic_backup_jobs:
+      - name: arspugnandi
+        username: rofqbj58
+        host: rofqbj58.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_ARS_PUGNANDI') }}"
+        source_directories:
+          - "{{ borgmatic_nfs_root }}/arspugnandi"
+        before_backup:
+          - "mount -o remount {{ borgmatic_nfs_root }}/arspugnandi"
+        backup_hour: 2
+      - name: katharina
+        username: zc520i6h
+        host: zc520i6h.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_KATHARINA') }}"
+        source_directories:
+          - "{{ borgmatic_nfs_root }}/katharina"
+        before_backup:
+          - "mount -o remount {{ borgmatic_nfs_root }}/katharina"
+        backup_hour: 7
+      - name: node-a
+        username: pi7vk5q8
+        host: pi7vk5q8.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_A') }}"
+        source_directories: 
+          - /data
+        backup_hour: 1
+        before_backup: []
+      - name: sebastian
+        username: uvk5c82u
+        host: uvk5c82u.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_SEBASTIAN') }}"
+        source_directories:
+          - "{{ borgmatic_nfs_root }}/sebastian"
+        before_backup:
+          - "mount -o remount {{ borgmatic_nfs_root }}/sebastian"
+        backup_hour: 5
 
   pre_tasks:
   - name: ensure lvm is setup 

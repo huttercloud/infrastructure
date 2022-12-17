@@ -1,15 +1,2 @@
 ---
 # vars file for borgbase
-
-borgmatic_root: /usr/local/borgmatic
-borgmatic_venv: "{{ borgmatic_root }}/venv"
-
-borgmatic_nfs_server: 192.168.30.17 # dont use dns for nfs mounts, dns may not be up and running when backup is executed
-borgmatic_nfs_root: "{{ borgmatic_root }}/mounts"
-borgmatc_nfs_mounts:
-  - name: arspugnandi
-    path: /volume1/ars-pugnandi
-  - name: katharina
-    path: /volume1/homes/@LH-BARFOOT.LOCAL/61/katharina-1000006/Drive
-  - name: sebastian
-    path: /volume1/homes/@LH-BARFOOT.LOCAL/61/sebastian-1000005/Drive

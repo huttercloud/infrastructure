@@ -1,76 +1,169 @@
 ---
 # tasks file for borgbase
 
-- name: install software packages for borgmatic
-  ansible.builtin.package:
-    name:
-      - python3-venv
-      - nfs-common
+- name: install borgmatic
+  block:
+  - name: install software packages for borgmatic
+    ansible.builtin.package:
+      name:
+        - python3-venv
+        - nfs-common
+        - borgbackup
 
-- name: create ssh directory
-  ansible.builtin.file:
-    path: /root/.ssh
-    state: directory
-    owner: root
-    group: root
-    mode: 0700
+  - name: setup virtualenv for borgmatic
+    ansible.builtin.pip:
+      name: 
+        - borgmatic
+      virtualenv: "{{ borgmatic_venv }}"
+      virtualenv_command: "python3 -m venv"
 
-- name: copy borgbase backup keys
-  ansible.builtin.copy:
-    content: "{{ item.key }}"
-    dest: "/root/.ssh/{{ item.name }}"
-    owner: root
-    group: root
-    mode: 0600
-  no_log: true
-  loop:
-    - { name: "id_rsa.borgbase.ars-pugnandi", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_ARS_PUGNANDI') }}" }
-    - { name: "id_rsa.borgbase.katharina", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_KATHARINA') }}" }
-    - { name: "id_rsa.borgbase.node-a", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}" }
-    - { name: "id_rsa.borgbase.node-b", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_B') }}" }
-    - { name: "id_rsa.borgbase.sebastian", key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}" }
+  - name: setup borgmatic installation directory
+    ansible.builtin.file:
+      path: "{{ borgmatic_root }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
 
-- name: setup borgmatic installation directory
-  ansible.builtin.file:
-    path: "{{ borgmatic_root }}"
-    state: directory
-    owner: root
-    group: root
-    mode: 0700
+##
+# ssh setup
+##
 
-- name: setup virtualenv for borgmatic
-  ansible.builtin.pip:
-    name: borgmatic
-    virtualenv: "{{ borgmatic_venv }}"
-    virtualenv_command: "python3 -m venv"
+- name: setup ssh keys and known hosts
+  block:
+  - name: create ssh directory
+    ansible.builtin.file:
+      path: "{{ borgmatic_ssh }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
 
-- name: setup mount directory
-  ansible.builtin.file:
-    path: "{{ borgmatic_nfs_root }}"
-    state: directory
-    owner: root
-    group: root
-    mode: 0700
+  - name: copy borgbase backup keys
+    ansible.builtin.copy:
+      content: "{{ item.key }}"
+      dest: "{{ borgmatic_ssh }}/{{ item.name }}"
+      owner: root
+      group: root
+      mode: 0600
+    no_log: true
+    loop: "{{ borgmatic_ssh_keys }}"
 
-- name: setup systemd mount points
-  ansible.builtin.template:
-    src: nfs.mount
-    # name of unit must match file system path
-    dest: "/etc/systemd/system/{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
-    owner: root
-    group: root
-    mode: 0700
-  vars:
-    name: "{{ item.name }}"
-    path: "{{ item.path }}"
-  loop: "{{ borgmatc_nfs_mounts }}"
-  register: mounts
+  - name: run ssh keyscan
+    ansible.builtin.shell: "ssh-keyscan {{ item.host }} >> {{ borgmatic_ssh }}/known_hosts_new"
+    loop: "{{ borgmatic_backup_jobs }}"
+  
+  - name: move keyscan file
+    ansible.builtin.shell: "mv {{ borgmatic_ssh }}/known_hosts_new {{ borgmatic_ssh }}/known_hosts"
 
-- name: enable and reload systemd
-  ansible.builtin.systemd:
-    daemon_reload: true
-    name: "{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
-    state: started
-    enabled: true
-  loop: "{{ borgmatc_nfs_mounts }}"
-  when: mounts.changed
+##
+# nfs setup
+##
+- name: setup nfs for nfs backups
+  block:
+  - name: setup mount directory
+    ansible.builtin.file:
+      path: "{{ borgmatic_nfs_root }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
+  - name: setup systemd mount points
+    ansible.builtin.template:
+      src: nfs.mount
+      # name of unit must match file system path
+      dest: "/etc/systemd/system/{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
+      owner: root
+      group: root
+      mode: 0700
+    vars:
+      name: "{{ item.name }}"
+      path: "{{ item.path }}"
+    loop: "{{ borgmatc_nfs_mounts }}"
+    register: mounts
+
+  - name: enable and reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: true
+      name: "{{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-{{ item.name }}.mount"
+      state: started
+      enabled: true
+    loop: "{{ borgmatc_nfs_mounts }}"
+    when: mounts.changed
+  when: borgmatic_nfs_enabled
+
+- name: prepare borgmatic jobs
+  block:
+  - name: create borgmatic jobs base directory
+    ansible.builtin.file:
+      path: "{{ borgmatic_jobs }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
+  - name: create borgmatic job directories
+    ansible.builtin.file:
+      path: "{{ borgmatic_jobs }}/{{ item.name }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+    loop: "{{ borgmatic_backup_jobs }}"
+
+  - name: create borgmatic configuration files
+    ansible.builtin.template:
+      src: borgmatic.yaml
+      dest: "{{ borgmatic_jobs }}/{{ item.name }}/borgmatic.yaml"
+      owner: root
+      group: root
+      mode: 0700
+    vars:
+      source_directories: "{{ item.source_directories }}"
+      username: "{{ item.username }}"
+      host: "{{ item.host}}"
+      borg_base_directory: "{{ borgmatic_jobs }}/{{ item.name }}"
+      private_key: "{{ borgmatic_ssh }}/{{ item.name }}"
+      user_known_hosts_file: "{{ borgmatic_ssh }}/known_hosts"
+      encryption_passphrase: "{{ item.passphrase }}"
+      before_backup: "{{ item.before_backup }}"
+    loop: "{{ borgmatic_backup_jobs }}"
+
+  - name: create bin dir for wrapper scripts
+    ansible.builtin.file:
+      path: "{{ borgmatic_bin }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
+  - name: Add borgmatic bin to PATH
+    lineinfile:
+      dest: /etc/environment
+      backrefs: true
+      regexp: "^PATH="
+      line: PATH="{{ borgmatic_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+  - name: create borgmatic wrapper scripts
+    ansible.builtin.template:
+      src: borgmatic.sh
+      dest: "{{ borgmatic_bin }}//borgmatic-{{ item.name }}.sh"
+      owner: root
+      group: root
+      mode: 0700
+    vars:
+      borgmatic_cli: "{{ borgmatic_venv }}/bin/borgmatic"
+      borgmatic_config: "{{ borgmatic_jobs }}/{{ item.name }}/borgmatic.yaml"
+    loop: "{{ borgmatic_backup_jobs }}"
+
+  - name: Creates borgmatic cronjobs
+    ansible.builtin.cron:
+      name: "daily borgmatic backup for {{ item.name }}"
+      weekday: "*"
+      minute: "0"
+      hour: "{{ item.backup_hour }}"
+      user: root
+      job: "{{ borgmatic_bin }}//borgmatic-{{ item.name }}.sh --verbosity 1"
+      cron_file: "borgmatic-{{ item.name }}"
+    loop: "{{ borgmatic_backup_jobs }}"
