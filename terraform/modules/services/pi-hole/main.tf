@@ -66,7 +66,7 @@ resource "kubernetes_persistent_volume_claim" "pi_hole_dnsmasq" {
   }
 }
 
-resource "kubernetes_daemonset" "pi_hole" {
+resource "kubernetes_deployment" "pi_hole" {
   metadata {
     name = "pi-hole"
     labels = {
@@ -82,7 +82,7 @@ resource "kubernetes_daemonset" "pi_hole" {
     }
 
     strategy {
-      type = "RollingUpdate"
+      type = "Recreate"
     }
 
     template {
@@ -204,6 +204,8 @@ resource "kubernetes_ingress_v1" "pi_hole" {
     annotations = {
       "cert-manager.io/cluster-issuer" = "letsencrypt-dns"
       "kubernetes.io/ingress.class" = "public"
+      "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
+      "nginx.ingress.kubernetes.io/app-root" = "/admin"
     }
   }
   spec {

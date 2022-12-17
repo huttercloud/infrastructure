@@ -54,7 +54,7 @@ resource "kubernetes_persistent_volume_claim" "wireguard_conf" {
   }
 }
 
-resource "kubernetes_daemonset" "wireguard" {
+resource "kubernetes_deployment" "wireguard" {
   metadata {
     name = "wireguard"
     labels = {
@@ -70,7 +70,7 @@ resource "kubernetes_daemonset" "wireguard" {
     }
 
     strategy {
-      type = "RollingUpdate"
+      type = "Recreate"
     }
 
     template {
