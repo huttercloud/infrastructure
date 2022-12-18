@@ -10,7 +10,10 @@ output "prometheus_remote_endpoint_user_id" {
     value = grafana_cloud_stack.hutter_cloud.prometheus_user_id
 }
 
-output "metrics_publisher_key" {
-    value = grafana_api_key.metrics_publisher.key
-    sensitive = true
+output "logs_url" {
+    value = grafana_cloud_stack.hutter_cloud.logs_url
+}
+
+output "logs_user_id" {
+    value = grafana_cloud_stack.hutter_cloud.logs_user_id
 }

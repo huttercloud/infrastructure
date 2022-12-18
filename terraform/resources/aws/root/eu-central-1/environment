@@ -9,3 +9,5 @@ AWS_REGION="eu-central-1"
 TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
 TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
 TF_VAR_synology_certificate_private_key="op://Personal/id_rsa.synology-certificate/private key"
+# the grafana key had to be manually created as the api didnt support the metricspublisher role
+TF_VAR_grafana_cloud_metrics_publisher="op://hutter.cloud/grafana cloud metricspublisher/password"

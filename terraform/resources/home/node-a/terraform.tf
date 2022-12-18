@@ -40,3 +40,14 @@ data "terraform_remote_state" "aws-root-global" {
     }
   }
 }
+
+data "terraform_remote_state" "grafana" {
+  backend = "remote"
+
+  config = {
+    organization = "hutter-cloud"
+    workspaces = {
+      name = "grafana"
+    }
+  }
+}

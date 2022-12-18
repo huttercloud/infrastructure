@@ -12,3 +12,7 @@ variable "synology_certificate_private_key" {
     sensitive = true
     type = string
 }
+variable "grafana_cloud_metrics_publisher" {
+  sensitive = true
+  type = string
+}

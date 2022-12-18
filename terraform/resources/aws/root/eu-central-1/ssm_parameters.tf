@@ -68,3 +68,40 @@ resource "aws_ssm_parameter" "hutter_cloud_service_synology_certificate_private_
   type  = "SecureString"
   value = var.synology_certificate_private_key
 }
+
+# grafana agent configuration
+resource "aws_ssm_parameter" "hutter_cloud_grafana_prometheus_remote_endpoint_user_id" {
+  name  = "hutter-cloud-grafana-prometheus-remote-endpoint-user-id"
+  type  = "SecureString"
+  value = data.terraform_remote_state.grafana.outputs.prometheus_remote_endpoint_user_id
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_prometheus_remote_endpoint_user_key" {
+  name  = "hutter-cloud-grafana-prometheus-remote-endpoint-user-key"
+  type  = "SecureString"
+  value = var.grafana_cloud_metrics_publisher
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_prometheus_remote_write_endpoint" {
+  name  = "hutter-cloud-grafana-prometheus-remote-write-endpoint"
+  type  = "SecureString"
+  value = data.terraform_remote_state.grafana.outputs.prometheus_remote_write_endpoint
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_logs_user_id" {
+  name  = "hutter-cloud-grafana-logs-user-id"
+  type  = "SecureString"
+  value = data.terraform_remote_state.grafana.outputs.logs_user_id
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_logs_user_key" {
+  name  = "hutter-cloud-grafana-logs-user-key"
+  type  = "SecureString"
+  value = var.grafana_cloud_metrics_publisher
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_logs_url" {
+  name  = "hutter-cloud-grafana-logs-url"
+  type  = "SecureString"
+  value = data.terraform_remote_state.grafana.outputs.logs_url
+}
