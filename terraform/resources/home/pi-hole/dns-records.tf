@@ -1,7 +1,6 @@
 locals {
     cname_records_node_a = [
         "hello-world.hutter.cloud",
-        "wireguard.hutter.cloud",
     ]
 }
 
@@ -9,6 +8,11 @@ resource "pihole_dns_record" "pihole" {
   domain = "pihole.hutter.cloud"
   ip     = "192.168.30.253"
 }
+resource "pihole_dns_record" "wireguard" {
+  domain = "wireguard.hutter.cloud"
+  ip     = "192.168.30.253"
+}
+
 resource "pihole_dns_record" "nas" {
   domain = "nas.hutter.cloud"
   ip     = "192.168.30.17"

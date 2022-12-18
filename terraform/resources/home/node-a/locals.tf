@@ -29,6 +29,7 @@ locals {
     wireguard_serverurl               = "wireguard.hutter.cloud"
     wireguard_internal_subnet         = "192.168.130.0/24"
     wireguard_peerdns                 = "192.168.30.253"
+    wireguard_external_ip             = "192.168.30.253"
 
     # grafana configuration
     cluster_name = "node-a"
