@@ -3,3 +3,6 @@
 TF_VAR_kubernetes_host="op://hutter.cloud/kubeconfig node-b/host"
 TF_VAR_kubernetes_token="op://hutter.cloud/kubeconfig node-b/token"
 TF_VAR_kubernetes_cluster_ca_cert_data="op://hutter.cloud/kubeconfig node-b/cluster_ca_certificate"
+
+# argo cd secrets
+TF_VAR_argo_cd_server_admin_password="op://hutter.cloud/argo cd server admin credentials/bcrypt"

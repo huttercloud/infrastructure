@@ -4,6 +4,7 @@ locals {
     external_secrets_version = "0.7.0"
     grafana_agent_operator_version = "0.2.8"
     grafana_agent_version = "v0.29.0"
+    argo_cd_version = "5.16.7"
 
     # cert manager configuration
     cert_manager_email = "huttersebastian@gmail.com"
@@ -20,5 +21,9 @@ locals {
 
     # grafana configuration
     cluster_name = "node-b"
+
+    # argo cd configuration
+    argo_cd_host = "argocd.hutter.cloud"
+    argo_cd_auth0_issuer = "https://hutter-cloud.eu.auth0.com/"
 }
 
