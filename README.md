@@ -48,17 +48,33 @@ op run --env-file="./environment" -- terraform apply
 
 one of the old nucs. this system will mainly serve pi-hole and handle http/s redirects
 - hostname: node-a.hutter.cloud
-- ip address: 192.168.30.61
+- ip address: 192.168.30.61 (static lease in mikrotik)
 - username: node
-  
+
+### additional mikrotik configd
+
+```bash
+# enable routing to wireguard network
+/ip route add dst-address=192.168.130.0/24 gateway=192.168.30.253
+# enable portforwarding from internet to wireguard
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
+```
 
 ## node-b
 
 desktop pc, services are accessible from the internet
 - hostname: node-b.hutter.cloud
-- ip address: 192.168.30.90
+- ip address: 192.168.30.90 (static lease in mikrotik)
 - username: node
-  
+
+### additional mikrotik configd
+
+```bash
+# enable http/s port forwardinf
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=80 protocol=tcp in-interface=bridge-vlan200 dst-port=80
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=443 protocol=tcp in-interface=bridge-vlan200 dst-port=443
+```
+
 # borgmatic
 
 If a new borgbase repo is added:
