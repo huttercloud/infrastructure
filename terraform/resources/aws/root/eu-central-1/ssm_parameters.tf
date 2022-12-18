@@ -60,3 +60,11 @@ resource "aws_ssm_parameter" "hutter_cloud_service_pihole_web_password" {
   type  = "SecureString"
   value = var.pi_hole_webpassword
 }
+
+
+# ssh private key for automatic ssl cert replacement
+resource "aws_ssm_parameter" "hutter_cloud_service_synology_certificate_private_key" {
+  name  = "hutter-cloud-service-synology-certificate-private-key"
+  type  = "SecureString"
+  value = var.synology_certificate_private_key
+}

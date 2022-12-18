@@ -7,3 +7,8 @@ variable "oauth2_proxy_cookie_secret" {
     sensitive = true
     type = string
 }
+
+variable "synology_certificate_private_key" {
+    sensitive = true
+    type = string
+}

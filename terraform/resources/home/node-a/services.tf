@@ -18,3 +18,8 @@ module "pi_hole" {
   pi_hole_external_ip = local.pi_hole_external_ip
   pi_hole_hostname    = local.pi_hole_hostname 
 }
+
+module "synology_certificate" {
+  source = "../../../modules/services/synology-certificate"
+
+}
