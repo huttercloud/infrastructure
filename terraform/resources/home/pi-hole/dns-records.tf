@@ -2,6 +2,8 @@ locals {
     cname_records_node_a = [
         "hello-world.hutter.cloud",
     ]
+
+    cname_records_node_b = []
 }
 
 resource "pihole_dns_record" "pihole" {
@@ -34,13 +36,19 @@ resource "pihole_dns_record" "node_a" {
 
 resource "pihole_dns_record" "node_b" {
   domain = "node-b.hutter.cloud"
-  ip     = "192.168.30.34"
+  ip     = "192.168.30.90"
 }
 
-# cname records pointing to node a
+# cname records pointing to nodes
 
 resource "pihole_cname_record" "node_a" {
   for_each = toset(local.cname_records_node_a)
   domain = each.value
   target = "node-a.hutter.cloud"
+}
+
+resource "pihole_cname_record" "node_b" {
+  for_each = toset(local.cname_records_node_b)
+  domain = each.value
+  target = "node-b.hutter.cloud"
 }
