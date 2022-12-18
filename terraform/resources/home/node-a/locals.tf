@@ -6,6 +6,7 @@ locals {
     wireguard_version = "1.0.20210914"
     grafana_agent_operator_version = "0.2.8"
     grafana_agent_version = "v0.29.0"
+    unifi_version = "7.3.76"
 
     # cert manager configuration
     cert_manager_email = "huttersebastian@gmail.com"
@@ -33,5 +34,9 @@ locals {
 
     # grafana configuration
     cluster_name = "node-a"
+
+    # unifi configuration
+    unifi_external_ip = "192.168.30.253"
+    unifi_hostname = "unifi.hutter.cloud"
 }
 

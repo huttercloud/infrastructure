@@ -22,5 +22,13 @@ module "pi_hole" {
 
 module "synology_certificate" {
   source = "../../../modules/services/synology-certificate"
+}
 
+module "unifi" {
+  source = "../../../modules/services/unifi"
+
+  storage_class_name  = module.storage_class_data.storage_class_name
+  unifi_version = local.unifi_version
+  unifi_external_ip = local.unifi_external_ip
+  unifi_hostname = local.unifi_hostname
 }
