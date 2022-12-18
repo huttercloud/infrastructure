@@ -50,10 +50,15 @@ one of the old nucs. this system will mainly serve pi-hole and handle http/s red
 - hostname: node-a.hutter.cloud
 - ip address: 192.168.30.61
 - username: node
+  
 
 ## node-b
 
-tbd
+desktop pc, services are accessible from the internet
+- hostname: node-b.hutter.cloud
+- ip address: 192.168.30.90
+- username: node
+  
 # borgmatic
 
 If a new borgbase repo is added:
