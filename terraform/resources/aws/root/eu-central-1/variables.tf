@@ -16,3 +16,35 @@ variable "grafana_cloud_metrics_publisher" {
   sensitive = true
   type = string
 }
+
+# argo cd declarative setup
+variable "argo_cd_declarative_kubernetes_host_node_a" {
+  sensitive = true
+  type = string
+}
+
+variable "argo_cd_declarative_kubernetes_token_node_a" {
+  sensitive = true
+  type = string
+}
+
+variable "argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_a" {
+  sensitive = true
+  type = string
+}
+
+
+variable "argo_cd_declarative_kubernetes_host_node_b" {
+  sensitive = true
+  type = string
+}
+
+variable "argo_cd_declarative_kubernetes_token_node_b" {
+  sensitive = true
+  type = string
+}
+
+variable "argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b" {
+  sensitive = true
+  type = string
+}
