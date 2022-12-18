@@ -5,7 +5,7 @@
 ## installation
 1. setup virtualenv for ansible, ensure terraform 1.3 is installed
 1. install ubuntu on nucs
-2. run the corresponding ansible playbooks `cd ansible; ansible-playbook -i inventory.ini playbook/node-a.yaml `
+2. run the corresponding ansible playbooks `cd ansible; op run --env-file="./environment" ansible-playbook -i inventory.ini playbook/node-a.yaml `
 3. apply terraform code for node-a and node-b `cd terraform/home/node-a 
 4. ...
 5. 
