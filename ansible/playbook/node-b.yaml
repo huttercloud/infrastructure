@@ -1,0 +1,68 @@
+---
+
+- name: Configure node-b
+  hosts: node-b.hutter.cloud
+  become: true
+  become_user: root
+
+  vars:
+    # lvm and networking config
+    vg: ubuntu-vg
+    lv: data
+    mountpoint: /data
+
+    # ssh keys for borgmatic backups
+    borgmatic_ssh_keys:
+    - name: "node-b"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_B') }}"
+
+    # borgmatic backup definitions
+    borgmatic_backup_jobs:
+      - name: node-b
+        username: pxgp57fu
+        host: pxgp57fu.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_B') }}"
+        source_directories: 
+          - /data
+        backup_hour: 1
+        before_backup: []
+
+  pre_tasks:
+  - name: ensure lvm is setup 
+    community.general.lvol:
+      vg: "{{ vg }}"
+      lv: "{{ lv }}"
+      size: 828g #100%FREE only worked once, so lv size is just hardcoded to the available space
+
+  - name: ensure partition is around
+    community.general.filesystem:
+      fstype: ext4
+      dev: "/dev/{{ vg }}/{{ lv }}"
+
+  - name: create mountpoint for data partition
+    ansible.builtin.file: 
+      path: "{{ mountpoint }}"
+      state: directory
+      mode: 0755
+
+  - name: Mount up device by label
+    ansible.posix.mount:
+      path: "{{ mountpoint }}"
+      src: "/dev/{{ vg }}/{{ lv }}"
+      fstype: ext4
+      state: mounted
+
+
+  roles:
+  - role: microk8s
+    tags:
+      - services 
+      - microk8s
+  - role: borgbase
+    tags:
+      - services
+      - borgbase
+  - role: node-exporter
+    tags:
+      - services
+      - node-exporter
