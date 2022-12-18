@@ -1,11 +1,11 @@
 locals {
-    oauth2_proxy_callbacks = [
-        "https://hello-world.hutter.cloud/oauth2/callback"
+    argo_cd_callbacks = [
+        "https://argocd.hutter.cloud/auth/callback"
     ]
 }
 
-resource "auth0_client" "oauth2_proxy" {
-  name                                = "hutter.cloud"
+resource "auth0_client" "argo_cd" {
+  name                                = "argocd.hutter.cloud"
   description                         = "Allow"
   app_type                            = "non_interactive"
   custom_login_page_on                = true
@@ -13,7 +13,7 @@ resource "auth0_client" "oauth2_proxy" {
   is_token_endpoint_ip_header_trusted = true
   token_endpoint_auth_method          = "client_secret_post"
   oidc_conformant                     = true
-  callbacks                           = local.oauth2_proxy_callbacks
+  callbacks                           = local.argo_cd_callbacks
   grant_types = [
     "authorization_code",
     "http://auth0.com/oauth/grant-type/password-realm",
@@ -30,12 +30,12 @@ resource "auth0_client" "oauth2_proxy" {
   }
 }
 
-output oauth2_proxy_client_id {
-    value = auth0_client.oauth2_proxy.client_id
+output argo_cd_client_id {
+    value = auth0_client.argo_cd.client_id
     sensitive = true
 }
 
-output oauth2_proxy_client_secret {
-    value = auth0_client.oauth2_proxy.client_secret
+output argo_cd_client_secret {
+    value = auth0_client.argo_cd.client_secret
     sensitive = true
 }
