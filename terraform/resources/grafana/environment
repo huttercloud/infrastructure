@@ -1,0 +1,4 @@
+# environment variables 
+
+## terraform/auth0
+GRAFANA_CLOUD_API_KEY="op://hutter.cloud/grafana cloud api key for terraform/password"
