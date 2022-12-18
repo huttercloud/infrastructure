@@ -1,0 +1,42 @@
+---
+# tasks file for node-exporter
+
+- name: check url for grafana remote write is defined
+  fail: msg="The variable 'grafana_prometheus_remote_write_endpoint' is empty"
+  when: grafana_prometheus_remote_write_endpoint | length == 0
+
+- name: check username for grafana remote write is defined
+  fail: msg="The variable 'grafana_prometheus_username' is empty"
+  when: grafana_prometheus_username | length == 0
+
+- name: check password for grafana remote write is defined
+  fail: msg="The variable 'grafana_prometheus_password' is empty"
+  when: grafana_prometheus_password | length == 0
+
+- name: install prometheus and node exporter
+  ansible.builtin.package:
+    name:
+      - prometheus
+      - prometheus-node-exporter
+
+- name: copy prometheus configuration
+  ansible.builtin.template:
+    src: prometheus.yml
+    dest: "/etc/prometheus/prometheus.yml"
+    owner: prometheus
+    group: prometheus
+    mode: 0640
+  register: prometheus_config
+
+- name: start node-exporter
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: prometheus-node-exporter
+
+- name: restart prometheus
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    name: prometheus
+  when: prometheus_config.changed
