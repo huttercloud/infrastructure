@@ -1,9 +1,13 @@
 locals {
     cname_records_node_a = [
-        "hello-world.hutter.cloud",
+        
     ]
 
-    cname_records_node_b = []
+    cname_records_node_b = [
+      "hello-world.hutter.cloud",
+      "argocd.hutter.cloud",
+      "grpc.argocd.hutter.cloud",
+    ]
 }
 
 resource "pihole_dns_record" "pihole" {

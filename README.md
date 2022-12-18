@@ -2,6 +2,14 @@
 
 # terraform
 
+terraform is used to configure all services required for a running environment.
+For the kubernetes clusters this includes:
+- grafana operator and monitoring resources
+- pi-hole for dns
+- wireguard for mgmt vpn
+- unifi controller for wlan
+- argocd for application management
+
 - remote state is stored in terraform cloud (run `terraform login`)
 - credentials for the different environments are stored in 1password.
 - the credentials are stored in earch terraform resource in the corresponding environment file
@@ -36,13 +44,6 @@ a node is installed with ubuntu 22.04 LTS server edition.
   - `op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator`
   - `op run --env-file="./environment" -- terraform apply`
 
-
-## using terraform with one password
-```bash
-# example execution for mikrotik
-cd terraform/resources/home/mikrotik
-op run --env-file="./environment" -- terraform apply
-```
 
 ## node-a
 
