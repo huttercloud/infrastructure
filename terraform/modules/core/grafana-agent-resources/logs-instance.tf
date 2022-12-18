@@ -30,6 +30,9 @@ resource "kubernetes_manifest" "logsinstance_primary" {
           }
           # passing the url as secret is not possible so its passed via tf var and remote data source 
           "url" = var.logs_url 
+          "externalLabels" = {
+            "cluster" = var.cluster_name
+          }
         },
       ]
     }
