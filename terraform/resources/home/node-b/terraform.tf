@@ -19,6 +19,7 @@ terraform {
   }
 }
 
+# external datasource containing auth0 
 data "terraform_remote_state" "auth0" {
   backend = "remote"
 
@@ -36,6 +37,17 @@ data "terraform_remote_state" "aws-root-global" {
     organization = "hutter-cloud"
     workspaces = {
       name = "aws-root-global"
+    }
+  }
+}
+
+data "terraform_remote_state" "grafana" {
+  backend = "remote"
+
+  config = {
+    organization = "hutter-cloud"
+    workspaces = {
+      name = "grafana"
     }
   }
 }
