@@ -1,6 +1,16 @@
 ---
 # tasks file for borgbase
 
+- name: sanity check given given ssh keys
+  fail: msg="The ssh key for '{{ item.name }}' is empty"
+  when: item.key | length == 0
+  loop: "{{ borgmatic_ssh_keys }}"
+
+- name: sanity check given given passphrases
+  fail: msg="The passphrase for '{{ item.name }}' is empty"
+  when: item.passphrase | length == 0
+  loop: "{{ borgmatic_backup_jobs }}"
+
 - name: install borgmatic
   block:
   - name: install software packages for borgmatic
