@@ -1,0 +1,6 @@
+---
+# defaults file for node-exporter
+
+grafana_prometheus_remote_write_endpoint: "{{ lookup('ansible.builtin.env', 'GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT') }}"
+grafana_prometheus_username: "{{ lookup('ansible.builtin.env', 'GRAFANA_PROMETHEUS_USERNAME') }}"
+grafana_prometheus_password: "{{ lookup('ansible.builtin.env', 'GRAFANA_PROMETHEUS_PASSWORD') }}"

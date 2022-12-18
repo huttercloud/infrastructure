@@ -11,3 +11,7 @@ BORGBASE_PASSPHRASE_KATHARINA="op://hutter.cloud/borgbase repository passphrase 
 BORGBASE_PASSPHRASE_NODE_A="op://hutter.cloud/borgbase repository passphrase for node-a/password"
 BORGBASE_PASSPHRASE_NODE_B="op://hutter.cloud/borgbase repository passphrase for node-b/password"
 BORGBASE_PASSPHRASE_SEBASTIAN="op://hutter.cloud/borgbase repository passphrase for sebastian/password"
+
+GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT="op://hutter.cloud/grafana cloud metricspublisher/prometheus endpoint"
+GRAFANA_PROMETHEUS_USERNAME="op://hutter.cloud/grafana cloud metricspublisher/username"
+GRAFANA_PROMETHEUS_PASSWORD="op://hutter.cloud/grafana cloud metricspublisher/password"
