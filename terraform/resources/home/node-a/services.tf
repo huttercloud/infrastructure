@@ -3,6 +3,7 @@ module "wireguard" {
 
   storage_class_name                 = module.storage_class_data.storage_class_name
   wireguard_version                  = local.wireguard_version
+  wireguard_external_ip              = local.wireguard_external_ip
   wireguard_peers                    = local.wireguard_peers
   wireguard_serverurl                = local.wireguard_serverurl
   wireguard_internal_subnet          = local.wireguard_internal_subnet

@@ -6,6 +6,10 @@ variable "wireguard_version" {
   type = string
 }
 
+variable "wireguard_external_ip" {
+  type = string
+}
+
 variable "wireguard_peers" {
     type = string
 }

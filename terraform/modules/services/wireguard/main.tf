@@ -129,7 +129,7 @@ resource "kubernetes_deployment" "wireguard" {
           }
           env {
             # fix subnet for vpn clients to allow routing on mikrotik 
-            # on mikrotik: /ip route add dst-address=192.168.130.0/24 gateway=192.168.30.61
+            # on mikrotik: /ip route add dst-address=192.168.130.0/24 gateway=192.168.30.253
             name = "INTERNAL_SUBNET"
             value = var.wireguard_internal_subnet
           }
@@ -180,10 +180,11 @@ resource "kubernetes_service" "wireguard" {
       # on the kubernetes cluster to allow port forwarding on
       # mikrotik: 
       # /ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
-      node_port = 32767
+      # node_port = 32767
     }
 
-    type = "NodePort"
+    //type = "NodePort"
+    external_ips = [ var.wireguard_external_ip ]
 
   }
 }
