@@ -105,3 +105,40 @@ resource "aws_ssm_parameter" "hutter_cloud_grafana_logs_url" {
   type  = "SecureString"
   value = data.terraform_remote_state.grafana.outputs.logs_url
 }
+
+# argo cd declarative setup
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_host_node_a" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-host-node-a"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_host_node_a
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_token_node_a" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-token-node-a"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_token_node_a
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_a" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-cluster-ca-cert-data-node-a"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_a
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_host_node_b" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-host-node-b"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_host_node_b
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_token_node_b" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-token-node-b"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_token_node_b
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b" {
+  name  = "hutter-cloud-argo-cd-declarative-kubernetes-cluster-ca-cert-data-node-b"
+  type  = "SecureString"
+  value = var.argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b
+}
