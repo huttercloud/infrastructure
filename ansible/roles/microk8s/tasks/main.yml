@@ -24,6 +24,9 @@
 - name: Install cert-manager addon
   shell: "microk8s enable cert-manager"
 
+- name: Install metrics-server addon
+  shell: "microk8s enable metrics-server"
+
 - name: Setup node ports
   ansible.builtin.lineinfile:
     path: /var/snap/microk8s/current/args/kube-apiserver

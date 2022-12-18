@@ -4,6 +4,8 @@ locals {
     external_secrets_version = "0.7.0"
     pi_hole_version = "2022.11.2"
     wireguard_version = "1.0.20210914"
+    grafana_agent_operator_version = "0.2.8"
+    grafana_agent_version = "v0.29.0"
 
     # cert manager configuration
     cert_manager_email = "huttersebastian@gmail.com"
@@ -27,5 +29,8 @@ locals {
     wireguard_serverurl               = "wireguard.hutter.cloud"
     wireguard_internal_subnet         = "192.168.130.0/24"
     wireguard_peerdns                 = "192.168.30.253"
+
+    # grafana configuration
+    cluster_name = "node-a"
 }
 

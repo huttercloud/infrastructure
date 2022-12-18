@@ -12,6 +12,10 @@ locals {
     # aws credentials for cluster secret store   
     core_access_key_id_parameter_store = data.terraform_remote_state.aws-root-global.outputs.user_parameter_store_access_key_id
     core_secret_access_key_parameter_store = data.terraform_remote_state.aws-root-global.outputs.user_parameter_store_secret_access_key
+
+    # prometheus remote write endpoint
+    core_prometheus_remote_write_endpoint = data.terraform_remote_state.grafana.outputs.prometheus_remote_write_endpoint
+    core_logs_url = "${data.terraform_remote_state.grafana.outputs.logs_url}/loki/api/v1/push"
 }
 
 
@@ -57,4 +61,19 @@ module "storage_class_data" {
     
     storage_class_name = local.storage_class_name_data
     storage_class_path = local.storage_class_path_data
+}
+
+module "grafana_agent_operator" {
+  source = "../../../modules/core/grafana-agent-operator"
+
+  grafana_agent_operator_version = local.grafana_agent_operator_version
+}
+
+module "grafana_agent_resources" {
+  source = "../../../modules/core/grafana-agent-resources"
+
+  cluster_name = local.cluster_name
+  grafana_agent_version = local.grafana_agent_version
+  prometheus_remote_write_endpoint = local.core_prometheus_remote_write_endpoint
+  logs_url = local.core_logs_url
 }

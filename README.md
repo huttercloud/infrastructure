@@ -11,8 +11,8 @@
 the terraform resources are dependent on each other, the correct order for a full plan / apply cycle is:
 - resources/auth0
 - resources/grafana
-- resources/aws/global
-- resources/aws/eu-central-1
+- resources/aws/root/global
+- resources/aws/root/eu-central-1
 - resources/home/mikrotik
 - resources/home/pi-hole
 - resources/home/node-a
