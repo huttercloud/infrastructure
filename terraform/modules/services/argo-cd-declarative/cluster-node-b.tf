@@ -43,7 +43,7 @@ resource "kubernetes_manifest" "argo_cd_declarative_cluster_node_b" {
             }
           }
           "data" = {
-            "name" = "node-b"
+            "name" = "node-b.hutter.cloud"
             "server" = "{{ .server }}"
             "config" = <<EOT
             {

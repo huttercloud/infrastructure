@@ -48,3 +48,8 @@ variable "argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b" {
   sensitive = true
   type = string
 }
+
+variable "argo_cd_declarative_github_applications_deploy_key" {
+  sensitive = true
+  type = string
+}
