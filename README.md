@@ -39,11 +39,19 @@ a node is installed with ubuntu 22.04 LTS server edition.
 5. run the corresponding ansible playbooks 
   - `cd ansible`
   - `op run --env-file="./environment" -- ansible-playbook -i inventory.ini playbook/node-a.yaml`
-6. apply terraform code for node-a and node-b `cd terraform/home/node-a; 
-  - `cd terraform/resources/home/node-a`
-  - `op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator`
-  - `op run --env-file="./environment" -- terraform apply`
+1. apply terraform code for node-a and node-b
 
+```bash
+# node a
+cd terraform/resources/home/node-a
+op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator
+op run --env-file="./environment" -- terraform apply
+
+# node b
+cd terraform/resources/home/node-a
+op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator -target moduke.argo_cd
+op run --env-file="./environment" -- terraform apply
+```
 
 ## node-a
 

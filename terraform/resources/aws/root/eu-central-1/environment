@@ -20,3 +20,4 @@ TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_a="op://hutter.c
 TF_VAR_argo_cd_declarative_kubernetes_host_node_b="op://hutter.cloud/kubeconfig node-b/host"
 TF_VAR_argo_cd_declarative_kubernetes_token_node_b="op://hutter.cloud/kubeconfig node-b/token"
 TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b="op://hutter.cloud/kubeconfig node-b/cluster_ca_certificate"
+TF_VAR_argo_cd_declarative_github_applications_deploy_key="op://hutter.cloud/github.com applications deploy key for argocd/private key"
