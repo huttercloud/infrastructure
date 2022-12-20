@@ -14,7 +14,7 @@ resource "kubernetes_manifest" "app_node_b" {
       }
       "project" = "default"
       "source" = {
-        "path" = "applications/node-a"
+        "path" = "applications/node-b"
         "repoURL" = "git@github.com:huttercloud/applications.git"
         "targetRevision" = "HEAD"
       }
