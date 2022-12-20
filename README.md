@@ -44,12 +44,12 @@ a node is installed with ubuntu 22.04 LTS server edition.
 ```bash
 # node a
 cd terraform/resources/home/node-a
-op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator
+op run --env-file="./environment" -- terraform apply -target module.external_secrets #-target module.grafana_agent_operator
 op run --env-file="./environment" -- terraform apply
 
 # node b
 cd terraform/resources/home/node-a
-op run --env-file="./environment" -- terraform apply -target module.external_secrets -target module.grafana_agent_operator -target moduke.argo_cd
+op run --env-file="./environment" -- terraform apply -target module.external_secrets -target moduke.argo_cd #-target module.grafana_agent_operator 
 op run --env-file="./environment" -- terraform apply
 ```
 

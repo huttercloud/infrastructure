@@ -63,17 +63,17 @@ module "storage_class_data" {
     storage_class_path = local.storage_class_path_data
 }
 
-module "grafana_agent_operator" {
-  source = "../../../modules/core/grafana-agent-operator"
+# module "grafana_agent_operator" {
+#   source = "../../../modules/core/grafana-agent-operator"
 
-  grafana_agent_operator_version = local.grafana_agent_operator_version
-}
+#   grafana_agent_operator_version = local.grafana_agent_operator_version
+# }
 
-module "grafana_agent_resources" {
-  source = "../../../modules/core/grafana-agent-resources"
+# module "grafana_agent_resources" {
+#   source = "../../../modules/core/grafana-agent-resources"
 
-  cluster_name = local.cluster_name
-  grafana_agent_version = local.grafana_agent_version
-  prometheus_remote_write_endpoint = local.core_prometheus_remote_write_endpoint
-  logs_url = local.core_logs_url
-}
+#   cluster_name = local.cluster_name
+#   grafana_agent_version = local.grafana_agent_version
+#   prometheus_remote_write_endpoint = local.core_prometheus_remote_write_endpoint
+#   logs_url = local.core_logs_url
+# }
