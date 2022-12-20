@@ -33,12 +33,6 @@ module "external_dns" {
   txt_owner_id = local.txt_owner_id
 }
 
-module "external_name_cronjob" {
-  source = "../../../modules/core/external-name-cronjob"
-
-  externalname_hostname = local.externalname_hostname
-}
-
 module "external_secrets" {
   source = "../../../modules/core/external-secrets"
 
