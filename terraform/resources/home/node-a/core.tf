@@ -33,12 +33,6 @@ module "external_dns" {
   txt_owner_id = local.txt_owner_id
 }
 
-module "external_name_cronjob" {
-  source = "../../../modules/core/external-name-cronjob"
-
-  externalname_hostname = local.externalname_hostname
-}
-
 module "external_secrets" {
   source = "../../../modules/core/external-secrets"
 
@@ -50,10 +44,6 @@ module "secret_stores" {
 
   access_key_id_parameter_store = local.core_access_key_id_parameter_store
   secret_access_key_parameter_store = local.core_secret_access_key_parameter_store
-}
-
-module "oauth2_proxy_secret" {
-    source = "../../../modules/core/oauth2-proxy-secret" 
 }
 
 module "storage_class_data" {

@@ -7,8 +7,11 @@ resource "kubernetes_manifest" "app_node_a" {
       "namespace" = "default"
     }
     "spec" = {
+      "syncPolicy" = {
+        "automated" = {}
+      }
       "destination" = {
-        "server" = "https://node-a.hutter.cloud:16443"
+        "server" = "https://node-b.hutter.cloud:16443" // the app of apps needs to be registered on the argocd server itself!
       }
       "project" = "default"
       "source" = {
