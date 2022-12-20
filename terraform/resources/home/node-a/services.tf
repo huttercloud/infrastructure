@@ -8,7 +8,7 @@ module "wireguard" {
   wireguard_serverurl                = local.wireguard_serverurl
   wireguard_internal_subnet          = local.wireguard_internal_subnet
   wireguard_peerdns                  = local.wireguard_peerdns
-  wireguard_external_hostname_target = module.external_name_cronjob.external_name_target
+  wireguard_external_hostname_target = local.wireguard_external_hostname_target
 }
 
 module "pi_hole" {
@@ -18,10 +18,6 @@ module "pi_hole" {
   pi_hole_version     = local.pi_hole_version
   pi_hole_external_ip = local.pi_hole_external_ip
   pi_hole_hostname    = local.pi_hole_hostname 
-}
-
-module "synology_certificate" {
-  source = "../../../modules/services/synology-certificate"
 }
 
 module "unifi" {

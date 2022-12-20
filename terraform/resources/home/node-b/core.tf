@@ -46,10 +46,6 @@ module "secret_stores" {
   secret_access_key_parameter_store = local.core_secret_access_key_parameter_store
 }
 
-module "oauth2_proxy_secret" {
-    source = "../../../modules/core/oauth2-proxy-secret" 
-}
-
 module "storage_class_data" {
     source = "../../../modules/core/storage-class-hostpath"
     

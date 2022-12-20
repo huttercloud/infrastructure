@@ -9,6 +9,9 @@ resource "kubernetes_manifest" "app_node_b" {
       "namespace" = "default"
     }
     "spec" = {
+      "syncPolicy" = {
+        "automated" = {}
+      }
       "destination" = {
         "server" = "https://node-b.hutter.cloud:16443"
       }
