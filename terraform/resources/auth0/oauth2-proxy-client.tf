@@ -1,6 +1,7 @@
 locals {
     oauth2_proxy_callbacks = [
-        "https://hello-world.hutter.cloud/oauth2/callback"
+        "https://hello-world.hutter.cloud/oauth2/callback",
+        "https://usenet.hutter.cloud/oauth2/callback"
     ]
 }
 

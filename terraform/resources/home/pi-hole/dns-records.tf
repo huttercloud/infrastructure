@@ -7,6 +7,8 @@ locals {
       "hello-world.hutter.cloud",
       "argocd.hutter.cloud",
       "grpc.argocd.hutter.cloud",
+      "usenet.hutter.cloud",
+      "usenet-2.hutter.cloud"
     ]
 }
 
