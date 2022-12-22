@@ -22,13 +22,13 @@
         username: pxgp57fu
         host: pxgp57fu.repo.borgbase.com
         passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_B') }}"
-        source_directories: 
+        source_directories:
           - /data
         backup_hour: 1
         before_backup: []
 
   pre_tasks:
-  - name: ensure lvm is setup 
+  - name: ensure lvm is setup
     community.general.lvol:
       vg: "{{ vg }}"
       lv: "{{ lv }}"
@@ -40,7 +40,7 @@
       dev: "/dev/{{ vg }}/{{ lv }}"
 
   - name: create mountpoint for data partition
-    ansible.builtin.file: 
+    ansible.builtin.file:
       path: "{{ mountpoint }}"
       state: directory
       mode: 0755
@@ -52,36 +52,36 @@
       fstype: ext4
       state: mounted
 
-  - name: create root folder for usenet service
-    ansible.builtin.file: 
-      path: "{{ mountpoint }}/usenet"
-      state: directory
-      owner: 1000
-      group: 1000
-      mode: 0755
-  
-  - name: create folder structure for usenet services
-    ansible.builtin.file: 
-      path: "{{ mountpoint }}/usenet/{{ item }}"
-      state: directory
-      owner: 1000
-      group: 1000
-      mode: 0755
-    loop:
-      - downloads
-      - incomplete-downloads
-      - sabnzbd
-      - radarr
-      - sonarr
-      - bazarr
-      - nzbhydra
+  # the host-path plugin for microk8s can be used afterall!
+  # one needs to set the pvc to readwritemany ....
+  # - name: create root folder for usenet service
+  #   ansible.builtin.file:
+  #     path: "{{ mountpoint }}/usenet"
+  #     state: directory
+  #     owner: 1000
+  #     group: 1000
+  #     mode: 0755
 
-
+  # - name: create folder structure for usenet services
+  #   ansible.builtin.file:
+  #     path: "{{ mountpoint }}/usenet/{{ item }}"
+  #     state: directory
+  #     owner: 1000
+  #     group: 1000
+  #     mode: 0755
+  #   loop:
+  #     - downloads
+  #     - incomplete-downloads
+  #     - sabnzbd
+  #     - radarr
+  #     - sonarr
+  #     - bazarr
+  #     - nzbhydra
 
   roles:
   - role: microk8s
     tags:
-      - services 
+      - services
       - microk8s
   - role: borgbase
     tags:
