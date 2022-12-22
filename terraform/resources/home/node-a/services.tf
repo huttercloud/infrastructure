@@ -17,14 +17,14 @@ module "pi_hole" {
   storage_class_name  = module.storage_class_data.storage_class_name
   pi_hole_version     = local.pi_hole_version
   pi_hole_external_ip = local.pi_hole_external_ip
-  pi_hole_hostname    = local.pi_hole_hostname 
+  pi_hole_hostname    = local.pi_hole_hostname
 }
 
 module "unifi" {
   source = "../../../modules/services/unifi"
 
-  storage_class_name  = module.storage_class_data.storage_class_name
-  unifi_version = local.unifi_version
-  unifi_external_ip = local.unifi_external_ip
-  unifi_hostname = local.unifi_hostname
+  storage_class_name = module.storage_class_data.storage_class_name
+  unifi_version      = local.unifi_version
+  unifi_external_ip  = local.unifi_external_ip
+  unifi_hostname     = local.unifi_hostname
 }

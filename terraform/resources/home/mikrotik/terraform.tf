@@ -9,7 +9,7 @@ terraform {
 
   required_providers {
     mikrotik = {
-      source = "ddelnano/mikrotik"
+      source  = "ddelnano/mikrotik"
       version = "0.10.0"
     }
   }

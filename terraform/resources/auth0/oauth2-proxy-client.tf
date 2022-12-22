@@ -1,8 +1,8 @@
 locals {
-    oauth2_proxy_callbacks = [
-        "https://hello-world.hutter.cloud/oauth2/callback",
-        "https://usenet.hutter.cloud/oauth2/callback"
-    ]
+  oauth2_proxy_callbacks = [
+    "https://hello-world.hutter.cloud/oauth2/callback",
+    "https://usenet.hutter.cloud/oauth2/callback"
+  ]
 }
 
 resource "auth0_client" "oauth2_proxy" {
@@ -27,16 +27,16 @@ resource "auth0_client" "oauth2_proxy" {
     lifetime_in_seconds = 36000
     secret_encoded      = false
     alg                 = "RS256"
-    scopes = {}
+    scopes              = {}
   }
 }
 
-output oauth2_proxy_client_id {
-    value = auth0_client.oauth2_proxy.client_id
-    sensitive = true
+output "oauth2_proxy_client_id" {
+  value     = auth0_client.oauth2_proxy.client_id
+  sensitive = true
 }
 
-output oauth2_proxy_client_secret {
-    value = auth0_client.oauth2_proxy.client_secret
-    sensitive = true
+output "oauth2_proxy_client_secret" {
+  value     = auth0_client.oauth2_proxy.client_secret
+  sensitive = true
 }

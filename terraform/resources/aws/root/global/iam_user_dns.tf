@@ -12,8 +12,8 @@ resource "aws_iam_access_key" "dns" {
 }
 
 resource "aws_iam_user_policy_attachment" "dns" {
-    user = aws_iam_user.dns.name
-    policy_arn = "arn:aws:iam::aws:policy/AmazonRoute53FullAccess"
+  user       = aws_iam_user.dns.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRoute53FullAccess"
 }
 
 output "user_dns_access_key_id" {
@@ -21,6 +21,6 @@ output "user_dns_access_key_id" {
 }
 
 output "user_dns_secret_access_key" {
-  value = aws_iam_access_key.dns.secret
+  value     = aws_iam_access_key.dns.secret
   sensitive = true
 }

@@ -1,7 +1,7 @@
 locals {
-    argo_cd_callbacks = [
-        "https://argocd.hutter.cloud/auth/callback"
-    ]
+  argo_cd_callbacks = [
+    "https://argocd.hutter.cloud/auth/callback"
+  ]
 }
 
 resource "auth0_client" "argo_cd" {
@@ -26,16 +26,16 @@ resource "auth0_client" "argo_cd" {
     lifetime_in_seconds = 36000
     secret_encoded      = false
     alg                 = "RS256"
-    scopes = {}
+    scopes              = {}
   }
 }
 
-output argo_cd_client_id {
-    value = auth0_client.argo_cd.client_id
-    sensitive = true
+output "argo_cd_client_id" {
+  value     = auth0_client.argo_cd.client_id
+  sensitive = true
 }
 
-output argo_cd_client_secret {
-    value = auth0_client.argo_cd.client_secret
-    sensitive = true
+output "argo_cd_client_secret" {
+  value     = auth0_client.argo_cd.client_secret
+  sensitive = true
 }

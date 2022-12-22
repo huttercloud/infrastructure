@@ -1,9 +1,9 @@
 resource "kubernetes_manifest" "external_secrets" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1beta1"
-    "kind" = "ExternalSecret"
+    "kind"       = "ExternalSecret"
     "metadata" = {
-      "name" = "external-dns"
+      "name"      = "external-dns"
       "namespace" = "default"
       "labels" = {
         "app.kubernetes.io/name" = "external-dns"
@@ -44,7 +44,7 @@ resource "kubernetes_manifest" "external_secrets" {
       "target" = {
         "template" = {
           "data" = {
-            "aws" = <<EOT
+            "aws"    = <<EOT
             [default]
             aws_access_key_id = {{ .accesskey }}
             aws_secret_access_key = {{ .secretkey }}
@@ -135,34 +135,34 @@ resource "kubernetes_deployment" "external_dns_aws" {
       }
 
       spec {
-        service_account_name = kubernetes_service_account.external_dns.metadata[0].name
+        service_account_name            = kubernetes_service_account.external_dns.metadata[0].name
         automount_service_account_token = true
         container {
           image = "k8s.gcr.io/external-dns/external-dns:${var.external_dns_version}"
           name  = "external-dns"
           args = [
-              "--source=service", # only create dns names for services with externalname and annotation due to no loadbalancer with public ip!
-              "--domain-filter=hutter.cloud",
-              "--provider=aws",
-              "--policy=sync",
-              "--aws-zone-type=public",
-              "--registry=txt",
-              "--txt-owner-id=${var.txt_owner_id}",
-              "--txt-prefix=extdns",
-              "--annotation-filter=hutter.cloud/dns-service in (aws)"
+            "--source=service", # only create dns names for services with externalname and annotation due to no loadbalancer with public ip!
+            "--domain-filter=hutter.cloud",
+            "--provider=aws",
+            "--policy=sync",
+            "--aws-zone-type=public",
+            "--registry=txt",
+            "--txt-owner-id=${var.txt_owner_id}",
+            "--txt-prefix=extdns",
+            "--annotation-filter=hutter.cloud/dns-service in (aws)"
           ]
           env {
-            name = "AWS_DEFAULT_REGION"
+            name  = "AWS_DEFAULT_REGION"
             value = "eu-central-1"
           }
           env {
-            name = "AWS_SHARED_CREDENTIALS_FILE"
+            name  = "AWS_SHARED_CREDENTIALS_FILE"
             value = "/secrets/aws"
           }
           volume_mount {
-            name = "aws-credentials"
+            name       = "aws-credentials"
             mount_path = "/secrets"
-            read_only = true
+            read_only  = true
           }
         }
         volume {

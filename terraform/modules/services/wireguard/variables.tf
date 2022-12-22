@@ -11,21 +11,21 @@ variable "wireguard_external_ip" {
 }
 
 variable "wireguard_peers" {
-    type = string
+  type = string
 }
 
 variable "wireguard_serverurl" {
-    type = string
+  type = string
 }
 
 variable "wireguard_internal_subnet" {
-    type = string
+  type = string
 }
 
 variable "wireguard_peerdns" {
-    type = string
+  type = string
 }
 
 variable "wireguard_external_hostname_target" {
-    type = string
+  type = string
 }
