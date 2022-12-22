@@ -1,3 +1,9 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
 resource "helm_release" "grafana_agent_operator" {
   name = "grafana-agent-operator"
 

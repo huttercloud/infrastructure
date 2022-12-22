@@ -1,3 +1,10 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
+
 resource "kubernetes_manifest" "podlogs" {
   manifest = {
     "apiVersion" = "monitoring.grafana.com/v1alpha1"

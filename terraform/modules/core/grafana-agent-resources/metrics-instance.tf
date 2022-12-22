@@ -1,3 +1,9 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
 resource "kubernetes_manifest" "metricsinstance_primary" {
   manifest = {
     "apiVersion" = "monitoring.grafana.com/v1alpha1"
@@ -34,8 +40,8 @@ resource "kubernetes_manifest" "metricsinstance_primary" {
               "name" = "grafana-agent-prometheus"
             }
           }
-          # passing the url as secret is not possible so its passed via tf var and remote data source 
-          "url" = var.prometheus_remote_write_endpoint 
+          # passing the url as secret is not possible so its passed via tf var and remote data source
+          "url" = var.prometheus_remote_write_endpoint
         },
       ]
       "serviceMonitorNamespaceSelector" = {}

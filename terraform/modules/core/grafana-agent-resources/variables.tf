@@ -1,3 +1,10 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
+
 variable "grafana_agent_version" {
   type = string
 }
