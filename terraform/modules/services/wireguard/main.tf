@@ -10,7 +10,7 @@ resource "kubernetes_config_map" "wireguard" {
   }
 
   data = {
-    "peer.conf"             = <<EOT
+    "peer.conf"   = <<EOT
 [Interface]
 Address = $${CLIENT_IP}
 PrivateKey = $(cat /config/$${PEER_ID}/privatekey-$${PEER_ID})
@@ -23,7 +23,7 @@ PresharedKey = $(cat /config/$${PEER_ID}/presharedkey-$${PEER_ID})
 Endpoint = $${SERVERURL}:$${SERVERPORT}
 AllowedIPs = 192.168.30.0/24
 EOT
-    "server.conf"             = <<EOT
+    "server.conf" = <<EOT
 [Interface]
 Address = $${INTERFACE}.1
 ListenPort = 51820
@@ -44,7 +44,7 @@ resource "kubernetes_persistent_volume_claim" "wireguard_conf" {
     }
   }
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = var.storage_class_name
     resources {
       requests = {
@@ -83,15 +83,15 @@ resource "kubernetes_deployment" "wireguard" {
       spec {
         init_container {
           image = "busybox"
-          name = "wg-init"
+          name  = "wg-init"
           # use cat instead of cp as configmap is mouted with softlinks.
           command = ["sh", "-c", "mkdir -p /config/templates; cat /tmpl/peer.conf > /config/templates/peer.conf ; cat /tmpl/server.conf > /config/templates/server.conf"]
           volume_mount {
-            name = "wg-conf"
+            name       = "wg-conf"
             mount_path = "/config"
           }
           volume_mount {
-            name = "wg-templates"
+            name       = "wg-templates"
             mount_path = "/tmpl"
           }
         }
@@ -108,38 +108,38 @@ resource "kubernetes_deployment" "wireguard" {
           }
           port {
             container_port = 51820
-            protocol = "UDP"
-            name = "wg"
+            protocol       = "UDP"
+            name           = "wg"
           }
           env {
-            name = "TZ"
+            name  = "TZ"
             value = "Europe/Zurich"
           }
           env {
-            name = "PEERS"
+            name  = "PEERS"
             value = var.wireguard_peers
           }
           env {
-            name = "SERVERURL"
+            name  = "SERVERURL"
             value = var.wireguard_serverurl
           }
           env {
-            name = "SERVERPORT"
+            name  = "SERVERPORT"
             value = "32767"
           }
           env {
             # fix subnet for vpn clients to allow routing on mikrotik 
             # on mikrotik: /ip route add dst-address=192.168.130.0/24 gateway=192.168.30.253
-            name = "INTERNAL_SUBNET"
+            name  = "INTERNAL_SUBNET"
             value = var.wireguard_internal_subnet
           }
           env {
-            name = "PEERDNS"
+            name  = "PEERDNS"
             value = var.wireguard_peerdns
           }
-          
+
           volume_mount {
-            name = "wg-conf"
+            name       = "wg-conf"
             mount_path = "/config"
           }
         }
@@ -174,8 +174,8 @@ resource "kubernetes_service" "wireguard" {
     port {
       port        = 32767
       target_port = 51820
-      protocol = "UDP"
-      name = "wg"
+      protocol    = "UDP"
+      name        = "wg"
       # ensure we always assign the same physical port
       # on the kubernetes cluster to allow port forwarding on
       # mikrotik: 
@@ -184,7 +184,7 @@ resource "kubernetes_service" "wireguard" {
     }
 
     //type = "NodePort"
-    external_ips = [ var.wireguard_external_ip ]
+    external_ips = [var.wireguard_external_ip]
 
   }
 }
@@ -197,11 +197,11 @@ resource "kubernetes_service" "wireguard_external_name" {
     }
     annotations = {
       "external-dns.alpha.kubernetes.io/hostname" = var.wireguard_serverurl
-      "hutter.cloud/dns-service" =  "aws"
+      "hutter.cloud/dns-service"                  = "aws"
     }
   }
   spec {
-    type = "ExternalName"
+    type          = "ExternalName"
     external_name = var.wireguard_external_hostname_target
   }
 }

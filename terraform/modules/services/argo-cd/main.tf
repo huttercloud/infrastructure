@@ -1,5 +1,5 @@
 resource "helm_release" "argo_cd" {
-  name       = "argo-cd"
+  name = "argo-cd"
 
   repository = "https://argoproj.github.io/argo-helm"
   chart      = "argo-cd"
@@ -30,36 +30,36 @@ requestedScopes:
   - profile
   - email
 EOT
-}
+  }
 
   set {
-    name = "configs.rbac.policy\\.default"
+    name  = "configs.rbac.policy\\.default"
     value = "role:admin"
   }
 
   #  configure server certificate with letsencrypt
   set {
-    name = "server.certificate.enabled"
+    name  = "server.certificate.enabled"
     value = true
   }
 
   set {
-    name = "server.certificate.secretName"
+    name  = "server.certificate.secretName"
     value = "argocd-server-tls"
   }
 
   set {
-    name = "server.certificate.domain"
+    name  = "server.certificate.domain"
     value = var.argo_cd_host
   }
 
   set {
-    name = "server.certificate.issuer.kind"
+    name  = "server.certificate.issuer.kind"
     value = "ClusterIssuer"
   }
 
   set {
-    name = "server.certificate.issuer.name"
+    name  = "server.certificate.issuer.name"
     value = "letsencrypt-dns"
   }
 
@@ -93,5 +93,5 @@ EOT
 
 
 
-  
+
 }

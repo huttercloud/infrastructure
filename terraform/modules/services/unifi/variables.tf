@@ -8,7 +8,7 @@ variable "unifi_version" {
 
 variable "unifi_external_ip" {
   type = string
-  
+
 }
 
 variable "unifi_hostname" {

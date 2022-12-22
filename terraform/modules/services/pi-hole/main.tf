@@ -1,9 +1,9 @@
 resource "kubernetes_manifest" "pi-hole" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1beta1"
-    "kind" = "ExternalSecret"
+    "kind"       = "ExternalSecret"
     "metadata" = {
-      "name" = "pi-hole"
+      "name"      = "pi-hole"
       "namespace" = "default"
       "labels" = {
         "app.kubernetes.io/name" = "pi-hole"
@@ -40,7 +40,7 @@ resource "kubernetes_persistent_volume_claim" "pi_hole_etc" {
     name = "pi-hole-etc"
   }
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = var.storage_class_name
     resources {
       requests = {
@@ -56,7 +56,7 @@ resource "kubernetes_persistent_volume_claim" "pi_hole_dnsmasq" {
     name = "pi-hole-dnsmasq"
   }
   spec {
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
     storage_class_name = var.storage_class_name
     resources {
       requests = {
@@ -101,39 +101,39 @@ resource "kubernetes_deployment" "pi_hole" {
           }
           port {
             container_port = 53
-            protocol = "UDP"
-            name = "dnsu"
+            protocol       = "UDP"
+            name           = "dnsu"
           }
           port {
             container_port = 53
-            protocol = "TCP"
-            name = "dnst"
+            protocol       = "TCP"
+            name           = "dnst"
           }
 
           port {
             container_port = 80
-            protocol = "TCP"
-            name = "http"
+            protocol       = "TCP"
+            name           = "http"
           }
           env {
-            name = "TZ"
+            name  = "TZ"
             value = "Europe/Zurich"
           }
           env {
-              name = "WEBPASSWORD"
-              value_from {
-                secret_key_ref {
-                  name = "pi-hole"
-                  key = "webpassword"
-                }
+            name = "WEBPASSWORD"
+            value_from {
+              secret_key_ref {
+                name = "pi-hole"
+                key  = "webpassword"
               }
             }
+          }
           volume_mount {
-            name = "etc"
+            name       = "etc"
             mount_path = "/etc/pihole"
           }
           volume_mount {
-            name = "dnsmasq"
+            name       = "dnsmasq"
             mount_path = "/etc/dnsmasq.d"
           }
         }
@@ -165,11 +165,11 @@ resource "kubernetes_service" "pi_hole_http" {
     port {
       port        = 80
       target_port = 80
-      protocol = "TCP"
-      name = "http"
+      protocol    = "TCP"
+      name        = "http"
     }
 
-    external_ips = [ var.pi_hole_external_ip ]
+    external_ips = [var.pi_hole_external_ip]
   }
 }
 
@@ -184,17 +184,17 @@ resource "kubernetes_service" "pi_hole_dns" {
     port {
       port        = 53
       target_port = 53
-      protocol = "TCP"
-      name = "dnst"
+      protocol    = "TCP"
+      name        = "dnst"
     }
     port {
       port        = 53
       target_port = 53
-      protocol = "UDP"
-      name = "dnsu"
+      protocol    = "UDP"
+      name        = "dnsu"
     }
 
-    external_ips = [ var.pi_hole_external_ip ]
+    external_ips = [var.pi_hole_external_ip]
   }
 }
 
@@ -202,22 +202,22 @@ resource "kubernetes_ingress_v1" "pi_hole" {
   metadata {
     name = "pi-hole"
     annotations = {
-      "cert-manager.io/cluster-issuer" = "letsencrypt-dns"
-      "kubernetes.io/ingress.class" = "public"
+      "cert-manager.io/cluster-issuer"           = "letsencrypt-dns"
+      "kubernetes.io/ingress.class"              = "public"
       "nginx.ingress.kubernetes.io/ssl-redirect" = "true"
-      "nginx.ingress.kubernetes.io/app-root" = "/admin"
+      "nginx.ingress.kubernetes.io/app-root"     = "/admin"
     }
   }
   spec {
     tls {
-      hosts = [ var.pi_hole_hostname ]
+      hosts       = [var.pi_hole_hostname]
       secret_name = "pihole-tls"
     }
     rule {
       host = var.pi_hole_hostname
       http {
         path {
-          path = "/admin"
+          path      = "/admin"
           path_type = "Prefix"
           backend {
             service {

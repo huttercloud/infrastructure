@@ -4,5 +4,5 @@ data "aws_route53_zone" "hutter_cloud" {
 }
 
 output "hutter_cloud_zone_id" {
-    value = data.aws_route53_zone.hutter_cloud.zone_id
+  value = data.aws_route53_zone.hutter_cloud.zone_id
 }

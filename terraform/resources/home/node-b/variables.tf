@@ -18,6 +18,6 @@ variable "kubernetes_cluster_ca_cert_data" {
 # passed as data source (for auth0) or as variable to this
 # resource
 variable "argo_cd_server_admin_password" {
-  type = string
+  type      = string
   sensitive = true
 } 
