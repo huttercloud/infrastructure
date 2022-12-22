@@ -14,3 +14,14 @@ terraform {
     }
   }
 }
+
+data "terraform_remote_state" "mikrotik" {
+  backend = "remote"
+
+  config = {
+    organization = "hutter-cloud"
+    workspaces = {
+      name = "mikrotik"
+    }
+  }
+}

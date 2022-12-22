@@ -10,8 +10,15 @@ locals {
     "usenet.hutter.cloud",
     "usenet-2.hutter.cloud"
   ]
+
+  dhcp_leases_from_mikrotik = data.terraform_remote_state.mikrotik.outputs.dhcp_leases
 }
 
+##
+# A Records
+##
+
+# pihole, unifi and wireguard are all using the virtual ip on node-a
 resource "pihole_dns_record" "pihole" {
   domain = "pihole.hutter.cloud"
   ip     = "192.168.30.253"
@@ -26,23 +33,13 @@ resource "pihole_dns_record" "wireguard" {
   ip     = "192.168.30.253"
 }
 
-resource "pihole_dns_record" "nas" {
-  domain = "nas.hutter.cloud"
-  ip     = "192.168.30.17"
-}
-resource "pihole_dns_record" "homeassistant" {
-  domain = "homeassistant.hutter.cloud"
-  ip     = "192.168.30.182"
-}
+# create A records from mikrotik leases
 
-resource "pihole_dns_record" "node_a" {
-  domain = "node-a.hutter.cloud"
-  ip     = "192.168.30.61"
-}
+resource "pihole_dns_record" "static_leases" {
+    for_each = local.dhcp_leases_from_mikrotik
 
-resource "pihole_dns_record" "node_b" {
-  domain = "node-b.hutter.cloud"
-  ip     = "192.168.30.90"
+    domain = each.value.comment
+    ip     = each.value.address
 }
 
 # cname records pointing to nodes
