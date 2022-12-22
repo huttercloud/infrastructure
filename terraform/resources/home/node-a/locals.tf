@@ -4,8 +4,6 @@ locals {
   external_secrets_version       = "0.7.0"
   pi_hole_version                = "2022.11.2"
   wireguard_version              = "1.0.20210914"
-  grafana_agent_operator_version = "0.2.8"
-  grafana_agent_version          = "v0.29.0"
   unifi_version                  = "7.3.76"
 
   # cert manager configuration
@@ -33,8 +31,5 @@ locals {
   # unifi configuration
   unifi_external_ip = "192.168.30.253"
   unifi_hostname    = "unifi.hutter.cloud"
-
-  # grafana configuration
-  cluster_name = "node-a"
 }
 

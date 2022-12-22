@@ -1,3 +1,10 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
+
 resource "kubernetes_service_account" "grafana_agent" {
   metadata {
     name = "grafana-agent"

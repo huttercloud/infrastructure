@@ -1,3 +1,10 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
+
 resource "kubernetes_manifest" "grafana_agent_prometheus_secret" {
   manifest = {
     "apiVersion" = "external-secrets.io/v1beta1"

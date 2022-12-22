@@ -1,3 +1,9 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
 resource "kubernetes_manifest" "servicemonitor_kubelet_monitor" {
   manifest = {
     "apiVersion" = "monitoring.coreos.com/v1"

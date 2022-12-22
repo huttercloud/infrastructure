@@ -1,3 +1,9 @@
+#
+#
+# TODO: move to argocd app!
+#
+
+
 resource "kubernetes_manifest" "logsinstance_primary" {
   manifest = {
     "apiVersion" = "monitoring.grafana.com/v1alpha1"
@@ -28,8 +34,8 @@ resource "kubernetes_manifest" "logsinstance_primary" {
               "name" = "grafana-agent-loki"
             }
           }
-          # passing the url as secret is not possible so its passed via tf var and remote data source 
-          "url" = var.logs_url 
+          # passing the url as secret is not possible so its passed via tf var and remote data source
+          "url" = var.logs_url
           "externalLabels" = {
             "cluster" = var.cluster_name
           }
