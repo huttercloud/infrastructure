@@ -1,0 +1,76 @@
+---
+
+- name: Configure node-c
+  hosts: node-c.hutter.cloud
+  become: true
+  become_user: root
+
+  vars:
+    github_ssh_key:  "{{ lookup('ansible.builtin.env', 'GITHUB_SSH_KEY') }}"
+    gitlab_ssh_key:  "{{ lookup('ansible.builtin.env', 'GITLAB_SSH_KEY') }}"
+
+    ssh_folder: /home/sebastianhutter/.ssh
+    owner: sebastianhutter
+    group: sebastianhutter
+
+    ssh_config: |
+      Host gitlab.com
+        PubkeyAuthentication yes
+        IdentityFile ~/.ssh/id_rsa.gitlab
+
+      Host github.com
+        PubkeyAuthentication yes
+        IdentityFile ~/.ssh/id_rsa.github
+
+  tasks:
+  - name: check ssh keys
+    fail: msg="The ssh key for '{{ item }}' is empty"
+    when: item | length == 0
+    loop:
+    - "{{ github_ssh_key }}"
+    - "{{ gitlab_ssh_key }}"
+
+  - name: install software packages
+    ansible.builtin.package:
+      name:
+        - python3-venv
+        - nfs-common
+        - docker.io
+        - jq
+
+  - name: ensure docker is running
+    ansible.builtin.systemd:
+      daemon_reload: true
+      name: docker
+      state: started
+      enabled: true
+
+  - name: add user to docker group
+    ansible.builtin.user:
+      name: '{{ owner }}'
+      groups: docker
+      append: yes
+
+  - name: add private key for github access
+    ansible.builtin.copy:
+      content: "{{ github_ssh_key }}"
+      dest: "{{ ssh_folder }}/id_rsa.github"
+      owner: "{{ owner }}"
+      group: "{{ group }}"
+      mode: '0600'
+
+  - name: add private key for gitlab access
+    ansible.builtin.copy:
+      content: "{{ gitlab_ssh_key }}"
+      dest: "{{ ssh_folder }}/id_rsa.github"
+      owner: "{{ owner }}"
+      group: "{{ group }}"
+      mode: '0600'
+
+  - name: add ssh config
+    ansible.builtin.copy:
+      content: "{{ ssh_config }}"
+      dest: "{{ ssh_folder }}/config"
+      owner: "{{ owner }}"
+      group: "{{ group }}"
+      mode: '0600'

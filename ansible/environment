@@ -15,3 +15,6 @@ BORGBASE_PASSPHRASE_SEBASTIAN="op://hutter.cloud/borgbase repository passphrase 
 GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT="op://hutter.cloud/grafana cloud metricspublisher/prometheus endpoint"
 GRAFANA_PROMETHEUS_USERNAME="op://hutter.cloud/grafana cloud metricspublisher/username"
 GRAFANA_PROMETHEUS_PASSWORD="op://hutter.cloud/grafana cloud metricspublisher/password"
+
+GITHUB_SSH_KEY="op://Personal/id_rsa.github/private key"
+GITLAB_SSH_KEY="op://Personal/id_rsa.gitlab/private key"

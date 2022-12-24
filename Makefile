@@ -26,6 +26,9 @@ ansible-node-a:
 ansible-node-b:
 	cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/node-b.yaml
 
+ansible-node-c:
+	cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/node-c.yaml
+
 ansible-plex:
 	cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/plex.yaml
 
