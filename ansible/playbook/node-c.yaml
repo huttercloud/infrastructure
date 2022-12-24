@@ -62,7 +62,7 @@
   - name: add private key for gitlab access
     ansible.builtin.copy:
       content: "{{ gitlab_ssh_key }}"
-      dest: "{{ ssh_folder }}/id_rsa.github"
+      dest: "{{ ssh_folder }}/id_rsa.gitlab"
       owner: "{{ owner }}"
       group: "{{ group }}"
       mode: '0600'
