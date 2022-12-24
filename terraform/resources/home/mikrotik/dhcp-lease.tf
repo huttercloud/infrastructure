@@ -58,6 +58,10 @@ locals {
             macaddress = "2C:F0:5D:1F:FD:A6"
             address = "192.168.30.90"
         },
+        "node-c" = {
+            macaddress = "C0:3F:D5:62:7F:A3"
+            address = "192.168.30.21"
+        },
     }
 }
 
