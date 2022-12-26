@@ -1,0 +1,6 @@
+# environment variables
+
+## terraform/aws
+AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS terraform credentials/username"
+AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS terraform credentials/password"
+AWS_REGION="eu-central-1"
