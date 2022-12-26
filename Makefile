@@ -45,6 +45,8 @@ terraform-aws-root-global:
 	cd terraform/resources/aws/root/global; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-aws-root-eu-central-1:
 	cd terraform/resources/aws/root/eu-central-1; op run --env-file="./environment" -- terraform apply -auto-approve
+terraform-aws-root-us-east-1:
+	cd terraform/resources/aws/root/us-east-1; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-home-mikrotik:
 	cd terraform/resources/home/mikrotik; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-home-pi-hole:
