@@ -46,7 +46,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r update-versions/requirements.txt
-
+      - name: Update versions
+        run: |
+          python3 update-versions/update-versions.py \
+            --file infrastructure/terraform/resources/home/node-a/locals.tf \
+            --file infrastructure/terraform/resources/home/node-b/locals.tf \
+            --replace '\s*?external_dns_version\s*?=\s+\"(.*?)\"' EXTERNALDNS \
+            --replace '\s*?external_secrets_version\s*?=\s+\"(.*?)\"' EXTERNALSECRETS \
+            --replace '\s*?pi_hole_version\s*?=\s+\"(.*?)\"' PIHOLE \
+            --replace '\s*?wireguard_version\s*?=\s+\"(.*?)\"' WIREGUARD \
+            --replace '\s*?unifi_version\s*?=\s+\"(.*?)\"' UNIFICONTROLLER \
+            --replace '\s*?argo_cd_version\s*?=\s+\"(.*?)\"' ARGOCD
       - name: "Create pull request"
         uses: peter-evans/create-pull-request@v4
         with:
@@ -57,4 +67,3 @@ jobs:
           title: "chore: Update versions ${{ steps.date.outputs.date }}"
           reviewers: |
             sebastianhutter
-
