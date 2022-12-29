@@ -1,10 +1,75 @@
 # hutter.cloud infrastructure
 
-# terraform
+## nodes
+
+## node-a
+
+intel nuc running kubernetes, providing pi-hole (dns), unifi controller and wireguard vpn.
+in addition, the node runs daily borgmatic backups for synology shares
+- hostname: node-a.hutter.cloud
+- ip address: 192.168.30.61 (static lease in mikrotik)
+- username: node
+
+### additional mikrotik configd
+
+```bash
+# enable routing to wireguard network
+/ip route add dst-address=192.168.130.0/24 gateway=192.168.30.253
+# enable portforwarding from internet to wireguard
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
+```
+
+## node-b
+
+desktop pc, services are accessible from the internet.
+runs kubernetes, argo cd and everything else.
+
+- hostname: node-b.hutter.cloud
+- ip address: 192.168.30.90 (static lease in mikrotik)
+- username: node
+
+### additional mikrotik configd
+
+```bash
+# enable http/s port forwardinf
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=80 protocol=tcp in-interface=bridge-vlan200 dst-port=80
+/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=443 protocol=tcp in-interface=bridge-vlan200 dst-port=443
+```
+
+## node-c
+
+intel nuc used for ssh access and run docker and docker compose on amd64!
+- hostname: node-c.hutter.cloud
+- ip address: 192.168.30.21 (static lease in mikrotik)
+- username: node
+
+### additional mikrotik configd
+
+none
+
+## ansible 
+
+ansible is used to configure to configure and upgrade the different physical nodes.
+
+to run ansible the nucs must be manually installed, ssh and sudo need to be setup.
+- add public ssh key to the system `ssh-copy-id -i .ssh/id_rsa.home node@192.168.30.61`
+- allow node user full sudo rights without password (for ansible) `sudo /bin/sh -c "echo 'node ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/node"`
+
+Afterwards the ansible playbooks for the nodes can be executed
+
+```bash
+make ansible-node-a
+make ansible-node-b
+make ansible-node-c
+
+# to upgrade all systems run
+make ansible-upgrade systems
+```
+## terraform
 
 terraform is used to configure all services required for a running environment.
-For the kubernetes clusters this includes:
-- grafana operator and monitoring resources
+For the nodes this includes:
+
 - pi-hole for dns
 - wireguard for mgmt vpn
 - unifi controller for wlan
@@ -26,62 +91,27 @@ the terraform resources are dependent on each other, the correct order for a ful
 - resources/home/node-a
 - resources/home/node-b
 
-# nodes
+### first terraform run
 
-a node is installed with ubuntu 22.04 LTS server edition.
-## configuration
-1. setup virtualenv for ansible, ensure terraform 1.3 is installed
-1. install ubuntu on nucs
-2. install ubuntu server with `openssh`
-3. add public ssh key to the system `ssh-copy-id -i .ssh/id_rsa.home node@192.168.30.61`
-4. allow node user full sudo rights without password (for ansible) `sudo /bin/sh -c "echo 'node ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/node"`
-- change password of user
-5. run the corresponding ansible playbooks 
-  - `cd ansible`
-  - `op run --env-file="./environment" -- ansible-playbook -i inventory.ini playbook/node-a.yaml`
-1. apply terraform code for node-a and node-b
+terraform is used to deploy pods to kubernetes. These are dependent on CRDs. As long as the CRDs are not installed in the kubernetes cluster the terraform run will fail. To ensure the CRDs are installed before the first terraform execution needs
+to be targeted:
 
 ```bash
 # node a
 cd terraform/resources/home/node-a
-op run --env-file="./environment" -- terraform apply -target module.external_secrets #-target module.grafana_agent_operator
-op run --env-file="./environment" -- terraform apply
+op run --env-file="./environment" -- terraform apply -target module.external_secrets
 
 # node b
 cd terraform/resources/home/node-a
-op run --env-file="./environment" -- terraform apply -target module.external_secrets -target moduke.argo_cd #-target module.grafana_agent_operator 
-op run --env-file="./environment" -- terraform apply
+op run --env-file="./environment" -- terraform apply -target module.external_secrets -target moduke.argo_cd
 ```
 
-## node-a
+### running terraform
 
-one of the old nucs. this system will mainly serve pi-hole and handle http/s redirects
-- hostname: node-a.hutter.cloud
-- ip address: 192.168.30.61 (static lease in mikrotik)
-- username: node
-
-### additional mikrotik configd
+Use the make targets to execute tf for the different resources
 
 ```bash
-# enable routing to wireguard network
-/ip route add dst-address=192.168.130.0/24 gateway=192.168.30.253
-# enable portforwarding from internet to wireguard
-/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
-```
-
-## node-b
-
-desktop pc, services are accessible from the internet
-- hostname: node-b.hutter.cloud
-- ip address: 192.168.30.90 (static lease in mikrotik)
-- username: node
-
-### additional mikrotik configd
-
-```bash
-# enable http/s port forwardinf
-/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=80 protocol=tcp in-interface=bridge-vlan200 dst-port=80
-/ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=443 protocol=tcp in-interface=bridge-vlan200 dst-port=443
+make terraform-%
 ```
 
 # borgmatic
