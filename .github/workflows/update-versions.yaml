@@ -18,8 +18,8 @@ env:
   WORDPRESS_SFTP_PASSWORD: ${{ secrets.WORDPRESS_COM_SFTP_PASSWORD }}
 
 jobs:
-  update-plugins:
-    name: "Update local plugins"
+  update-versions:
+    name: "Update local versions"
     runs-on: "ubuntu-latest"
     permissions: write-all
 
