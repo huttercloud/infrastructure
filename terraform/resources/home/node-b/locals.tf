@@ -17,6 +17,10 @@ locals {
   storage_class_name_data = "persistent"
   storage_class_path_data = "/data"
 
+  # storage class for second disk
+  storage_class_name_data_2 = "persistent-2"
+  datastorage_class_path_data_2 = "/data2"
+
   # argo cd configuration
   argo_cd_host         = "argocd.hutter.cloud"
   argo_cd_auth0_issuer = "https://hutter-cloud.eu.auth0.com/"
