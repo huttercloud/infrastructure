@@ -2,15 +2,16 @@
 
 ## nodes
 
-## node-a
+### node-a
 
 intel nuc running kubernetes, providing pi-hole (dns), unifi controller and wireguard vpn.
 in addition, the node runs daily borgmatic backups for synology shares
+
 - hostname: node-a.hutter.cloud
 - ip address: 192.168.30.61 (static lease in mikrotik)
 - username: node
 
-### additional mikrotik configd
+#### additional mikrotik config
 
 ```bash
 # enable routing to wireguard network
@@ -19,7 +20,7 @@ in addition, the node runs daily borgmatic backups for synology shares
 /ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.61 to-ports=32767 protocol=udp in-interface=bridge-vlan200 dst-port=32767
 ```
 
-## node-b
+### node-b
 
 desktop pc, services are accessible from the internet.
 runs kubernetes, argo cd and everything else.
@@ -28,7 +29,7 @@ runs kubernetes, argo cd and everything else.
 - ip address: 192.168.30.90 (static lease in mikrotik)
 - username: node
 
-### additional mikrotik configd
+#### additional mikrotik config
 
 ```bash
 # enable http/s port forwardinf
@@ -36,14 +37,14 @@ runs kubernetes, argo cd and everything else.
 /ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=443 protocol=tcp in-interface=bridge-vlan200 dst-port=443
 ```
 
-## node-c
+### node-c
 
 intel nuc used for ssh access and run docker and docker compose on amd64!
 - hostname: node-c.hutter.cloud
 - ip address: 192.168.30.21 (static lease in mikrotik)
 - username: node
 
-### additional mikrotik configd
+#### additional mikrotik config
 
 none
 
