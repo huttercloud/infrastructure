@@ -8,7 +8,8 @@ locals {
     "argocd.hutter.cloud",
     "grpc.argocd.hutter.cloud",
     "usenet.hutter.cloud",
-    "usenet-2.hutter.cloud"
+    "prometheus.hutter.cloud",
+    "grafana.hutter.cloud",
   ]
 
   dhcp_leases_from_mikrotik = data.terraform_remote_state.mikrotik.outputs.dhcp_leases
