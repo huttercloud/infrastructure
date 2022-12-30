@@ -1,15 +1,15 @@
-# 
+#
 # install core applications in k8s
-# 
+#
 
 
 locals {
   # aws iam access key id for dns access
   # v1.8 of cert manager (provided by microk8s) doesnt support "accessKeyIDSecretRef" in the spec of the dns
-  # resolver, so we need to still reference the value as accessKeyID 
+  # resolver, so we need to still reference the value as accessKeyID
   core_access_key_id_dns = data.terraform_remote_state.aws-root-global.outputs.user_dns_access_key_id
 
-  # aws credentials for cluster secret store   
+  # aws credentials for cluster secret store
   core_access_key_id_parameter_store     = data.terraform_remote_state.aws-root-global.outputs.user_parameter_store_access_key_id
   core_secret_access_key_parameter_store = data.terraform_remote_state.aws-root-global.outputs.user_parameter_store_secret_access_key
 
@@ -51,6 +51,13 @@ module "storage_class_data" {
 
   storage_class_name = local.storage_class_name_data
   storage_class_path = local.storage_class_path_data
+}
+
+module "storage_class_data_2" {
+  source = "../../../modules/core/storage-class-hostpath"
+
+  storage_class_name = local.storage_class_name_data_2
+  storage_class_path = local.datastorage_class_path_data_2
 }
 
 # module "grafana_agent_operator" {

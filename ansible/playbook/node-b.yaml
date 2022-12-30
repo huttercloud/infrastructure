@@ -11,6 +11,12 @@
     lv: data
     mountpoint: /data
 
+    # add second disk to the mix for prometheus data
+    # directly formated and mounted, no vg!
+    # disk was formatted manually!
+    second_disk_uuid: cfd6c3a9-8a2a-42c0-892b-933b876c9bc9
+    second_disk_mountpoint: /data2
+
     # ssh keys for borgmatic backups
     borgmatic_ssh_keys:
     - name: "node-b"
@@ -49,6 +55,19 @@
     ansible.posix.mount:
       path: "{{ mountpoint }}"
       src: "/dev/{{ vg }}/{{ lv }}"
+      fstype: ext4
+      state: mounted
+
+  - name: create mountpoint for second data disk
+    ansible.builtin.file:
+      path: "{{ second_disk_mountpoint }}"
+      state: directory
+      mode: 0755
+
+  - name: Mount second disk by id
+    ansible.posix.mount:
+      path: "{{ second_disk_mountpoint }}"
+      src: "UUID={{ second_disk_uuid }}"
       fstype: ext4
       state: mounted
 
