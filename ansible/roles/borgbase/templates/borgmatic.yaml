@@ -431,7 +431,7 @@ hooks:
     # "create", or "check" action or an associated before/after
     # hook.
     on_error:
-        - echo "Error during backup for '{{ source_directories }}'!"
+        - echo "Error during backup for '{{ source_directories[0] }}'!"
 
     # List of one or more shell commands or scripts to execute
     # before running all actions (if one of them is "create").
