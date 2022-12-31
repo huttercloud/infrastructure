@@ -74,3 +74,10 @@
       owner: "{{ owner }}"
       group: "{{ group }}"
       mode: '0600'
+
+
+  roles:
+  - role: node-exporter
+    tags:
+      - services
+      - node-exporter
