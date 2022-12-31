@@ -430,8 +430,8 @@ hooks:
     # when an exception occurs during a "prune", "compact",
     # "create", or "check" action or an associated before/after
     # hook.
-    # on_error:
-        # - echo "Error during prune/compact/create/check."
+    on_error:
+        - echo "Error during backup for '{{ source_directories }}'!"
 
     # List of one or more shell commands or scripts to execute
     # before running all actions (if one of them is "create").
