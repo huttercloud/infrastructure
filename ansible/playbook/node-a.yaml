@@ -49,7 +49,7 @@
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
     - name: "sebastian"
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
-    
+
     # borgmatic backup definitions
     borgmatic_backup_jobs:
       - name: arspugnandi
@@ -74,7 +74,7 @@
         username: pi7vk5q8
         host: pi7vk5q8.repo.borgbase.com
         passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_A') }}"
-        source_directories: 
+        source_directories:
           - /data
         backup_hour: 1
         before_backup: []
@@ -89,7 +89,7 @@
         backup_hour: 5
 
   pre_tasks:
-  - name: ensure lvm is setup 
+  - name: ensure lvm is setup
     community.general.lvol:
       vg: "{{ vg }}"
       lv: "{{ lv }}"
@@ -101,7 +101,7 @@
       dev: "/dev/{{ vg }}/{{ lv }}"
 
   - name: create mountpoint for data partition
-    ansible.builtin.file: 
+    ansible.builtin.file:
       path: "{{ mountpoint }}"
       state: directory
       mode: 0755
@@ -135,13 +135,9 @@
     execute_dns: false
     dns_server: 1.1.1.1
     tags:
-      - services 
+      - services
       - microk8s
   - role: borgbase
     tags:
       - services
       - borgbase
-  - role: node-exporter
-    tags:
-      - services
-      - node-exporter
