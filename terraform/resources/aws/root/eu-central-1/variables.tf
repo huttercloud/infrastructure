@@ -53,3 +53,8 @@ variable "argo_cd_declarative_github_applications_deploy_key" {
   sensitive = true
   type      = string
 }
+
+variable "grafana_admin_password" {
+  sensitive = true
+  type      = string
+}
