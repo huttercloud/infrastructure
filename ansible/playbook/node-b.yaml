@@ -106,7 +106,3 @@
     tags:
       - services
       - borgbase
-  - role: node-exporter
-    tags:
-      - services
-      - node-exporter
