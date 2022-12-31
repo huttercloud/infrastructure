@@ -1,4 +1,4 @@
-# environment variables 
+# environment variables
 
 ## terraform/aws
 AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS terraform credentials/username"
@@ -21,3 +21,5 @@ TF_VAR_argo_cd_declarative_kubernetes_host_node_b="op://hutter.cloud/kubeconfig 
 TF_VAR_argo_cd_declarative_kubernetes_token_node_b="op://hutter.cloud/kubeconfig node-b/token"
 TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b="op://hutter.cloud/kubeconfig node-b/cluster_ca_certificate"
 TF_VAR_argo_cd_declarative_github_applications_deploy_key="op://hutter.cloud/github.com applications deploy key for argocd/private key"
+
+TF_VAR_grafana_admin_password="op://hutter.cloud/grafana admin/password"

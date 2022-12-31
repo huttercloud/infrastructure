@@ -148,3 +148,9 @@ resource "aws_ssm_parameter" "hutter_cloud_argo_cd_declarative_github_applicatio
   type  = "SecureString"
   value = var.argo_cd_declarative_github_applications_deploy_key
 }
+
+resource "aws_ssm_parameter" "hutter_cloud_grafana_admin_password" {
+  name  = "hutter-cloud-grafana-admin-password"
+  type  = "SecureString"
+  value = var.grafana_admin_password
+}
