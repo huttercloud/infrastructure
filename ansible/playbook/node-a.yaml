@@ -59,7 +59,7 @@
         source_directories:
           - "{{ borgmatic_nfs_root }}/arspugnandi"
         before_backup:
-          - "mount -o remount {{ borgmatic_nfs_root }}/arspugnandi"
+          - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-arspugnandi.mount"
         backup_hour: 2
       - name: katharina
         username: zc520i6h
@@ -68,7 +68,7 @@
         source_directories:
           - "{{ borgmatic_nfs_root }}/katharina"
         before_backup:
-          - "mount -o remount {{ borgmatic_nfs_root }}/katharina"
+          - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-katharina.mount"
         backup_hour: 7
       - name: node-a
         username: pi7vk5q8
@@ -85,7 +85,7 @@
         source_directories:
           - "{{ borgmatic_nfs_root }}/sebastian"
         before_backup:
-          - "mount -o remount {{ borgmatic_nfs_root }}/sebastian"
+          - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-sebastian.mount"
         backup_hour: 5
 
   pre_tasks:

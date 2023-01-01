@@ -22,7 +22,7 @@
 
   - name: setup virtualenv for borgmatic
     ansible.builtin.pip:
-      name: 
+      name:
         - borgmatic
       virtualenv: "{{ borgmatic_venv }}"
       virtualenv_command: "python3 -m venv"
@@ -62,7 +62,7 @@
   - name: run ssh keyscan
     ansible.builtin.shell: "ssh-keyscan {{ item.host }} >> {{ borgmatic_ssh }}/known_hosts_new"
     loop: "{{ borgmatic_backup_jobs }}"
-  
+
   - name: move keyscan file
     ansible.builtin.shell: "mv {{ borgmatic_ssh }}/known_hosts_new {{ borgmatic_ssh }}/known_hosts"
 
