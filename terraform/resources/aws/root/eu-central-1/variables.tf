@@ -58,3 +58,8 @@ variable "grafana_admin_password" {
   sensitive = true
   type      = string
 }
+
+variable "loki_gateway_credentials" {
+  sensitive = true
+  type      = string
+}

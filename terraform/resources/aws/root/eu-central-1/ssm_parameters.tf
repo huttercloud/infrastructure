@@ -154,3 +154,10 @@ resource "aws_ssm_parameter" "hutter_cloud_grafana_admin_password" {
   type  = "SecureString"
   value = var.grafana_admin_password
 }
+
+resource "aws_ssm_parameter" "hutter_cloud_loki_gateway_credentials" {
+  name  = "hutter-cloud-loki-gateway-credentials"
+  type  = "SecureString"
+  value = var.loki_gateway_credentials
+}
+

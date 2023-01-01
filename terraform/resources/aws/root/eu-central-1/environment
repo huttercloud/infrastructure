@@ -23,3 +23,4 @@ TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b="op://hutter.c
 TF_VAR_argo_cd_declarative_github_applications_deploy_key="op://hutter.cloud/github.com applications deploy key for argocd/private key"
 
 TF_VAR_grafana_admin_password="op://hutter.cloud/grafana admin/password"
+TF_VAR_loki_gateway_credentials="op://hutter.cloud/loki gateway credentials/htpasswd"
