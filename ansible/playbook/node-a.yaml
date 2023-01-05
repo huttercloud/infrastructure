@@ -35,9 +35,9 @@
     - name: arspugnandi
       path: /volume1/ars-pugnandi
     - name: katharina
-      path: /volume1/homes/@LH-BARFOOT.LOCAL/61/katharina-1000006/Drive
+      path: /volume1/homes/katharina
     - name: sebastian
-      path: /volume1/homes/@LH-BARFOOT.LOCAL/61/sebastian-1000005/Drive
+      path: /volume1/homes/sebastian
 
     # ssh keys for borgmatic backups
     borgmatic_ssh_keys:
