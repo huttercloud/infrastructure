@@ -62,6 +62,10 @@ locals {
             macaddress = "C0:3F:D5:62:7F:A3"
             address = "192.168.30.21"
         },
+        "synology" = {
+            macaddress = "90:09:D0:25:32:E5"
+            address = "192.168.30.33"
+        }
     }
 }
 
