@@ -29,13 +29,13 @@ borgmatic_backup_jobs: []
 #   username: pi7vk5q8
 #   host: pi7vk5q8.repo.borgbase.com
 #   passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_NODE_A') }}"
-#   source_directories: 
+#   source_directories:
 #     - /data
 #   before_backup: []
 #   backup_hour: 1
 
 borgmatic_nfs_enabled: false
-borgmatic_nfs_server: 192.168.30.17 # dont use dns for nfs mounts, dns may not be up and running when backup is executed
+borgmatic_nfs_server: 192.168.30.33 # dont use dns for nfs mounts, dns may not be up and running when backup is executed
 
 borgmatc_nfs_mounts: []
 # example entry
