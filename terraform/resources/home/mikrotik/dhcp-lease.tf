@@ -34,7 +34,7 @@ locals {
             macaddress = "B8:27:EB:9B:65:33"
             address = "192.168.30.182"
         },
-        "nas" = {
+        "nfs" = {
             macaddress = "00:11:32:87:1A:FD"
             address = "192.168.30.17"
         },
