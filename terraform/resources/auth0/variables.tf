@@ -23,3 +23,13 @@ variable "user_password_pascal" {
   sensitive = true
 }
 
+variable "user_password_benjamin" {
+  type      = string
+  sensitive = true
+}
+
+variable "user_password_marek" {
+  type      = string
+  sensitive = true
+}
+
