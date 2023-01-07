@@ -4,6 +4,7 @@ locals {
     "https://usenet.hutter.cloud/oauth2/callback",
     "https://grafana.hutter.cloud/oauth2/callback",
     "https://prometheus.hutter.cloud/oauth2/callback",
+    "https://tautulli.hutter.cloud/oauth2/callback",
   ]
 }
 
