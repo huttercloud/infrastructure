@@ -30,6 +30,16 @@ locals {
       email    = "pbaettig@gmail.com"
       password = var.user_password_pascal
     },
+    {
+      name     = "Benjamin Hutter"
+      email    = "hutterben@gmail.com"
+      password = var.user_password_benjamin
+    },
+    {
+      name     = "Marek Obuchowicz"
+      email    = "marek@korekontrol.eu"
+      password = var.user_password_marek
+    },
   ]
 }
 
@@ -40,5 +50,11 @@ resource "auth0_user" "users" {
   email           = each.value.email
   email_verified  = true
   password        = each.value.password
+
+  lifecycle {
+    ignore_changes = [
+      password,
+    ]
+  }
 }
 
