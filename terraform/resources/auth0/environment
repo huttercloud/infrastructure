@@ -1,4 +1,4 @@
-# environment variables 
+# environment variables
 
 ## terraform/auth0
 AUTH0_CLIENT_ID="op://hutter.cloud/auth0 terraform application/username"
@@ -10,3 +10,5 @@ TF_VAR_user_password_christoph="op://hutter.cloud/auth0 user christoph/password"
 TF_VAR_user_password_jacek="op://hutter.cloud/auth0 user jacek/password"
 TF_VAR_user_password_katharina="op://hutter.cloud/auth0 user katharina/password"
 TF_VAR_user_password_pascal="op://hutter.cloud/auth0 user pascal/password"
+TF_VAR_user_password_benjamin="op://hutter.cloud/auth0 user benjamin/password"
+TF_VAR_user_password_marek="op://hutter.cloud/auth0 user marek/password"
