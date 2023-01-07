@@ -11,6 +11,7 @@ locals {
     "prometheus.hutter.cloud",
     "grafana.hutter.cloud",
     "loki.hutter.cloud",
+    "tautulli.hutter.cloud",
   ]
 
   dhcp_leases_from_mikrotik = data.terraform_remote_state.mikrotik.outputs.dhcp_leases
