@@ -6,6 +6,8 @@ locals {
     "https://prometheus.hutter.cloud/oauth2/callback",
     "https://tautulli.hutter.cloud/oauth2/callback",
     "https://overseerr.hutter.cloud/oauth2/callback",
+    "https://calibre.hutter.cloud/oauth2/callback",
+    "https://calibre-content.hutter.cloud/oauth2/callback",
   ]
 }
 
