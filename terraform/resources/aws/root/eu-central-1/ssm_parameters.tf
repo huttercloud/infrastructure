@@ -161,3 +161,21 @@ resource "aws_ssm_parameter" "hutter_cloud_loki_gateway_credentials" {
   value = var.loki_gateway_credentials
 }
 
+# auth0 client for pureftpd authentication
+resource "aws_ssm_parameter" "hutter_cloud_service_pureftpd_client_id" {
+  name  = "hutter-cloud-service-pureftpd-client-id"
+  type  = "SecureString"
+  value = data.terraform_remote_state.auth0.outputs.pureftpd_client_id
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_service_pureftpd_client_secret" {
+  name  = "hutter-cloud-service-pureftpd-client-secret"
+  type  = "SecureString"
+  value = data.terraform_remote_state.auth0.outputs.pureftpd_client_secret
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_service_pureftpd_audience" {
+  name  = "hutter-cloud-service-pureftpd-audience"
+  type  = "SecureString"
+  value = data.terraform_remote_state.auth0.outputs.pureftpd_audience
+}
