@@ -10,4 +10,4 @@ execute_dns: true
 
 # service node port range
 # allow services running in kubernetes to pretty much use any node port
-service_node_port_range: 53-32767
+service_node_port_range: 20-32767
