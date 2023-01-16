@@ -16,6 +16,7 @@ locals {
     "calibre.hutter.cloud",
     "calibre-content.hutter.cloud",
     "ftp.hutter.cloud",
+    "calibre-opds.hutter.cloud",
   ]
 
   dhcp_leases_from_mikrotik = data.terraform_remote_state.mikrotik.outputs.dhcp_leases
