@@ -179,3 +179,10 @@ resource "aws_ssm_parameter" "hutter_cloud_service_pureftpd_audience" {
   type  = "SecureString"
   value = data.terraform_remote_state.auth0.outputs.pureftpd_audience
 }
+
+# calibre opds feed basic auth secret
+resource "aws_ssm_parameter" "hutter_cloud_calibre_opds_credentials" {
+  name  = "hutter-cloud-calibre-opds-credentials"
+  type  = "SecureString"
+  value = var.calibre_opds_credentials
+}
