@@ -63,3 +63,8 @@ variable "loki_gateway_credentials" {
   sensitive = true
   type      = string
 }
+
+variable "calibre_opds_credentials" {
+  sensitive = true
+  type      = string
+}
