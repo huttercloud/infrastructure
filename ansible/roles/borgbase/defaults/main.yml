@@ -35,9 +35,9 @@ borgmatic_backup_jobs: []
 #   backup_hour: 1
 
 borgmatic_nfs_enabled: false
-borgmatic_nfs_server: 192.168.30.33 # dont use dns for nfs mounts, dns may not be up and running when backup is executed
 
 borgmatc_nfs_mounts: []
 # example entry
 # - name: sebastian
 #   path: /volume1/homes/@LH-BARFOOT.LOCAL/61/sebastian-1000005/Drive
+#   server: 192.168.30.33
