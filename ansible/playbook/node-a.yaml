@@ -55,7 +55,7 @@
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
     - name: "sebastian"
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
-    - name: "sebastian"
+    - name: "ebooks"
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_EBOOKS') }}"
 
 
