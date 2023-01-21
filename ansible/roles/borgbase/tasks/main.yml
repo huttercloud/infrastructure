@@ -90,6 +90,7 @@
     vars:
       name: "{{ item.name }}"
       path: "{{ item.path }}"
+      server: "{{ item.server }}"
     loop: "{{ borgmatc_nfs_mounts }}"
     register: mounts
 
