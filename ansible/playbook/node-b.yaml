@@ -17,6 +17,12 @@
     second_disk_uuid: cfd6c3a9-8a2a-42c0-892b-933b876c9bc9
     second_disk_mountpoint: /data2
 
+    # borgmatic alert aws credentials
+    borgmatic_sns_topic: "arn:aws:sns:eu-central-1:337261303015:borgmatic"
+    borgmatic_sns_region: "eu-central-1"
+    borgmatic_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'BORGMATIC_AWS_ACCESS_KEY_ID') }}"
+    borgmatic_aws_access_key_secret: "{{ lookup('ansible.builtin.env', 'BORGMATIC_AWS_ACCESS_KEY_SECRET') }}"
+
     # ssh keys for borgmatic backups
     borgmatic_ssh_keys:
     - name: "node-b"

@@ -29,6 +29,12 @@
     execute_dns: false
     dns_server: 1.1.1.1
 
+    # borgmatic alert aws credentials
+    borgmatic_sns_topic: "arn:aws:sns:eu-central-1:337261303015:borgmatic"
+    borgmatic_sns_region: "eu-central-1"
+    borgmatic_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'BORGMATIC_AWS_ACCESS_KEY_ID') }}"
+    borgmatic_aws_access_key_secret: "{{ lookup('ansible.builtin.env', 'BORGMATIC_AWS_ACCESS_KEY_SECRET') }}"
+
     # nfs mounts for borgmatic backup sources
     borgmatic_nfs_enabled: true
     borgmatc_nfs_mounts:
