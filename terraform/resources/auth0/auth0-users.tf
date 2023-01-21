@@ -40,6 +40,11 @@ locals {
       email    = "marek@korekontrol.eu"
       password = var.user_password_marek
     },
+    {
+      name     = "Philippe Angéloz"
+      email    = "info@angeloz.me"
+      password = var.user_password_philippe
+    },
   ]
 }
 

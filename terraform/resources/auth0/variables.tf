@@ -12,7 +12,7 @@ variable "user_password_jacek" {
   type      = string
   sensitive = true
 }
- 
+
 variable "user_password_katharina" {
   type      = string
   sensitive = true
@@ -33,3 +33,7 @@ variable "user_password_marek" {
   sensitive = true
 }
 
+variable "user_password_philippe" {
+  type      = string
+  sensitive = true
+}
