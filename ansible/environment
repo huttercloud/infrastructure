@@ -14,6 +14,9 @@ BORGBASE_PASSPHRASE_NODE_B="op://hutter.cloud/borgbase repository passphrase for
 BORGBASE_PASSPHRASE_SEBASTIAN="op://hutter.cloud/borgbase repository passphrase for sebastian/password"
 BORGBASE_PASSPHRASE_EBOOKS="op://hutter.cloud/borgbase repository passphrase for ebooks/password"
 
+BORGMATIC_AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS borgmatic user/username"
+BORGMATIC_AWS_ACCESS_KEY_SECRET="op://hutter.cloud/AWS borgmatic user/password"
+
 GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT="op://hutter.cloud/grafana cloud metricspublisher/prometheus endpoint"
 GRAFANA_PROMETHEUS_USERNAME="op://hutter.cloud/grafana cloud metricspublisher/username"
 GRAFANA_PROMETHEUS_PASSWORD="op://hutter.cloud/grafana cloud metricspublisher/password"

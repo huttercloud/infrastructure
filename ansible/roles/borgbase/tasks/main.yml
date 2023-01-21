@@ -11,6 +11,14 @@
   when: item.passphrase | length == 0
   loop: "{{ borgmatic_backup_jobs }}"
 
+- name: sanity check given aws credentials
+  fail: msg="The aws access key id for borgmatic alerts is missing"
+  when: borgmatic_aws_access_key_id | length == 0
+
+- name: sanity check given aws credentials
+  fail: msg="The aws access key secret for borgmatic alerts is missing"
+  when: borgmatic_aws_access_key_secret | length == 0
+
 - name: install borgmatic
   block:
   - name: install software packages for borgmatic
@@ -24,6 +32,8 @@
     ansible.builtin.pip:
       name:
         - borgmatic
+        - boto3
+        - click
       virtualenv: "{{ borgmatic_venv }}"
       virtualenv_command: "python3 -m venv"
 
@@ -104,6 +114,11 @@
     when: mounts.changed
   when: borgmatic_nfs_enabled
 
+
+##
+# borgmatic jobs
+##
+
 - name: prepare borgmatic jobs
   block:
   - name: create borgmatic jobs base directory
@@ -139,6 +154,8 @@
       user_known_hosts_file: "{{ borgmatic_ssh }}/known_hosts"
       encryption_passphrase: "{{ item.passphrase }}"
       before_backup: "{{ item.before_backup }}"
+      alert_script: "{{ borgmatic_bin }}/borgmatic-alert.sh"
+      alert_subject: "Borgmatic backup failed for {{ item.name }}"
     loop: "{{ borgmatic_backup_jobs }}"
 
   - name: create bin dir for wrapper scripts
@@ -178,3 +195,30 @@
       job: "{{ borgmatic_bin }}//borgmatic-{{ item.name }}.sh --verbosity 1"
       cron_file: "borgmatic-{{ item.name }}"
     loop: "{{ borgmatic_backup_jobs }}"
+
+##
+# setup alert script
+##
+
+  - name: Copy borgmatic alert script
+    ansible.builtin.copy:
+      src: borgmatic-alert.py
+      dest: "{{ borgmatic_bin }}/borgmatic-alert.py"
+      owner: root
+      group: root
+      mode: 0700
+
+  - name: Copy borgmatic alert wrapper
+    ansible.builtin.template:
+      src: borgmatic-alert.sh
+      dest: "{{ borgmatic_bin }}/borgmatic-alert.sh"
+      owner: root
+      group: root
+      mode: 0700
+    vars:
+      borgmatic_venv_python: "{{ borgmatic_venv }}/bin/python3"
+      borgmatic_alert_script: "{{ borgmatic_bin }}/borgmatic-alert.py"
+      sns_topic: "{{ borgmatic_sns_topic }}"
+      region: "{{ borgmatic_sns_region }}"
+      aws_access_key_id: "{{ borgmatic_aws_access_key_id }}"
+      aws_access_key_secret: "{{ borgmatic_aws_access_key_secret }}"
