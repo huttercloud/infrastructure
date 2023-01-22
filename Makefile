@@ -38,7 +38,10 @@ terraform: terraform-auth0 terraform-grafana terraform-aws-root-global terraform
 terraform: terraform-home-mikrotik terraform-home-pi-hole terraform-home-node-a terraform-home-node-b
 
 terraform-auth0:
+<<<<<<< HEAD
 	cd terraform/resources/auth0; op inject -i accounts.yaml.tpl -o accounts.yaml --force
+=======
+>>>>>>> e6002cfc6caf76a85fb0cb3b89b6f14a993f400d
 	cd terraform/resources/auth0; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-grafana:
 	cd terraform/resources/grafana; op run --env-file="./environment" -- terraform apply -auto-approve
