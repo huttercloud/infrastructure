@@ -186,3 +186,16 @@ resource "aws_ssm_parameter" "hutter_cloud_calibre_opds_credentials" {
   type  = "SecureString"
   value = var.calibre_opds_credentials
 }
+
+# auth0 client for jenkins auth0
+resource "aws_ssm_parameter" "hutter_cloud_service_jenkins_client_id" {
+  name  = "hutter-cloud-service-jenkins-client-id"
+  type  = "SecureString"
+  value = data.terraform_remote_state.auth0.outputs.jenkins_client_id
+}
+
+resource "aws_ssm_parameter" "hutter_cloud_service_jenkins_client_secret" {
+  name  = "hutter-cloud-service-jenkins-client-secret"
+  type  = "SecureString"
+  value = data.terraform_remote_state.auth0.outputs.jenkins_client_secret
+}
