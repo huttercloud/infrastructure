@@ -45,6 +45,7 @@ terraform-grafana:
 terraform-aws-root-global:
 	cd terraform/resources/aws/root/global; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-aws-root-eu-central-1:
+	cd terraform/resources/aws/root/eu-central-1; op inject -i secrets.yaml.tpl -o secrets.yaml --force
 	cd terraform/resources/aws/root/eu-central-1; op run --env-file="./environment" -- terraform apply -auto-approve
 terraform-aws-root-us-east-1:
 	cd terraform/resources/aws/root/us-east-1; op run --env-file="./environment" -- terraform apply -auto-approve

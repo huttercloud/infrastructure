@@ -39,3 +39,5 @@ venv
 
 # ignore rendered accounts.yaml file
 terraform/resources/auth0/accounts.yaml
+# ignore rednered secrets.yaml file
+terraform/resources/aws/root/eu-central-1/secrets.yaml

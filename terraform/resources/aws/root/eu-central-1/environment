@@ -4,24 +4,3 @@
 AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS terraform credentials/username"
 AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS terraform credentials/password"
 AWS_REGION="eu-central-1"
-
-## secrets for parameter store
-TF_VAR_pi_hole_webpassword="op://hutter.cloud/pi-hole admin/password"
-TF_VAR_oauth2_proxy_cookie_secret="op://hutter.cloud/oauth2 proxy cookie secret/password"
-TF_VAR_synology_certificate_private_key="op://Personal/id_rsa.synology-certificate/private key"
-# the grafana key had to be manually created as the api didnt support the metricspublisher role
-TF_VAR_grafana_cloud_metrics_publisher="op://hutter.cloud/grafana cloud metricspublisher/password"
-
-# argo cd declarative setup
-TF_VAR_argo_cd_declarative_kubernetes_host_node_a="op://hutter.cloud/kubeconfig node-a/host"
-TF_VAR_argo_cd_declarative_kubernetes_token_node_a="op://hutter.cloud/kubeconfig node-a/token"
-TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_a="op://hutter.cloud/kubeconfig node-a/cluster_ca_certificate"
-
-TF_VAR_argo_cd_declarative_kubernetes_host_node_b="op://hutter.cloud/kubeconfig node-b/host"
-TF_VAR_argo_cd_declarative_kubernetes_token_node_b="op://hutter.cloud/kubeconfig node-b/token"
-TF_VAR_argo_cd_declarative_kubernetes_cluster_ca_cert_data_node_b="op://hutter.cloud/kubeconfig node-b/cluster_ca_certificate"
-TF_VAR_argo_cd_declarative_github_applications_deploy_key="op://hutter.cloud/github.com applications deploy key for argocd/private key"
-
-TF_VAR_grafana_admin_password="op://hutter.cloud/grafana admin/password"
-TF_VAR_loki_gateway_credentials="op://hutter.cloud/loki gateway credentials/htpasswd"
-TF_VAR_calibre_opds_credentials="op://hutter.cloud/opds login calibre-web/htpasswd"
