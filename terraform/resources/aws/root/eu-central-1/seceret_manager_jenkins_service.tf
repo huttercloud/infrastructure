@@ -23,5 +23,5 @@ resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_unity_
 
 resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_unity_personal_license" {
   secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_unity_personal_license.id
-  secret_binary = base64decode(local.secrets.jenkins.secrets.alf)
+  secret_binary = local.secrets.jenkins.secrets.alf
 }
