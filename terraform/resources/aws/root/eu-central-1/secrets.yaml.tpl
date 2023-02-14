@@ -28,3 +28,7 @@ secrets:
       cert: op://hutter.cloud/kubeconfig node-b/cluster_ca_certificate
     github:
       deploykey: op://hutter.cloud/github.com applications deploy key for argocd/private_key_base64
+  jenkins:
+    secrets:
+      alf: op://FFHS/Unity Personal License/base64_file
+      deploymentkey: op://FFHS/Github Deployment Key for Unity Projects/private_key_base64
