@@ -65,6 +65,10 @@ locals {
         "synology" = {
             macaddress = "90:09:D0:25:32:E5"
             address = "192.168.30.33"
+        },
+        "netgear-ap" = {
+            macaddress = "94:18:65:41:21:39"
+            address = "192.168.30.48"
         }
     }
 }
