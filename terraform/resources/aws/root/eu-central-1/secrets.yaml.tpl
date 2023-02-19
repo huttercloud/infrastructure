@@ -30,7 +30,10 @@ secrets:
       deploykey: op://hutter.cloud/github.com applications deploy key for argocd/private_key_base64
   jenkins:
     secrets:
-      alf: op://FFHS/Unity Personal License/base64_file
+      unity:
+        alf: op://FFHS/Unity Personal License/base64_file
+        username: op://FFHS/Unity ID/username
+        password: op://FFHS/Unity ID/password
       github:
         key: op://Personal/Github Machine User for CI Key/private_key_base64
         pat:
