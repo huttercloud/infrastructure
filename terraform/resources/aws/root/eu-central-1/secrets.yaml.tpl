@@ -31,4 +31,8 @@ secrets:
   jenkins:
     secrets:
       alf: op://FFHS/Unity Personal License/base64_file
-      deploymentkey: op://FFHS/Github Deployment Key for Unity Projects/private_key_base64
+      github:
+        key: op://Personal/Github Machine User for CI Key/private_key_base64
+        pat:
+          username: op://Personal/Github Machine User for CI PAT/username
+          token: op://Personal/Github Machine User for CI PAT/password

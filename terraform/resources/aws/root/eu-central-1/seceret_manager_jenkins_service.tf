@@ -1,19 +1,34 @@
 
 
-# password for pihole web interface
-resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_unity_deployment_key" {
-  name  = "github-unity-deployment-key"
+# github machine user ssh key
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_github_machine_user_ssh_key" {
+  name  = "github-machine-user-ssh-key"
   tags = {
     "jenkins:credentials:type" = "sshUserPrivateKey"
     "jenkins:credentials:username" = "git"
   }
 }
 
-resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_unity_deployment_key" {
-  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_unity_deployment_key.id
-  secret_string = base64decode(local.secrets.jenkins.secrets.deploymentkey)
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_github_machine_user_ssh_key" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_github_machine_user_ssh_key.id
+  secret_string = base64decode(local.secrets.jenkins.secrets.github.key)
 }
 
+# github machine user pat
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_github_machine_user_pat" {
+  name  = "github-machine-user-pat"
+  tags = {
+    "jenkins:credentials:type" = "usernamePassword"
+    "jenkins:credentials:username" = local.secrets.jenkins.secrets.github.pat.username
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_github_machine_user_pat" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_github_machine_user_pat.id
+  secret_string = local.secrets.jenkins.secrets.github.pat.token
+}
+
+# unity personal license
 resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_unity_personal_license" {
   name  = "unity-personal-license"
   tags = {
