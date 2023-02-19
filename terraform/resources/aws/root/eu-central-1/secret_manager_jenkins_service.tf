@@ -38,6 +38,12 @@ resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_unity_
 resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_unity_personal_license" {
   secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_unity_personal_license.id
   secret_binary = local.secrets.jenkins.secrets.unity.alf
+
+  lifecycle {
+    ignore_changes = [
+      secret_binary
+    ]
+  }
 }
 
 # unity id
@@ -51,4 +57,18 @@ resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_unity_
 resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_unity_id" {
   secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_unity_id.id
   secret_string = local.secrets.jenkins.secrets.unity.password
+}
+
+
+# aws secretsmanager access key and secret
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_secrets_manager" {
+  name  = "aws-secretsmanager"
+  tags = {
+    "jenkins:credentials:type" = "usernamePassword"
+    "jenkins:credentials:username" = data.terraform_remote_state.aws-root-global.outputs.user_secrets_manager_access_key_id
+  }
+}
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_secrets_manager" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_secrets_manager.id
+  secret_string = data.terraform_remote_state.aws-root-global.outputs.user_secrets_manager_secret_access_key
 }
