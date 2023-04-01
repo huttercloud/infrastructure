@@ -21,5 +21,7 @@ GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT="op://hutter.cloud/grafana cloud metric
 GRAFANA_PROMETHEUS_USERNAME="op://hutter.cloud/grafana cloud metricspublisher/username"
 GRAFANA_PROMETHEUS_PASSWORD="op://hutter.cloud/grafana cloud metricspublisher/password"
 
-GITHUB_SSH_KEY="op://Personal/id_rsa.github/private key"
-GITLAB_SSH_KEY="op://Personal/id_rsa.gitlab/private key"
+GITHUB_SSH_PRIVATE_KEY="op://Personal/id_rsa.github/private key"
+GITLAB_SSH_PRIVATE_KEY="op://Personal/id_rsa.gitlab/private key"
+
+JENKINS_SSH_PPUBLIC_KEY="op://Personal/id.rsa.jenkins.hutter.cloud/public key"

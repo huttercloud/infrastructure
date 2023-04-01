@@ -14,8 +14,11 @@
     # add second disk to the mix for prometheus data
     # directly formated and mounted, no vg!
     # disk was formatted manually!
-    second_disk_uuid: cfd6c3a9-8a2a-42c0-892b-933b876c9bc9
+    second_disk_uuid: 1d25ce93-834d-418c-bef7-2c788871e6bd
     second_disk_mountpoint: /data2
+
+    # ssh key used by jenkins for ssh connection
+    jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
 
     # borgmatic alert aws credentials
     borgmatic_sns_topic: "arn:aws:sns:eu-central-1:337261303015:borgmatic"
@@ -112,3 +115,6 @@
     tags:
       - services
       - borgbase
+  - role: jenkins-ssh-access
+    tags:
+      - jenkins

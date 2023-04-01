@@ -1,0 +1,14 @@
+---
+# tasks file for jenkins-ssh-access
+
+- name: sanity check jenkins public key
+  fail: msg="The aws access key id for borgmatic alerts is missing"
+  when: jenkins_public_ssh_key | length == 0
+
+- name: Add jenkins public key
+  ansible.posix.authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ jenkins_public_ssh_key }}"
+
+

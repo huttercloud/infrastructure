@@ -29,6 +29,9 @@
     execute_dns: false
     dns_server: 1.1.1.1
 
+    # ssh key used by jenkins for ssh connection
+    jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
+
     # borgmatic alert aws credentials
     borgmatic_sns_topic: "arn:aws:sns:eu-central-1:337261303015:borgmatic"
     borgmatic_sns_region: "eu-central-1"
@@ -165,3 +168,6 @@
     tags:
       - services
       - borgbase
+  - role: jenkins-ssh-access
+    tags:
+      - jenkins

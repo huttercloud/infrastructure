@@ -1,0 +1,15 @@
+---
+
+- name: Configure plex
+  hosts: plex.hutter.cloud
+  become: true
+  become_user: root
+
+  vars:
+    # ssh key used by jenkins for ssh connection
+    jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
+
+  roles:
+  - role: jenkins-ssh-access
+    tags:
+      - system

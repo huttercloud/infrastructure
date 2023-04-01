@@ -171,7 +171,7 @@
       dest: /etc/environment
       backrefs: true
       regexp: "^PATH="
-      line: PATH="{{ borgmatic_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+      line: PATH="{{ borgmatic_bin }}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 
   - name: create borgmatic wrapper scripts
     ansible.builtin.template:

@@ -6,8 +6,11 @@
   become_user: root
 
   vars:
-    github_ssh_key:  "{{ lookup('ansible.builtin.env', 'GITHUB_SSH_KEY') }}"
-    gitlab_ssh_key:  "{{ lookup('ansible.builtin.env', 'GITLAB_SSH_KEY') }}"
+    github_ssh_private_key:  "{{ lookup('ansible.builtin.env', 'GITHUB_SSH_PRIVATE_KEY') }}"
+    gitlab_ssh_private_key:  "{{ lookup('ansible.builtin.env', 'GITLAB_SSH_PRIVATE_KEY') }}"
+
+    # ssh key used by jenkins for ssh connection
+    jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
 
     ssh_folder: /home/sebastianhutter/.ssh
     owner: sebastianhutter
@@ -27,8 +30,8 @@
     fail: msg="The ssh key for '{{ item }}' is empty"
     when: item | length == 0
     loop:
-    - "{{ github_ssh_key }}"
-    - "{{ gitlab_ssh_key }}"
+    - "{{ github_ssh_private_key }}"
+    - "{{ gitlab_ssh_private_key }}"
 
   - name: install software packages
     ansible.builtin.package:
@@ -53,7 +56,7 @@
 
   - name: add private key for github access
     ansible.builtin.copy:
-      content: "{{ github_ssh_key }}"
+      content: "{{ github_ssh_private_key }}"
       dest: "{{ ssh_folder }}/id_rsa.github"
       owner: "{{ owner }}"
       group: "{{ group }}"
@@ -61,7 +64,7 @@
 
   - name: add private key for gitlab access
     ansible.builtin.copy:
-      content: "{{ gitlab_ssh_key }}"
+      content: "{{ gitlab_ssh_private_key }}"
       dest: "{{ ssh_folder }}/id_rsa.gitlab"
       owner: "{{ owner }}"
       group: "{{ group }}"
@@ -81,3 +84,6 @@
     tags:
       - services
       - node-exporter
+  - role: jenkins-ssh-access
+    tags:
+      - jenkins

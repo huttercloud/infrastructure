@@ -2,7 +2,7 @@
 # simple makefile to make running ansible and tf commands easier
 #
 
-.PHONY: ansible ansible-%
+.PHONY: ansible ansible-node-a ansible-node-b ansible-node-c ansible-plex
 .PHONY: terraform terraform-%
 
 # setup python virtualenv
@@ -14,7 +14,7 @@ requirements: requirements.txt
 	venv/bin/pip3 install -r requirements.txt
 
 # ansible targets
-ansible: ansible-node-a ansible-node-b ansible-plex
+ansible: ansible-node-a ansible-node-b ansible-node-c ansible-plex
 
 
 ansible-upgrade-systems:
