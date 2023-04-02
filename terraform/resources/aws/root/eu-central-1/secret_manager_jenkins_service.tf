@@ -75,62 +75,18 @@ resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secre
 
 #
 # ssh key for access of node-a, b, c and plex
-# same ssh key but different usernames!
 #
 
 # node-a
-resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_a" {
-  name  = "node-a-ssh-key"
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci" {
+  name  = "jenkinsci-ssh-key"
   tags = {
     "jenkins:credentials:type" = "sshUserPrivateKey"
-    "jenkins:credentials:username" = "node"
+    "jenkins:credentials:username" = "jenkinsci"
   }
 }
 
-resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_a" {
-  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_a.id
-  secret_string = base64decode(local.secrets.jenkins.secrets.infrastructure.key)
-}
-
-# node-b
-resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_b" {
-  name  = "node-b-ssh-key"
-  tags = {
-    "jenkins:credentials:type" = "sshUserPrivateKey"
-    "jenkins:credentials:username" = "node"
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_b" {
-  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_b.id
-  secret_string = base64decode(local.secrets.jenkins.secrets.infrastructure.key)
-}
-
-# node-c
-resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_c" {
-  name  = "node-c-ssh-key"
-  tags = {
-    "jenkins:credentials:type" = "sshUserPrivateKey"
-    "jenkins:credentials:username" = "sebastianhutter"
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_c" {
-  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_node_c.id
-  secret_string = base64decode(local.secrets.jenkins.secrets.infrastructure.key)
-}
-
-
-# plex
-resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_plex" {
-  name  = "plex-ssh-key"
-  tags = {
-    "jenkins:credentials:type" = "sshUserPrivateKey"
-    "jenkins:credentials:username" = "plex"
-  }
-}
-
-resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_plex" {
-  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_plex.id
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci.id
   secret_string = base64decode(local.secrets.jenkins.secrets.infrastructure.key)
 }
