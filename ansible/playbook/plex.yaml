@@ -9,6 +9,23 @@
     # ssh key used by jenkins for ssh connection
     jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
 
+  tasks:
+  - name: install homebrew packages
+    community.general.homebrew:
+      state: present
+      name:
+        - htop
+    become: true
+    become_user: "{{ ansible_user }}"
+
+  - name: install casks
+    community.general.homebrew_cask:
+      state: present
+      name:
+        - plex-media-server
+    become: true
+    become_user: "{{ ansible_user }}"
+
   roles:
   - role: jenkins-ssh-access
     tags:

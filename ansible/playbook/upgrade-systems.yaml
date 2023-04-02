@@ -2,81 +2,106 @@
 
 # https://www.cyberciti.biz/faq/ansible-apt-update-all-packages-on-ubuntu-debian-linux/
 
-- name: Upgrade and restart node-a
-  hosts: node-a.hutter.cloud
+# - name: Upgrade and restart node-a
+#   hosts: node-a.hutter.cloud
+
+#   tasks:
+#   - name: Update apt cache
+#     apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+#   - name: Upgrade all apt packages
+#     apt: upgrade=dist force_apt_get=yes
+
+#   - name: Check if a reboot is needed for Debian and Ubuntu boxes
+#     register: reboot_a_required_file
+#     stat: path=/var/run/reboot-required get_md5=no
+
+#   - name: Reboot the Debian or Ubuntu server
+#     reboot:
+#       msg: "Reboot initiated by Ansible due to kernel updates"
+#       connect_timeout: 5
+#       reboot_timeout: 300
+#       pre_reboot_delay: 0
+#       post_reboot_delay: 30
+#       test_command: uptime
+#     when: reboot_a_required_file.stat.exists
+
+#   - name: wait 5 minutes to ensure dns service is back up and running
+#     ansible.builtin.pause:
+#       minutes: 5
+#     when: reboot_a_required_file.stat.exists
+
+
+# - name: Upgrade and restart node-b
+#   hosts: node-b.hutter.cloud
+
+#   tasks:
+#   - name: Update apt cache
+#     apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+#   - name: Upgrade all apt packages
+#     apt: upgrade=dist force_apt_get=yes
+
+#   - name: Check if a reboot is needed for Debian and Ubuntu boxes
+#     register: reboot_b_required_file
+#     stat: path=/var/run/reboot-required get_md5=no
+
+#   - name: Reboot the Debian or Ubuntu server
+#     reboot:
+#       msg: "Reboot initiated by Ansible due to kernel updates"
+#       connect_timeout: 5
+#       reboot_timeout: 300
+#       pre_reboot_delay: 0
+#       post_reboot_delay: 30
+#       test_command: uptime
+#     when: reboot_b_required_file.stat.exists
+
+# - name: Upgrade and restart node-c
+#   hosts: node-c.hutter.cloud
+
+#   tasks:
+#   - name: Update apt cache
+#     apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+#   - name: Upgrade all apt packages
+#     apt: upgrade=dist force_apt_get=yes
+
+#   - name: Check if a reboot is needed for Debian and Ubuntu boxes
+#     register: reboot_b_required_file
+#     stat: path=/var/run/reboot-required get_md5=no
+
+#   - name: Reboot the Debian or Ubuntu server
+#     reboot:
+#       msg: "Reboot initiated by Ansible due to kernel updates"
+#       connect_timeout: 5
+#       reboot_timeout: 300
+#       pre_reboot_delay: 0
+#       post_reboot_delay: 30
+#       test_command: uptime
+#     when: reboot_b_required_file.stat.exists
+
+- name: Upgrade and restart plex
+  hosts: plex.hutter.cloud
 
   tasks:
-  - name: Update apt cache
-    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  - name: Update homebrew
+    community.general.homebrew:
+      update_homebrew: true
+      upgrade_all: true
+    become: true
+    become_user: "{{ ansible_user }}"
 
-  - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
+  - name: Update casks
+    community.general.homebrew_cask:
+      upgrade_all: true
+    become: true
+    become_user: "{{ ansible_user }}"
 
-  - name: Check if a reboot is needed for Debian and Ubuntu boxes
-    register: reboot_a_required_file
-    stat: path=/var/run/reboot-required get_md5=no
-
-  - name: Reboot the Debian or Ubuntu server
+  - name: Reboot Plex Server
     reboot:
-      msg: "Reboot initiated by Ansible due to kernel updates"
+      msg: "Reboot initiated by Ansible"
       connect_timeout: 5
       reboot_timeout: 300
       pre_reboot_delay: 0
       post_reboot_delay: 30
       test_command: uptime
-    when: reboot_a_required_file.stat.exists
-
-  - name: wait 5 minutes to ensure dns service is back up and running
-    ansible.builtin.pause:
-      minutes: 5
-    when: reboot_a_required_file.stat.exists
-
-
-- name: Upgrade and restart node-b
-  hosts: node-b.hutter.cloud
-
-  tasks:
-  - name: Update apt cache
-    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
-
-  - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
-
-  - name: Check if a reboot is needed for Debian and Ubuntu boxes
-    register: reboot_b_required_file
-    stat: path=/var/run/reboot-required get_md5=no
-
-  - name: Reboot the Debian or Ubuntu server
-    reboot:
-      msg: "Reboot initiated by Ansible due to kernel updates"
-      connect_timeout: 5
-      reboot_timeout: 300
-      pre_reboot_delay: 0
-      post_reboot_delay: 30
-      test_command: uptime
-    when: reboot_b_required_file.stat.exists
-
-- name: Upgrade and restart node-c
-  hosts: node-c.hutter.cloud
-
-  tasks:
-  - name: Update apt cache
-    apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
-
-  - name: Upgrade all apt packages
-    apt: upgrade=dist force_apt_get=yes
-
-  - name: Check if a reboot is needed for Debian and Ubuntu boxes
-    register: reboot_b_required_file
-    stat: path=/var/run/reboot-required get_md5=no
-
-  - name: Reboot the Debian or Ubuntu server
-    reboot:
-      msg: "Reboot initiated by Ansible due to kernel updates"
-      connect_timeout: 5
-      reboot_timeout: 300
-      pre_reboot_delay: 0
-      post_reboot_delay: 30
-      test_command: uptime
-    when: reboot_b_required_file.stat.exists
-
