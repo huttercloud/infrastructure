@@ -14,14 +14,17 @@
     name: jenkinsci
     group: jenkinsci
     home: /var/lib/jenkins
+    shell: /bin/bash
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 # add jenkins user to the admin group if running on mac to allow ssh access
-- name: Add jenkins user to admin groups
+- name: Add jenkins user
   ansible.builtin.user:
     name: jenkinsci
     group: jenkinsci
     groups: admin
     home: /var/lib/jenkins
+    shell: /bin/zsh
   when: ansible_distribution == 'MacOSX'
 
 - name: Add jenkins public key
@@ -58,3 +61,23 @@
   become: true
   become_user: jenkinsci
   when: ansible_distribution == 'MacOSX'
+
+- name: Ensure virtualenv is installed
+  ansible.builtin.command: python3 -m venv /var/lib/jenkins/venv
+  args:
+    creates: /var/lib/jenkins/venv
+
+- name: Install ansible for the jenkinsci user
+  ansible.builtin.pip:
+    name: ansible
+    virtualenv: /var/lib/jenkins/venv
+  # ansible install on plex server broken atm
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Ensure venv access
+  ansible.builtin.file:
+    path: /var/lib/jenkins/venv
+    state: directory
+    mode: '0755'
+    owner: jenkinsci
+    group: jenkinsci
