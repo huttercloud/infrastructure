@@ -29,4 +29,4 @@
   roles:
   - role: jenkins-ssh-access
     tags:
-      - system
+      - jenkins

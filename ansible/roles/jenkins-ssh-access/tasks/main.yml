@@ -2,13 +2,50 @@
 # tasks file for jenkins-ssh-access
 
 - name: sanity check jenkins public key
-  fail: msg="The aws access key id for borgmatic alerts is missing"
+  fail: msg="The jenkins ssh key is missing"
   when: jenkins_public_ssh_key | length == 0
+
+- name: Add jenkins group
+  ansible.builtin.group:
+    name: jenkinsci
+
+- name: Add jenkins user
+  ansible.builtin.user:
+    name: jenkinsci
+    group: jenkinsci
+    home: /var/lib/jenkins
 
 - name: Add jenkins public key
   ansible.posix.authorized_key:
-    user: "{{ ansible_user }}"
+    user: "jenkinsci"
     state: present
     key: "{{ jenkins_public_ssh_key }}"
 
+- name: Create home dir
+  ansible.builtin.file:
+    path: /var/lib/jenkinsci
+    state: directory
+    mode: '0755'
+    owner: jenkinsci
+    group: jenkinsci
 
+- name: Allow 'jenkinsci' to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^jenkinsci'
+    line: 'jenkinsci ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Install java
+  apt:
+    name: default-jdk
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Install java
+  community.general.homebrew:
+    name:
+      - java
+  become: true
+  become_user: "{{ ansible_user }}"
+  when: ansible_distribution == 'MacOSX'
