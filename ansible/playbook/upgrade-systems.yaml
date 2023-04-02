@@ -89,13 +89,13 @@
       update_homebrew: true
       upgrade_all: true
     become: true
-    become_user: "{{ ansible_user }}"
+    become_user: plex
 
   - name: Update casks
     community.general.homebrew_cask:
       upgrade_all: true
     become: true
-    become_user: "{{ ansible_user }}"
+    become_user: plex
 
   - name: Reboot Plex Server
     reboot:
