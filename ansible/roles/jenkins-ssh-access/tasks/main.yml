@@ -15,6 +15,15 @@
     group: jenkinsci
     home: /var/lib/jenkins
 
+# add jenkins user to the admin group if running on mac to allow ssh access
+- name: Add jenkins user to admin groups
+  ansible.builtin.user:
+    name: jenkinsci
+    group: jenkinsci
+    groups: admin
+    home: /var/lib/jenkins
+  when: ansible_distribution == 'MacOSX'
+
 - name: Add jenkins public key
   ansible.posix.authorized_key:
     user: "jenkinsci"
@@ -23,7 +32,7 @@
 
 - name: Create home dir
   ansible.builtin.file:
-    path: /var/lib/jenkinsci
+    path: /var/lib/jenkins
     state: directory
     mode: '0755'
     owner: jenkinsci
@@ -45,7 +54,7 @@
 - name: Install java
   community.general.homebrew:
     name:
-      - java
+      - openjdk@11
   become: true
-  become_user: "{{ ansible_user }}"
+  become_user: jenkinsci
   when: ansible_distribution == 'MacOSX'
