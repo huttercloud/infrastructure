@@ -7,16 +7,16 @@ pipeline {
     stages {
         stage('Reboot plex server') {
             steps {
+              sshagent(['jenkinsci-ssh-key']) {
                 sh(
                   script: """
-                    pwd
-                    id
-                    ip addr
-                    /var/lib/jenkins/venv/bin/ansible-playbook --help
+                    cd ansible
+                    ansible-playbook -i inventory.ini playbook/reboot-plex.yaml
                   """
                 )
-                ansiblePlaybook credentialsId: 'plex-ssh-key', inventory: 'ansible/inventory.ini', playbook: 'ansible/playbook/reboot-plex.yaml'
+              }
             }
         }
     }
 }
+
