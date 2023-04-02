@@ -11,7 +11,7 @@ pipeline {
                 sh(
                   script: """
                     cd ansible
-                    ansible-playbook -i inventory.ini playbook/reboot-plex.yaml
+                    ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini playbook/reboot-plex.yaml
                   """
                 )
               }
