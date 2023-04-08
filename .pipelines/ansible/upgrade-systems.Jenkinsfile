@@ -6,6 +6,9 @@ pipeline {
       // every first of the month at 3 AM
       cron('H 3 1 * *')
   }
+  environment {
+    OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
+  }
   parameters {
     booleanParam(defaultValue: true, name: 'NODE_A', description: 'Patch node-a')
     booleanParam(defaultValue: true, name: 'NODE_B', description: 'Patch node-b')

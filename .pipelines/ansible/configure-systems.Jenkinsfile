@@ -2,6 +2,9 @@
 
 pipeline {
   agent none
+  environment {
+    OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
+  }
   parameters {
     booleanParam(defaultValue: true, name: 'NODE_A', description: 'Configure node-a')
     booleanParam(defaultValue: true, name: 'NODE_B', description: 'Configure node-b')

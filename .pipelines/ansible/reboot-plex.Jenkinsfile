@@ -4,6 +4,9 @@ pipeline {
   agent {
     label "node-b"
   }
+  environment {
+    OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
+  }
   stages {
     stage('Reboot plex server') {
       steps {
