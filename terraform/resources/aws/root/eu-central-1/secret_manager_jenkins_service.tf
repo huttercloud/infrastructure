@@ -105,3 +105,20 @@ resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secre
   secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_1password_connect_token.id
   secret_string = local.secrets.jenkins.secrets.onepassword.token
 }
+
+#
+# 1password token for 1password connect access
+#
+
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_terraform_cloud_token" {
+  name  = "jenkinsci-terraform-cloud-token"
+  tags = {
+    "jenkins:credentials:type" = "string"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_terraform_cloud_token" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_terraform_cloud_token.id
+  secret_string = local.secrets.jenkins.secrets.terraform.token
+}
+

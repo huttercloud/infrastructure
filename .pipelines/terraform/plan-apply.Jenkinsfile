@@ -6,6 +6,7 @@ pipeline {
   }
   environment {
         OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
+        TF_TOKEN_app_terraform_io = credentials('jenkinsci-terraform-cloud-token')
     }
   stages {
     stage('auth0') {

@@ -30,6 +30,8 @@ secrets:
       deploykey: op://hutter.cloud/github.com applications deploy key for argocd/private_key_base64
   jenkins:
     secrets:
+      terraform:
+        token: op://hutter.cloud/terraform cloud token/password
       onepassword:
         token: op://hutter.cloud/1password-connect home token jenkins-hutter.cloud/credential
       infrastructure:
