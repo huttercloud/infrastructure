@@ -12,8 +12,21 @@ pipeline {
     OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
     TF_TOKEN_app_terraform_io = credentials('jenkinsci-terraform-cloud-token')
   }
+  parameters {
+    booleanParam(defaultValue: true, name: 'AUTH0', description: 'Run terraform for terraform/resources/auth0')
+    booleanParam(defaultValue: true, name: 'AWS_ROOT_GLOBAL', description: 'Run terraform for terraform/resources/aws/root/global')
+    booleanParam(defaultValue: true, name: 'AWS_ROOT_EU_CENTRAL_1', description: 'Run terraform for terraform/resources/aws/root/eu-central-1')
+    booleanParam(defaultValue: true, name: 'AWS_ROOT_US_EAST_1', description: 'Run terraform for terraform/resources/aws/root/us-east-1')
+    booleanParam(defaultValue: true, name: 'HOME_MIKROTIK', description: 'Run terraform for terraform/resources/home/mikrotik')
+    booleanParam(defaultValue: true, name: 'HOME_PI_HOLE', description: 'Run terraform for terraform/resources/home/pi-hole')
+    booleanParam(defaultValue: true, name: 'HOME_NODE_A', description: 'Run terraform for terraform/resources/home/node-a')
+    booleanParam(defaultValue: true, name: 'HOME_NODE_B', description: 'Run terraform for terraform/resources/home/node-b')
+  }
   stages {
     stage('auth0') {
+      when {
+        expression { params.AUTH0 }
+      }
       steps {
         sh(
           script: """
@@ -26,6 +39,9 @@ pipeline {
       }
     }
     stage('aws root global') {
+      when {
+        expression { params.AWS_ROOT_GLOBAL }
+      }
       steps {
         sh(
           script: """
@@ -37,6 +53,9 @@ pipeline {
       }
     }
     stage('aws root eu-central-1') {
+      when {
+        expression { params.AWS_ROOT_EU_CENTRAL_1 }
+      }
       steps {
         sh(
           script: """
@@ -49,6 +68,9 @@ pipeline {
       }
     }
     stage('aws root us-east-1') {
+      when {
+        expression { params.AWS_ROOT_US_EAST_1 }
+      }
       steps {
         sh(
           script: """
@@ -60,6 +82,9 @@ pipeline {
       }
     }
     stage('home mikrotik') {
+      when {
+        expression { params.HOME_MIKROTIK }
+      }
       steps {
         sh(
           script: """
@@ -71,6 +96,9 @@ pipeline {
       }
     }
     stage('home pi-hole') {
+      when {
+        expression { params.HOME_PI_HOLE }
+      }
       steps {
         sh(
           script: """
@@ -82,6 +110,9 @@ pipeline {
       }
     }
     stage('home node-a') {
+      when {
+        expression { params.HOME_NODE_A }
+      }
       steps {
         sh(
           script: """
@@ -93,6 +124,9 @@ pipeline {
       }
     }
     stage('home node-b') {
+      when {
+        expression { params.HOME_NODE_B }
+      }
       steps {
         sh(
           script: """
