@@ -77,7 +77,6 @@ resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secre
 # ssh key for access of node-a, b, c and plex
 #
 
-# node-a
 resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci" {
   name  = "jenkinsci-ssh-key"
   tags = {
@@ -89,4 +88,20 @@ resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_infras
 resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci" {
   secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_infrastructure_ssh_key_jenkinsci.id
   secret_string = base64decode(local.secrets.jenkins.secrets.infrastructure.key)
+}
+
+#
+# 1password token for 1password connect access
+#
+
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_1password_connect_token" {
+  name  = "jenkinsci-1password-connect-token"
+  tags = {
+    "jenkins:credentials:type" = "string"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_1password_connect_token" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_1password_connect_token.id
+  secret_string = local.secrets.jenkins.secrets.onepassword.token
 }

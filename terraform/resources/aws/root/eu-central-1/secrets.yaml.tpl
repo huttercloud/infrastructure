@@ -5,7 +5,7 @@ secrets:
     webpassword: op://hutter.cloud/pi-hole admin/password
   synology:
     certificate:
-      privatekey: op://Personal/id_rsa.synology-certificate/private_key_base64
+      privatekey: op://hutter.cloud/id_rsa.synology-certificate/private_key_base64
   grafana:
     admin:
       password: op://hutter.cloud/grafana admin/password
@@ -30,14 +30,16 @@ secrets:
       deploykey: op://hutter.cloud/github.com applications deploy key for argocd/private_key_base64
   jenkins:
     secrets:
+      onepassword:
+        token: op://hutter.cloud/1password-connect home token jenkins-hutter.cloud/credential
       infrastructure:
-        key: op://Personal/id.rsa.jenkins.hutter.cloud/private_key_base64
+        key: op://hutter.cloud/id.rsa.jenkins.hutter.cloud/private_key_base64
       unity:
         alf: op://FFHS/Unity Personal License/base64_file
         username: op://FFHS/Unity ID/username
         password: op://FFHS/Unity ID/password
       github:
-        key: op://Personal/Github Machine User for CI Key/private_key_base64
+        key: op://hutter.cloud/Github Machine User for CI Key/private_key_base64
         pat:
-          username: op://Personal/Github Machine User for CI PAT/username
-          token: op://Personal/Github Machine User for CI PAT/password
+          username: op://hutter.cloud/Github Machine User for CI PAT/username
+          token: op://hutter.cloud/Github Machine User for CI PAT/password

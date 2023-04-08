@@ -1,11 +1,11 @@
 # environment variables for ansible
 
-BORGBASE_SSH_KEY_ARS_PUGNANDI="op://Personal/id_rsa.borgbase.ars-pugnandi/private key"
-BORGBASE_SSH_KEY_KATHARINA="op://Personal/id_rsa.borgbase.katharina/private key"
-BORGBASE_SSH_KEY_NODE_A="op://Personal/id_rsa.borgbase.node-a/private key"
-BORGBASE_SSH_KEY_NODE_B="op://Personal/id_rsa.borgbase.node-b/private key"
-BORGBASE_SSH_KEY_SEBASTIAN="op://Personal/id_rsa.borgbase.sebastian/private key"
-BORGBASE_SSH_KEY_EBOOKS="op://Personal/id_rsa.borgbase.ebooks/private key"
+BORGBASE_SSH_KEY_ARS_PUGNANDI="op://hutter.cloud/id_rsa.borgbase.ars-pugnandi/private key"
+BORGBASE_SSH_KEY_KATHARINA="op://hutter.cloud/id_rsa.borgbase.katharina/private key"
+BORGBASE_SSH_KEY_NODE_A="op://hutter.cloud/id_rsa.borgbase.node-a/private key"
+BORGBASE_SSH_KEY_NODE_B="op://hutter.cloud/id_rsa.borgbase.node-b/private key"
+BORGBASE_SSH_KEY_SEBASTIAN="op://hutter.cloud/id_rsa.borgbase.sebastian/private key"
+BORGBASE_SSH_KEY_EBOOKS="op://hutter.cloud/id_rsa.borgbase.ebooks/private key"
 
 BORGBASE_PASSPHRASE_ARS_PUGNANDI="op://hutter.cloud/borgbase repository passphrase for ars-pugnandi/password"
 BORGBASE_PASSPHRASE_KATHARINA="op://hutter.cloud/borgbase repository passphrase for katharina/password"
@@ -21,7 +21,7 @@ GRAFANA_PROMETHEUS_REMOTE_WRITE_ENDPOINT="op://hutter.cloud/grafana cloud metric
 GRAFANA_PROMETHEUS_USERNAME="op://hutter.cloud/grafana cloud metricspublisher/username"
 GRAFANA_PROMETHEUS_PASSWORD="op://hutter.cloud/grafana cloud metricspublisher/password"
 
-GITHUB_SSH_PRIVATE_KEY="op://Personal/id_rsa.github/private key"
-GITLAB_SSH_PRIVATE_KEY="op://Personal/id_rsa.gitlab/private key"
+GITHUB_SSH_PRIVATE_KEY="op://hutter.cloud/id_rsa.github/private key"
+GITLAB_SSH_PRIVATE_KEY="op://hutter.cloud/id_rsa.gitlab/private key"
 
-JENKINS_SSH_PPUBLIC_KEY="op://Personal/id.rsa.jenkins.hutter.cloud/public key"
+JENKINS_SSH_PPUBLIC_KEY="op://hutter.cloud/id.rsa.jenkins.hutter.cloud/public key"
