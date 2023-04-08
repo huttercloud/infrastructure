@@ -5,8 +5,8 @@ pipeline {
     label "node-b"
   }
   triggers {
-      // every first of the month at 3 AM
-      cron('H 3 1 * *')
+      // every tuesday morning
+      cron('H 3 * * 2')
   }
   environment {
     OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
