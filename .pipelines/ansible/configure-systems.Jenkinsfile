@@ -21,7 +21,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini playbook/node-a.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini playbook/node-a.yaml
             """
           )
         }
@@ -40,7 +40,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini playbook/node-b.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini playbook/node-b.yaml
             """
           )
         }
@@ -58,7 +58,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini playbook/node-c.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini playbook/node-c.yaml
             """
           )
         }
@@ -76,7 +76,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini playbook/plex.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini playbook/plex.yaml
             """
           )
         }

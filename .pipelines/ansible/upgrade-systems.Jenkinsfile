@@ -25,7 +25,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini --limit node-a.hutter.cloud playbook/upgrade-systems.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-a.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
         }
@@ -44,7 +44,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini --limit node-b.hutter.cloud playbook/upgrade-systems.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-b.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
         }
@@ -62,7 +62,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini --limit node-c.hutter.cloud playbook/upgrade-systems.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-c.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
         }
@@ -80,7 +80,7 @@ pipeline {
           sh(
             script: """
               cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i jenkins.ini --limit plex.hutter.cloud playbook/upgrade-systems.yaml
+              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit plex.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
         }
