@@ -31,13 +31,17 @@ pipeline {
               ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-a.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
+          // wait a little while to ensure k8s services on node a are back
+          sleep time: 1 unit: MINUTES
         }
       }
     }
     stage('Patch node-b.hutter.cloud') {
       agent {
-        // patch node-b not from node-b ....
-        label 'node-a'
+        // patch node-b not from node-c
+        // as node-b may be rebooted during
+        // also not running on node-a due to dns requirements
+        label 'node-c'
       }
       when {
         expression { params.NODE_B }
