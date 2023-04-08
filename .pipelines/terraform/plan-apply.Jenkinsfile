@@ -4,10 +4,14 @@ pipeline {
   agent {
     label "node-b"
   }
+  triggers {
+      // every first of the month at 3 AM
+      cron('H 3 1 * *')
+  }
   environment {
-        OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
-        TF_TOKEN_app_terraform_io = credentials('jenkinsci-terraform-cloud-token')
-    }
+    OP_CONNECT_TOKEN = credentials('jenkinsci-1password-connect-token')
+    TF_TOKEN_app_terraform_io = credentials('jenkinsci-terraform-cloud-token')
+  }
   stages {
     stage('auth0') {
       steps {

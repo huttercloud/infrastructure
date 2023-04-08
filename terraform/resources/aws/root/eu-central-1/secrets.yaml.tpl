@@ -36,10 +36,6 @@ secrets:
         token: op://hutter.cloud/1password-connect home token jenkins-hutter.cloud/credential
       infrastructure:
         key: op://hutter.cloud/id.rsa.jenkins.hutter.cloud/private_key_base64
-      unity:
-        alf: op://FFHS/Unity Personal License/base64_file
-        username: op://FFHS/Unity ID/username
-        password: op://FFHS/Unity ID/password
       github:
         key: op://hutter.cloud/Github Machine User for CI Key/private_key_base64
         pat:
