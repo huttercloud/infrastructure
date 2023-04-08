@@ -32,7 +32,7 @@ pipeline {
             """
           )
           // wait a little while to ensure k8s services on node a are back
-          sleep time: 1 unit: MINUTES
+          sleep(time: 60)
         }
       }
     }
