@@ -28,3 +28,11 @@ module "unifi" {
   unifi_external_ip  = local.unifi_external_ip
   unifi_hostname     = local.unifi_hostname
 }
+
+module "onepassword-connect" {
+  source = "../../../modules/services/1password-connect"
+
+  onepassword_connect_version = local.onepassword_connect_version
+  onepassword_connect_host = local.onepassword_host
+  onepassword_connect_credentials = var.onepassword_connect_credentials
+}

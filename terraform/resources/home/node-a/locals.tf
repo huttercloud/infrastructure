@@ -5,6 +5,7 @@ locals {
   pi_hole_version                = "2023.03.1"
   wireguard_version              = "1.0.20210914"
   unifi_version                  = "7.3.83"
+  onepassword_connect_version    = "1.10.0"
 
   # cert manager configuration
   cert_manager_email = "huttersebastian@gmail.com"
@@ -31,5 +32,9 @@ locals {
   # unifi configuration
   unifi_external_ip = "192.168.30.253"
   unifi_hostname    = "unifi.hutter.cloud"
+
+  # 1password-connect configuration
+  onepassword_host = "1password-connect.hutter.cloud"
+
 }
 

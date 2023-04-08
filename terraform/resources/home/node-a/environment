@@ -1,5 +1,8 @@
-# environment variables 
+# environment variables
 ## node-a/kubernetes
 TF_VAR_kubernetes_host="op://hutter.cloud/kubeconfig node-a/host"
 TF_VAR_kubernetes_token="op://hutter.cloud/kubeconfig node-a/token"
 TF_VAR_kubernetes_cluster_ca_cert_data="op://hutter.cloud/kubeconfig node-a/cluster_ca_certificate"
+
+## 1password connect secret
+TF_VAR_onepassword_connect_credentials="op://hutter.cloud/1password connect home Credentials File/base64"

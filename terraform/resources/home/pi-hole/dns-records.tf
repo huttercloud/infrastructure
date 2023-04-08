@@ -1,6 +1,6 @@
 locals {
   cname_records_node_a = [
-
+    "1password-connect.hutter.cloud"
   ]
 
   cname_records_node_b = [

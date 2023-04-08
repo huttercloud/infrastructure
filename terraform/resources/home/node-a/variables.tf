@@ -11,3 +11,9 @@ variable "kubernetes_token" {
 variable "kubernetes_cluster_ca_cert_data" {
   type = string
 }
+
+# 1password connect string
+variable onepassword_connect_credentials {
+  type      = string
+  sensitive = true
+}
