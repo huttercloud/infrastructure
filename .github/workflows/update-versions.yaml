@@ -57,6 +57,7 @@ jobs:
             --replace '\s*?wireguard_version\s*?=\s+\"(.*?)\"' WIREGUARD \
             --replace '\s*?unifi_version\s*?=\s+\"(.*?)\"' UNIFICONTROLLER \
             --replace '\s*?argo_cd_version\s*?=\s+\"(.*?)\"' ARGOCD
+            --replace '\s*?onepassword_connect_version\s*?=\s+\"(.*?)\"' ONEPASSWORD_CONNECT
       - name: "Create pull request"
         uses: peter-evans/create-pull-request@v4
         with:
