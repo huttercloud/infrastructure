@@ -118,3 +118,9 @@
   - role: jenkins-ssh-access
     tags:
       - jenkins
+  - role: 1password-cli
+    tags:
+      - jenkins
+  - role: terraform-cli
+    tags:
+      - jenkins
