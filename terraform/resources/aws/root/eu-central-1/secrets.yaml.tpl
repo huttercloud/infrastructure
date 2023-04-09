@@ -41,3 +41,4 @@ secrets:
         pat:
           username: op://hutter.cloud/Github Machine User for CI PAT/username
           token: op://hutter.cloud/Github Machine User for CI PAT/password
+        webhook: op://hutter.cloud/Github Machine User for CI Webhook Registration/password

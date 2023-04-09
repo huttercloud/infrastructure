@@ -28,6 +28,20 @@ resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secre
   secret_string = local.secrets.jenkins.secrets.github.pat.token
 }
 
+# github machine user pat for webhook registration
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_github_machine_user_webhook_pat" {
+  name  = "github-machine-user-webhook-pat"
+  tags = {
+    "jenkins:credentials:type" = "string"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_github_machine_user_webhook_pat" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_github_machine_user_webhook_pat.id
+  secret_string = local.secrets.jenkins.secrets.github.webhook
+}
+
+
 # aws secretsmanager access key and secret
 resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_secrets_manager" {
   name  = "aws-secretsmanager"
