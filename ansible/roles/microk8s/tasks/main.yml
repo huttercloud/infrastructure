@@ -11,7 +11,7 @@
 - name: Install dns addon
   ansible.builtin.command: "microk8s enable dns:{{ dns_server }}"
   when: execute_dns
-  
+
 - name: Install rbac addon
   ansible.builtin.command: "microk8s enable rbac"
 
@@ -29,6 +29,10 @@
 
 - name: Install metrics-server addon
   ansible.builtin.command: "microk8s enable metrics-server"
+
+- name: Install gpu addon
+  ansible.builtin.command: "microk8s enable gpu"
+  when: ansible_hostname == "node-b.hutter.cloud"
 
 - name: Setup node ports
   ansible.builtin.lineinfile:
