@@ -4,7 +4,7 @@ locals {
   external_secrets_version       = "0.9.5"
   pi_hole_version                = "2023.05.2"
   wireguard_version              = "1.0.20210914"
-  unifi_version                  = "7.5.174"
+  unifi_version                  = "7.5.176"
   onepassword_connect_version    = "1.14.0"
 
   # cert manager configuration
