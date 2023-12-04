@@ -104,3 +104,19 @@ resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secre
   secret_string = local.secrets.jenkins.secrets.terraform.token
 }
 
+#
+# secret santa jam webhook
+#
+
+resource "aws_secretsmanager_secret" "hutter_cloud_service_jenkins_secret_santa_jam_webhook" {
+  name  = "jenkinsci-santa-jam-webhook"
+  tags = {
+    "jenkins:credentials:type" = "string"
+  }
+}
+
+resource "aws_secretsmanager_secret_version" "hutter_cloud_service_jenkins_secret_santa_jam_webhook" {
+  secret_id     = aws_secretsmanager_secret.hutter_cloud_service_jenkins_secret_santa_jam_webhook.id
+  secret_string = local.secrets.jenkins.secrets.discord.santa
+}
+
