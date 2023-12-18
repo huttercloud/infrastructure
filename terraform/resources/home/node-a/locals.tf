@@ -1,10 +1,10 @@
 locals {
   # application versions
   external_dns_version           = "v0.13.4"
-  external_secrets_version       = "0.9.9"
+  external_secrets_version       = "0.9.10"
   pi_hole_version                = "2023.11.0"
   wireguard_version              = "1.0.20210914"
-  unifi_version                  = "8.0.7"
+  unifi_version                  = "8.0.24"
   onepassword_connect_version    = "1.14.0"
 
   # cert manager configuration
