@@ -41,7 +41,7 @@ pipeline {
         // patch node-b not from node-c
         // as node-b may be rebooted during
         // also not running on node-a due to dns requirements
-        label 'node-c'
+        label 'node-a'
       }
       when {
         expression { params.NODE_B }
@@ -57,24 +57,24 @@ pipeline {
         }
       }
     }
-    stage('Patch node-c.hutter.cloud') {
-      agent {
-        label "node-b"
-      }
-      when {
-        expression { params.NODE_C }
-      }
-      steps {
-        sshagent(['jenkinsci-ssh-key']) {
-          sh(
-            script: """
-              cd ansible
-              ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-c.hutter.cloud playbook/upgrade-systems.yaml
-            """
-          )
-        }
-      }
-    }
+    // stage('Patch node-c.hutter.cloud') {
+    //   agent {
+    //     label "node-b"
+    //   }
+    //   when {
+    //     expression { params.NODE_C }
+    //   }
+    //   steps {
+    //     sshagent(['jenkinsci-ssh-key']) {
+    //       sh(
+    //         script: """
+    //           cd ansible
+    //           ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-c.hutter.cloud playbook/upgrade-systems.yaml
+    //         """
+    //       )
+    //     }
+    //   }
+    // }
     stage('Patch plex.hutter.cloud') {
       agent {
         label "node-b"
