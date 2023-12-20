@@ -22,7 +22,7 @@
     community.general.homebrew_cask:
       state: present
       name:
-        - plex-media-server
+        - plex
     become: true
     become_user: "{{ ansible_user }}"
 
