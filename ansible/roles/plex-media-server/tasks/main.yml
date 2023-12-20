@@ -1,0 +1,19 @@
+---
+# tasks file for plex-media-server
+
+
+- name: install casks
+  community.general.homebrew_cask:
+    state: present
+    name:
+      - plex-media-server
+  become: true
+  become_user: "{{ ansible_user }}"
+
+- name: copy mount and start script
+  ansible.builtin.unarchive:
+    src: Mount-And-Start-Plex-Media-Server.app.zip
+    dest: /usr/local/
+    copy: true
+  become: true
+  become_user: "root"

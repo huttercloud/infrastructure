@@ -18,15 +18,10 @@
     become: true
     become_user: "{{ ansible_user }}"
 
-  - name: install casks
-    community.general.homebrew_cask:
-      state: present
-      name:
-        - plex-media-server
-    become: true
-    become_user: "{{ ansible_user }}"
-
   roles:
+  - role: plex-media-server
+    tags:
+      - plex
   - role: jenkins-ssh-access
     tags:
       - jenkins
