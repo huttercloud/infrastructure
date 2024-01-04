@@ -31,7 +31,8 @@ locals {
 # pihole, unifi and wireguard are all using the virtual ip on node-a
 resource "pihole_dns_record" "pihole" {
   domain = "pihole.hutter.cloud"
-  ip     = "192.168.30.253"
+  #ip     = "192.168.30.253"
+  ip = "10.255.255.253"
 }
 
 resource "pihole_dns_record" "unifi" {
