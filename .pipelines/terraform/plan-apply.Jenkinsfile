@@ -95,20 +95,21 @@ pipeline {
         )
       }
     }
-    stage('home pi-hole') {
-      when {
-        expression { params.HOME_PI_HOLE }
-      }
-      steps {
-        sh(
-          script: """
-            cd terraform/resources/home/pi-hole
-            op run --env-file="./environment" -- terraform init
-            op run --env-file="./environment" -- terraform apply -auto-approve
-          """
-        )
-      }
-    }
+    // disabling pi-hole, it seems pi hole breaks when terraform changes are applied and the dns resolver needs to be restarted,
+    // stage('home pi-hole') {
+    //   when {
+    //     expression { params.HOME_PI_HOLE }
+    //   }
+    //   steps {
+    //     sh(
+    //       script: """
+    //         cd terraform/resources/home/pi-hole
+    //         op run --env-file="./environment" -- terraform init
+    //         op run --env-file="./environment" -- terraform apply -auto-approve
+    //       """
+    //     )
+    //   }
+    // }
     stage('home node-a') {
       when {
         expression { params.HOME_NODE_A }
