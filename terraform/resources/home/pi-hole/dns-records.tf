@@ -1,8 +1,15 @@
 locals {
-  cname_records_node_a = [
-    "1password-connect.hutter.cloud"
-  ]
+  # ip addresses for A records
+  mikrotik_ip = "192.168.30.254"
+  digitalocean_ip = "10.255.255.253"
 
+  cname_records_mikrotik = [
+    "wireguard.hutter.cloud",
+  ]
+  cname_records_digitalocean = [
+    "1password-connect.hutter.cloud",
+  ]
+  cname_records_node_a = []
   cname_records_node_b = [
     "hello-world.hutter.cloud",
     "argocd.hutter.cloud",
@@ -28,23 +35,20 @@ locals {
 # A Records
 ##
 
-# pihole, unifi and wireguard are all using the virtual ip on node-a
-resource "pihole_dns_record" "pihole" {
-  domain = "pihole.hutter.cloud"
-  #ip     = "192.168.30.253"
-  ip = "10.255.255.253"
+# pi-hole and 1password connect are both running on a digitalocean node
+# connected via a wireguard tunnel from the mikrotik router
+resource "pihole_dns_record" "digitalocean" {
+  domain = "digitalocean.hutter.cloud"
+  ip = local.digitalocean_ip
 }
 
-resource "pihole_dns_record" "unifi" {
-  domain = "unifi.hutter.cloud"
-  ip     = "192.168.30.253"
-}
-resource "pihole_dns_record" "wireguard" {
-  domain = "wireguard.hutter.cloud"
-  ip     = "192.168.30.253"
+resource "pihole_dns_record" "mikrotik" {
+  domain = "mikrotik.hutter.cloud"
+  ip = local.mikrotik_ip
 }
 
-# create A records from mikrotik leases
+
+# # create A records from mikrotik leases
 
 resource "pihole_dns_record" "static_leases" {
     for_each = local.dhcp_leases_from_mikrotik
@@ -54,7 +58,17 @@ resource "pihole_dns_record" "static_leases" {
 }
 
 # cname records pointing to nodes
+resource "pihole_cname_record" "mikrotik" {
+  for_each = toset(local.cname_records_mikrotik)
+  domain   = each.value
+  target   = "mikrotik.hutter.cloud"
+}
 
+resource "pihole_cname_record" "digitalocean" {
+  for_each = toset(local.cname_records_digitalocean)
+  domain   = each.value
+  target   = "digitalocean.hutter.cloud"
+}
 resource "pihole_cname_record" "node_a" {
   for_each = toset(local.cname_records_node_a)
   domain   = each.value
