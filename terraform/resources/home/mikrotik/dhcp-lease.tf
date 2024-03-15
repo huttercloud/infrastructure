@@ -69,7 +69,15 @@ locals {
         "netgear-ap" = {
             macaddress = "94:18:65:41:21:39"
             address = "192.168.30.48"
-        }
+        },
+        "laptop-lan" = {
+            macaddress = "34:99:71:DE:E5:A6"
+            address = "192.168.30.28"
+        },
+        "laptop-wlan" = {
+            macaddress = "BC:D0:74:7B:25:A8"
+            address = "192.168.30.36"
+        },
     }
 }
 
