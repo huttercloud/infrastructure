@@ -59,8 +59,8 @@ locals {
             address = "192.168.30.90"
         },
         "node-c" = {
-            macaddress = "C0:3F:D5:62:7F:A3"
-            address = "192.168.30.21"
+            macaddress = "EC:A8:6B:F5:A0:A1"
+            address = "192.168.30.39"
         },
         "synology" = {
             macaddress = "90:09:D0:25:32:E5"
