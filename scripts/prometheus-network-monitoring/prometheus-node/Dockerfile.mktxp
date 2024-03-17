@@ -1,0 +1,4 @@
+FROM ghcr.io/akpw/mktxp:latest
+
+COPY --chown=mktxp:mktxp mktxp/mktxp.conf /home/mktxp/mktxp/mktxp.conf
+# RUN chmod -R 777 /home/mktxp/mktxp

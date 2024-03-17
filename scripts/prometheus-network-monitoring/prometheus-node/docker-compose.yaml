@@ -1,0 +1,58 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - prom_data:/prometheus
+      - ./prometheus:/etc/prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,flant-statusmap-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana:/etc/grafana/provisioning/datasources
+  # mikrotik-exporter:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.mikrotik
+  #   container_name: mikrotik-exporter
+  #   ports:
+  #     - 9436:9436
+  #   restart: unless-stopped
+  #   environment:
+  #     MIKROTIK_ADDRESS: 192.168.30.254
+  #     MIKROTIK_USER: admin
+  #     MIKROTIK_PASSWORD: passwordgoeshere
+  mktxp-exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile.mktxp
+    container_name: mktxp
+    ports:
+      - 49090:49090
+    restart: unless-stopped
+    volumes:
+      - ./mktxp/mktxp.conf:/home/mktxp/mktxp/mktxp.conf
+  blackbox-exporter:
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: blackbox
+    ports:
+      - 9115:9115
+    restart: unless-stopped
+
+
+volumes:
+  prom_data:
+  grafana_data:
