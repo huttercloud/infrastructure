@@ -51,6 +51,14 @@ services:
     ports:
       - 9115:9115
     restart: unless-stopped
+  ping-exporter:
+    image: czerwonk/ping_exporter
+    container_name: ping-exporter
+    ports:
+      - 9427:9427
+    restart: unless-stopped
+    volumes:
+      - ./ping-exporter:/config:ro
 
 
 volumes:

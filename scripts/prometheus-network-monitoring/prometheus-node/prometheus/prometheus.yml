@@ -66,38 +66,6 @@ scrape_configs:
 - job_name: 'blackbox_exporter'  # collect blackbox exporter's operational metrics.
   static_configs:
     - targets: ['blackbox:9115']
-# - job_name: 'blackbox_dns'
-#   metrics_path: /probe
-#   params:
-#     module: [dns]
-#   static_configs:
-#     - targets:
-#       - example.com:10.255.255.253
-#       - example.com:8.8.8.8
-#       - example.com:1.1.1.1
-#       - youtube.com:10.255.255.253
-#       - youtube.com:8.8.8.8
-#       - youtube.com:1.1.1.1
-#   relabel_configs:
-#     - source_labels: [__address__]
-#       target_label: __param_target
-#     - source_labels: [__param_target]
-#       target_label: instance
-#     - source_labels: [__param_target]
-#       regex: '(.*):.*$'
-#       replacement: '$1'
-#       target_label: 'domain'
-#     - source_labels: [__param_target]
-#       regex: '.*:(.*)$'
-#       replacement: '$1'
-#       target_label: 'instance'
-#     - source_labels: [__param_target]
-#       regex: '(.*):.*$'
-#       replacement: '$1'
-#       target_label: __param_module
-#     - source_labels: [__param_target]
-#       regex: '.*:(.*)$'
-#       replacement: '$1'
-#       target_label: __param_target
-#     - target_label: __address__
-#       replacement: blackbox:9115
+- job_name: 'ping_exporter'
+  static_configs:
+    - targets: ['ping-exporter:9427']

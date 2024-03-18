@@ -1,0 +1,18 @@
+targets:
+  - 8.8.8.8
+  - 8.8.4.4
+  - 10.255.255.253
+  - 192.168.30.254
+  - 192.168.30.48
+dns:
+  refresh: 2m15s
+  nameserver: 10.255.255.253
+
+ping:
+  interval: 2s
+  timeout: 3s
+  history-size: 42
+  size: 120
+
+options:
+  disableIPv6: true
