@@ -1,0 +1,10 @@
+[Unit]
+Description=Configure iptables to allow traffic from home network
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/iptables-home.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target
