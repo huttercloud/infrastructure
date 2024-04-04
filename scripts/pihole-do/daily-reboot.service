@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily reboot of the system to keep dns service happy
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/reboot
+User=root
+
+[Install]
+WantedBy=multi-user.target
