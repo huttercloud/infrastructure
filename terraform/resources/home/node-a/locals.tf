@@ -1,6 +1,6 @@
 locals {
   # application versions
-  external_dns_version           = "v0.13.4"
+  external_dns_version           = "v0.13.5"
   external_secrets_version       = "0.9.20"
   pi_hole_version                = "2024.07.0"
   wireguard_version              = "1.0.20210914"
