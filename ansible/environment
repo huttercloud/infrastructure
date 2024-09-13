@@ -5,6 +5,7 @@ BORGBASE_SSH_KEY_KATHARINA="op://hutter.cloud/id_rsa.borgbase.katharina/private 
 BORGBASE_SSH_KEY_NODE_A="op://hutter.cloud/id_rsa.borgbase.node-a/private key"
 BORGBASE_SSH_KEY_NODE_B="op://hutter.cloud/id_rsa.borgbase.node-b/private key"
 BORGBASE_SSH_KEY_SEBASTIAN="op://hutter.cloud/id_rsa.borgbase.sebastian/private key"
+BORGBASE_SSH_KEY_FERDI="op://hutter.cloud/id.rsa.borgbase.ferdi/private key"
 BORGBASE_SSH_KEY_EBOOKS="op://hutter.cloud/id_rsa.borgbase.ebooks/private key"
 
 BORGBASE_PASSPHRASE_ARS_PUGNANDI="op://hutter.cloud/borgbase repository passphrase for ars-pugnandi/password"
@@ -12,6 +13,7 @@ BORGBASE_PASSPHRASE_KATHARINA="op://hutter.cloud/borgbase repository passphrase 
 BORGBASE_PASSPHRASE_NODE_A="op://hutter.cloud/borgbase repository passphrase for node-a/password"
 BORGBASE_PASSPHRASE_NODE_B="op://hutter.cloud/borgbase repository passphrase for node-b/password"
 BORGBASE_PASSPHRASE_SEBASTIAN="op://hutter.cloud/borgbase repository passphrase for sebastian/password"
+BORGBASE_PASSPHRASE_FERDI="op://hutter.cloud/borgbase repository passphrase for ferdi/password"
 BORGBASE_PASSPHRASE_EBOOKS="op://hutter.cloud/borgbase repository passphrase for ebooks/password"
 
 BORGMATIC_AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS borgmatic user/username"

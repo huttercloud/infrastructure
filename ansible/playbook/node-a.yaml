@@ -50,6 +50,9 @@
     - name: sebastian
       path: /volume1/homes/sebastian
       server: 192.168.30.33
+    - name: ferdi
+      path: /volume1/homes/ferdinand
+      server: 192.168.30.33
     - name: ebooks
       path: /volume1/ebooks
       server: 192.168.30.17
@@ -64,6 +67,8 @@
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
     - name: "sebastian"
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
+    - name: "ferdi"
+      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_FERDI') }}"
     - name: "ebooks"
       key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_EBOOKS') }}"
 
@@ -105,6 +110,15 @@
         before_backup:
           - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-sebastian.mount"
         backup_hour: 5
+      - name: ferdi
+        username: z9efcw88
+        host: z9efcw88.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_FERDI') }}"
+        source_directories:
+          - "{{ borgmatic_nfs_root }}/ferdi"
+        before_backup:
+          - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-ferdi.mount"
+        backup_hour: 9
       - name: ebooks
         username: uf6ql889
         host: uf6ql889.repo.borgbase.com
