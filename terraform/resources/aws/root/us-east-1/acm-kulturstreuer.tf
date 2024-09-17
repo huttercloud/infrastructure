@@ -4,7 +4,8 @@ locals {
 
 # ACM validation is done manually via novatrend dns manager
 resource "aws_acm_certificate" "kulturstreuer" {
-  domain_name       = local.ks_domain_name
-  validation_method = "DNS"
+  domain_name               = local.ks_domain_name
+  subject_alternative_names = ["www.${local.ks_domain_name}"]
+  validation_method         = "DNS"
 }
 

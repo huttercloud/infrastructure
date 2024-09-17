@@ -1,6 +1,6 @@
 locals {
   # arn is created in us-east-1, see corresponding code
-  ks_acm_arn = "arn:aws:acm:us-east-1:337261303015:certificate/e15021d4-9539-4983-b13d-48c2e1f4944c"
+  ks_acm_arn = "arn:aws:acm:us-east-1:337261303015:certificate/c7180128-7c0d-4c7c-95a7-66d3d4550913"
 }
 
 
@@ -24,8 +24,12 @@ resource "aws_cloudfront_distribution" "kulturstreuer" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "kulturstreuer.ch"
+  comment             = "kulturstreuer-toess.ch"
   default_root_object = "index.html"
+  aliases = [
+    "kulturstreuer-toess.ch",
+    "www.kulturstreuer-toess.ch",
+  ]
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
