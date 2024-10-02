@@ -4,6 +4,11 @@ locals {
 }
 
 
+# dns zone for kstreuer
+resource "aws_route53_zone" "kulturstreuer" {
+  name = "kulturstreuer-toess.ch"
+}
+
 # bucket for destination, not in use as all redirects are handled via cloudfront function
 resource "aws_s3_bucket" "kulturstreuer" {
   bucket = "kulturstreuer-redirect"
@@ -56,4 +61,46 @@ resource "aws_cloudfront_distribution" "kulturstreuer" {
   }
 
   price_class = "PriceClass_100"
+}
+
+# cloudfront distribution alias records
+resource "aws_route53_record" "kulturstreuer" {
+  zone_id = aws_route53_zone.kulturstreuer.zone_id
+  name    = "kulturstreuer-toess.ch"
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.kulturstreuer.domain_name
+    zone_id                = aws_cloudfront_distribution.kulturstreuer.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "kulturstreuer_www" {
+  zone_id = aws_route53_zone.kulturstreuer.zone_id
+  name    = "www.kulturstreuer-toess.ch"
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.kulturstreuer.domain_name
+    zone_id                = aws_cloudfront_distribution.kulturstreuer.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+# acm cert validation records (acm is setup in us-east-1, manually adding the validation here for now)
+
+locals {
+  acm_validation_records = {
+    "_9c8719a6b4d21a6962d5cd9d17b01866.www.kulturstreuer-toess.ch" = "_ea38fd486da9a7ebd1fb5c712ee834a4.djqtsrsxkq.acm-validations.aws"
+    "_9c8719a6b4d21a6962d5cd9d17b01866.kulturstreuer-toess.ch"     = "_9c987d8287af804ae604b82d617826d9.djqtsrsxkq.acm-validations.aws"
+  }
+}
+
+resource "aws_route53_record" "acm_validation" {
+  for_each = local.acm_validation_records
+
+  ttl     = 300
+  zone_id = aws_route53_zone.kulturstreuer.zone_id
+  name    = each.key
+  type    = "CNAME"
+  records = [each.value]
 }
