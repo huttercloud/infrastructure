@@ -4,6 +4,7 @@ module "argo_cd" {
 
   argo_cd_version               = local.argo_cd_version
   argo_cd_host                  = local.argo_cd_host
+  argo_cd_external_hostname     = local.externalname_hostname
   argo_cd_server_admin_password = var.argo_cd_server_admin_password
   argo_cd_auth0_issuer          = local.argo_cd_auth0_issuer
   argo_cd_auth0_client_id       = data.terraform_remote_state.auth0.outputs.argo_cd_client_id

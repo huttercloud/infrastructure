@@ -6,6 +6,10 @@ variable "argo_cd_host" {
   type = string
 }
 
+variable "argo_cd_external_hostname" {
+  type = string
+}
+
 variable "argo_cd_server_admin_password" {
   type      = string
   sensitive = true

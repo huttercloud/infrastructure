@@ -96,12 +96,12 @@ resource "kubernetes_service" "arg_cd_external_name" {
   metadata {
     name = "argo-cd-external-name"
     annotations = {
-        "external-dns.alpha.kubernetes.io/hostname" = var.argo_cd_host
-        "hutter.cloud/dns-service" = "aws"
+      "external-dns.alpha.kubernetes.io/hostname" = var.argo_cd_host
+      "hutter.cloud/dns-service"                  = "aws"
     }
   }
   spec {
-    external_name = var.argo_cd_host
-    type = "ExternalName"
+    external_name = var.argo_cd_external_hostname
+    type          = "ExternalName"
   }
 }
