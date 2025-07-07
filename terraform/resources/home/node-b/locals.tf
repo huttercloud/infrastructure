@@ -1,7 +1,7 @@
 locals {
   # application versions
   external_dns_version           = "v0.13.5"
-  external_secrets_version       = "0.18.1"
+  external_secrets_version       = "0.18.2"
   argo_cd_version                = "8.1.2"
 
   # cert manager configuration
