@@ -27,3 +27,5 @@ GITHUB_SSH_PRIVATE_KEY="op://hutter.cloud/id_rsa.github/private key"
 GITLAB_SSH_PRIVATE_KEY="op://hutter.cloud/id_rsa.gitlab/private key"
 
 JENKINS_SSH_PPUBLIC_KEY="op://hutter.cloud/id.rsa.jenkins.hutter.cloud/public key"
+
+PIHOLE_ADMIN_PASSWORD="op://Private/Pi-Hole Node A Webpassword/password"
