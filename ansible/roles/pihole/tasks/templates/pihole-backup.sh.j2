@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+# create backup
+/usr/bin/docker exec -ti -w /backup pihole pihole-FTL --teleporter
+
+# only keep the last 5 backups
+/usr/bin/docker exec -ti -w /backup pihole /bin/sh -c 'find . -type f -name "*.zip" | sort | head -n -5 | xargs rm -f'

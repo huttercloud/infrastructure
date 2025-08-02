@@ -1,5 +1,4 @@
 ---
-
 - name: Configure node-a
   hosts: node-a.hutter.cloud
   become: true
@@ -41,37 +40,36 @@
     # nfs mounts for borgmatic backup sources
     borgmatic_nfs_enabled: true
     borgmatc_nfs_mounts:
-    - name: arspugnandi
-      path: /volume1/ars-pugnandi
-      server: 192.168.30.33
-    - name: katharina
-      path: /volume1/homes/katharina
-      server: 192.168.30.33
-    - name: sebastian
-      path: /volume1/homes/sebastian
-      server: 192.168.30.33
-    - name: ferdi
-      path: /volume1/homes/ferdinand
-      server: 192.168.30.33
-    - name: ebooks
-      path: /volume1/ebooks
-      server: 192.168.30.17
+      - name: arspugnandi
+        path: /volume1/ars-pugnandi
+        server: 192.168.30.33
+      - name: katharina
+        path: /volume1/homes/katharina
+        server: 192.168.30.33
+      - name: sebastian
+        path: /volume1/homes/sebastian
+        server: 192.168.30.33
+      - name: ferdi
+        path: /volume1/homes/ferdinand
+        server: 192.168.30.33
+      - name: ebooks
+        path: /volume1/ebooks
+        server: 192.168.30.17
 
     # ssh keys for borgmatic backups
     borgmatic_ssh_keys:
-    - name: "arspugnandi"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_ARS_PUGNANDI') }}"
-    - name: "katharina"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_KATHARINA') }}"
-    - name: "node-a"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
-    - name: "sebastian"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
-    - name: "ferdi"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_FERDI') }}"
-    - name: "ebooks"
-      key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_EBOOKS') }}"
-
+      - name: "arspugnandi"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_ARS_PUGNANDI') }}"
+      - name: "katharina"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_KATHARINA') }}"
+      - name: "node-a"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_NODE_A') }}"
+      - name: "sebastian"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_SEBASTIAN') }}"
+      - name: "ferdi"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_FERDI') }}"
+      - name: "ebooks"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_EBOOKS') }}"
 
     # borgmatic backup definitions
     borgmatic_backup_jobs:
@@ -130,65 +128,77 @@
         backup_hour: 8
 
   pre_tasks:
-  - name: ensure lvm is setup
-    community.general.lvol:
-      vg: "{{ vg }}"
-      lv: "{{ lv }}"
-      size: 374.93g #100%FREE only worked once, so lv size is just hardcoded to the available space
+    - name: ensure lvm is setup
+      community.general.lvol:
+        vg: "{{ vg }}"
+        lv: "{{ lv }}"
+        size: 374.93g #100%FREE only worked once, so lv size is just hardcoded to the available space
 
-  - name: ensure partition is around
-    community.general.filesystem:
-      fstype: ext4
-      dev: "/dev/{{ vg }}/{{ lv }}"
+    - name: ensure partition is around
+      community.general.filesystem:
+        fstype: ext4
+        dev: "/dev/{{ vg }}/{{ lv }}"
 
-  - name: create mountpoint for data partition
-    ansible.builtin.file:
-      path: "{{ mountpoint }}"
-      state: directory
-      mode: 0755
+    - name: create mountpoint for data partition
+      ansible.builtin.file:
+        path: "{{ mountpoint }}"
+        state: directory
+        mode: 0755
 
-  - name: Mount up device by label
-    ansible.posix.mount:
-      path: "{{ mountpoint }}"
-      src: "/dev/{{ vg }}/{{ lv }}"
-      fstype: ext4
-      state: mounted
+    - name: Mount up device by label
+      ansible.posix.mount:
+        path: "{{ mountpoint }}"
+        src: "/dev/{{ vg }}/{{ lv }}"
+        fstype: ext4
+        state: mounted
 
-  - name: setup nic with two static ips - required for runnig pihole in k8s
-    ansible.builtin.copy:
-      content: "{{ netplan }}"
-      dest: /etc/netplan/00-installer-config.yaml
-      owner: root
-      group: root
-      mode: '0644'
-    register: netplan
+    - name: setup nic with two static ips - required for runnig pihole in k8s
+      ansible.builtin.copy:
+        content: "{{ netplan }}"
+        dest: /etc/netplan/00-installer-config.yaml
+        owner: root
+        group: root
+        mode: "0644"
+      register: netplan
 
-  - name: update netplan
-    shell: netplan apply
-    when: netplan.changed
+    - name: update netplan
+      shell: netplan apply
+      when: netplan.changed
 
   roles:
-  - role: microk8s
-    # set to true for first installation
-    # after pihole is up and running manually switch the dns over to 192.168.30.253
-    # sudo microk8s disable dns
-    # sudo microk8s enable dns:192.168.30.253
-    execute_dns: false
-    dns_server: 1.1.1.1
-    tags:
-      - services
-      - microk8s
-  - role: borgbase
-    tags:
-      - services
-      - borgbase
-  - role: jenkins-ssh-access
-    tags:
-      - jenkins
-  - role: 1password-cli
-    tags:
-      - jenkins
-  - role: terraform-cli
-    tags:
-      - jenkins
-
+    # 2025-07-01: removed kubernetes from node-a in favour of single containers
+    # - role: microk8s
+    #   # set to true for first installation
+    #   # after pihole is up and running manually switch the dns over to 192.168.30.253
+    #   # sudo microk8s disable dns
+    #   # sudo microk8s enable dns:192.168.30.253
+    #   execute_dns: false
+    #   dns_server: 1.1.1.1
+    #   tags:
+    #     - services
+    #     - microk8s
+    - role: borgbase
+      tags:
+        - services
+        - borgbase
+    - role: jenkins-ssh-access
+      tags:
+        - jenkins
+    - role: 1password-cli
+      tags:
+        - jenkins
+    - role: terraform-cli
+      tags:
+        - jenkins
+    - role: docker
+      tags:
+        - docker
+    - role: pihole
+      vars:
+        pihole_compose_dir: /opt/docker-compose/pihole
+        pihole_compose_bind_dir_etc: "{{ mountpoint }}/pihole"
+        pihole_compose_bind_dir_backup: "{{ mountpoint }}/pihole-backup"
+        pihole_image: pihole/pihole:latest
+        pihole_admin_password: "{{ lookup('ansible.builtin.env', 'PIHOLE_ADMIN_PASSWORD') }}"
+      tags:
+        - pihole

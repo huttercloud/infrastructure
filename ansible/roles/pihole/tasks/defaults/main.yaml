@@ -1,0 +1,5 @@
+pihole_compose_dir: /opt/docker-compose/pihole
+pihole_compose_bind_dir_etc: /tmp/pihole
+pihole_compose_bind_dir_backup: /tmp/pihole-backup
+pihole_admin_password: password
+pihole_image: pihole/pihole:latest

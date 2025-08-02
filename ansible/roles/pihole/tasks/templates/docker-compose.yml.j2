@@ -1,0 +1,23 @@
+services:
+  pihole:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference}}"
+    container_name: pihole
+    image: {{ image }}
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+    environment:
+      TZ: "Europe/London"
+      FTLCONF_webserver_api_password: "{{ admin_password }}"
+      FTLCONF_dns_listeningMode: "all"
+    volumes:
+      - "{{ bind_dir_backup }}:/backup"
+      - "{{ bind_dir_etc }}:/etc/pihole"
+    cap_add:
+      - NET_ADMIN
+      - SYS_TIME
+      - SYS_NICE
+    restart: unless-stopped
