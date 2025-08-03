@@ -31,7 +31,9 @@
 - name: Ensure pihole backup cronjob is set
   ansible.builtin.cron:
     name: "pihole backup"
+    weekday: "*"
     minute: "0"
     hour: "3"
-    job: "/usr/local/bin/pihole-backup.sh"
+    job: "/usr/local/bin/pihole-backup.sh > /tmp/pihole-backup.log 2>&1"
     user: root
+    cron_file: pihole-backup
