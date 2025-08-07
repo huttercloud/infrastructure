@@ -1,7 +1,7 @@
 services:
   pihole:
     labels:
-      - "cloud.hutter.docker-compose={{ compose_file_reference}}"
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
     container_name: pihole
     image: {{ image }}
     ports:

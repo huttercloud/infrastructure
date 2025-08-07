@@ -37,3 +37,19 @@
     job: "/usr/local/bin/pihole-backup.sh > /tmp/pihole-backup.log 2>&1"
     user: root
     cron_file: pihole-backup
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: pihole-update.sh.j2
+    dest: /usr/local/bin/pihole-update.sh
+    mode: "0750"
+
+- name: Ensure pihole update cronjob is set
+  ansible.builtin.cron:
+    name: "pihole update"
+    weekday: "*"
+    minute: "0"
+    hour: "4"
+    job: "/usr/local/bin/pihole-update.sh > /tmp/pihole-update.log 2>&1"
+    user: root
+    cron_file: pihole-update
