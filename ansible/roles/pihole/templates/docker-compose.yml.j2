@@ -4,8 +4,10 @@ services:
       - "cloud.hutter.docker-compose={{ compose_file_reference }}"
       - "traefik.enable=true"
       - "traefik.http.routers.pihole.rule=Host(`pihole.hutter.cloud`)"
-      - "traefik.http.routers.pihole.entrypoints=web"
+      - "traefik.http.routers.pihole.entrypoints=websecure"
       - "traefik.http.routers.pihole.service=pihole"
+      - "traefik.http.routers.pihole.tls=true"
+      - "traefik.http.routers.pihole.tls.certresolver=r53"
       - "traefik.http.services.pihole.loadbalancer.server.port=80"
       - "traefik.http.services.pihole.loadbalancer.server.scheme=http"
     container_name: pihole
