@@ -2,13 +2,14 @@ services:
   pihole:
     labels:
       - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`pihole.hutter.cloud`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
     container_name: pihole
     image: {{ image }}
     ports:
       - "53:53/tcp"
       - "53:53/udp"
-      - "80:80/tcp"
-      - "443:443/tcp"
     environment:
       TZ: "Europe/London"
       FTLCONF_webserver_api_password: "{{ admin_password }}"
