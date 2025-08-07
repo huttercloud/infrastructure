@@ -1,3 +1,4 @@
+pihole_compose_network_name: pihole
 pihole_compose_dir: /opt/docker-compose/pihole
 pihole_compose_bind_dir_etc: /tmp/pihole
 pihole_compose_bind_dir_backup: /tmp/pihole-backup

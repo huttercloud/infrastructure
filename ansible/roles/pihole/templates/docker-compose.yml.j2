@@ -3,13 +3,19 @@ services:
     labels:
       - "cloud.hutter.docker-compose={{ compose_file_reference }}"
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`pihole.hutter.cloud`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.pihole.rule=Host(`pihole.hutter.cloud`)"
+      - "traefik.http.routers.pihole.entrypoints=web"
+      - "traefik.http.routers.pihole.service=pihole"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.http.services.pihole.loadbalancer.server.scheme=http"
     container_name: pihole
     image: {{ image }}
+    networks:
+      - bridge
     ports:
       - "53:53/tcp"
       - "53:53/udp"
+      - "8088:80/tcp"
     environment:
       TZ: "Europe/London"
       FTLCONF_webserver_api_password: "{{ admin_password }}"
@@ -22,3 +28,7 @@ services:
       - SYS_TIME
       - SYS_NICE
     restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ pihole_compose_network_name }}"
+    external: true
