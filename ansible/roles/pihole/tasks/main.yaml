@@ -10,7 +10,7 @@
     dest: "{{ pihole_compose_dir }}/docker-compose.yml"
     owner: root
     group: root
-    mode: "0644"
+    mode: "0600"
   vars:
     compose_file_reference: "{{ pihole_compose_dir }}/docker-compose.yml"
     admin_password: "{{ pihole_admin_password }}"
