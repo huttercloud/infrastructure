@@ -29,3 +29,6 @@ GITLAB_SSH_PRIVATE_KEY="op://hutter.cloud/id_rsa.gitlab/private key"
 JENKINS_SSH_PPUBLIC_KEY="op://hutter.cloud/id.rsa.jenkins.hutter.cloud/public key"
 
 PIHOLE_ADMIN_PASSWORD="op://Private/Pi-Hole Node A Webpassword/password"
+
+TRAEFIK_AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS route53 user for traefik/username"
+TRAEFIK_AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS route53 user for traefik/password"

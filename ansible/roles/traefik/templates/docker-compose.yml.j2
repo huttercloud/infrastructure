@@ -1,0 +1,46 @@
+services:
+  traefik:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-admin.rule=Host(`traefik.hutter.cloud`)"
+      - "traefik.http.routers.traefik-admin.entrypoints=websecure"
+      - "traefik.http.routers.traefik-admin.service=traefik-admin"
+      - "traefik.http.routers.traefik-admin.tls=true"
+      - "traefik.http.routers.traefik-admin.tls.certresolver=r53"
+      - "traefik.http.services.traefik-admin.loadbalancer.server.port=8080"
+    container_name: traefik
+    image: {{ image }}
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entryPoints.websecure.http.tls=true"
+      - "--entryPoints.websecure.http.tls.certResolver=r53"
+      - "--certificatesResolvers.r53.acme.dnschallenge=true"
+      - "--certificatesResolvers.r53.acme.email=me@sebastian-hutter.dev"
+      - "--certificatesResolvers.r53.acme.dnschallenge.provider=route53"
+      - "--certificatesResolvers.r53.acme.storage=/letsencrypt/acme.json"
+      - "--serversTransport.insecureSkipVerify=true"
+    environment:
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      AWS_REGION: "{{ aws_region }}"
+    networks:
+      - bridge
+    ports:
+      - "8080:8080/tcp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - "{{ bind_dir_letsencrypt }}:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ traefik_compose_network_name}}"
+    external: true

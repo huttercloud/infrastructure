@@ -1,0 +1,47 @@
+---
+- name: Ensure traefik compose directory exists
+  ansible.builtin.file:
+    path: "{{ traefik_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure docker network exists
+  community.docker.docker_network:
+    name: "{{ traefik_compose_network_name }}"
+    state: present
+    driver: bridge
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ traefik_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    compose_file_reference: "{{ traefik_compose_dir }}/docker-compose.yml"
+    image: "{{ traefik_image }}"
+    bind_dir_letsencrypt: "{{ traefik_compose_bind_dir_letsencrypt }}"
+    aws_access_key_id: "{{ traefik_aws_access_key_id }}"
+    aws_secret_access_key: "{{ traefik_aws_secret_access_key }}"
+    aws_region: "{{ traefik_aws_region }}"
+
+- name: Start traefik container
+  community.docker.docker_compose_v2:
+    project_src: "{{ traefik_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: traefik-update.sh.j2
+    dest: /usr/local/bin/traefik-update.sh
+    mode: "0750"
+
+- name: Ensure traefik update cronjob is set
+  ansible.builtin.cron:
+    name: "traefik update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/traefik-update.sh > /tmp/traefik-update.log 2>&1"
+    user: root
+    cron_file: traefik-update

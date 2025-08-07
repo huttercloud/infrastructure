@@ -1,0 +1,7 @@
+traefik_compose_network_name: traefik
+traefik_compose_dir: /opt/docker-compose/traefik
+traefik_image: traefik:latest
+traefik_aws_access_key_id: null
+traefik_aws_secret_access_key: null
+traefik_aws_region: eu-central-1
+traefik_compose_bind_dir_letsencrypt: /tmp/letsencrypt

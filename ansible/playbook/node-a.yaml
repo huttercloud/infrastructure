@@ -200,5 +200,15 @@
         pihole_compose_bind_dir_backup: "{{ mountpoint }}/pihole-backup"
         pihole_image: pihole/pihole:latest
         pihole_admin_password: "{{ lookup('ansible.builtin.env', 'PIHOLE_ADMIN_PASSWORD') }}"
+        pihole_compose_network_name: node
       tags:
         - pihole
+    - role: traefik
+      vars:
+        traefik_compose_dir: /opt/docker-compose/traefik
+        traefik_compose_network_name: node
+        traefik_compose_bind_dir_letsencrypt: "{{ mountpoint }}/traefik-letsencrypt"
+        traefik_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_ACCESS_KEY_ID') }}"
+        traefik_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_SECRET_ACCESS_KEY') }}"
+      tags:
+        - traefik
