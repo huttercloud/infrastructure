@@ -1,0 +1,28 @@
+services:
+  homeassistant:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.hutter.cloud`)"
+      - "traefik.http.routers.homeassistant.entrypoints=websecure"
+      - "traefik.http.routers.homeassistant.service=homeassistant"
+      - "traefik.http.routers.homeassistant.tls=true"
+      - "traefik.http.routers.homeassistant.tls.certresolver=r53"
+      - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
+    container_name: homeassistant
+    image: {{ image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    ports:
+      - "8123:8123/tcp"
+    volumes:
+      - "{{ bind_dir_config }}:/config"
+      - "/run/dbus:/run/dbus"
+    privileged: true
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ homeassistant_compose_network_name }}"
+    external: true

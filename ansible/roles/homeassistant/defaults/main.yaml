@@ -1,0 +1,4 @@
+homeassistant_compose_network_name: homeassistant
+homeassistant_compose_dir: /opt/docker-compose/homeassistant
+homeassistant_image: ghcr.io/home-assistant/home-assistant:stable
+homeassistant_compose_bind_dir_config: /tmp/homeassistant/config

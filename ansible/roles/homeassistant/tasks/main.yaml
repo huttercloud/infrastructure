@@ -1,0 +1,44 @@
+---
+- name: Ensure homeassistant compose directory exists
+  ansible.builtin.file:
+    path: "{{ homeassistant_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure docker network exists
+  community.docker.docker_network:
+    name: "{{ homeassistant_compose_network_name }}"
+    state: present
+    driver: bridge
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ homeassistant_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    compose_file_reference: "{{ homeassistant_compose_dir }}/docker-compose.yml"
+    image: "{{ homeassistant_image }}"
+    bind_dir_config: "{{ homeassistant_compose_bind_dir_config }}"
+
+- name: Start homeassistant container
+  community.docker.docker_compose_v2:
+    project_src: "{{ homeassistant_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: homeassistant-update.sh.j2
+    dest: /usr/local/bin/homeassistant-update.sh
+    mode: "0750"
+
+- name: Ensure homeassistant update cronjob is set
+  ansible.builtin.cron:
+    name: "homeassistant update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/homeassistant-update.sh > /tmp/homeassistant-update.log 2>&1"
+    user: root
+    cron_file: homeassistant-update

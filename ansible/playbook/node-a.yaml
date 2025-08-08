@@ -212,3 +212,11 @@
         traefik_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_SECRET_ACCESS_KEY') }}"
       tags:
         - traefik
+    - role: homeassistant
+      vars:
+        homeassistant_compose_dir: /opt/docker-compose/homeassistant
+        homeassistant_compose_network_name: node
+        homeassistant_compose_bind_dir_backup: "{{ mountpoint }}/homeassistant-backup"
+        homeassistant_compose_bind_dir_config: "{{ mountpoint }}/homeassistant-config"
+      tags:
+        - homeassistant

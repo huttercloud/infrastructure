@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+# download the latest available image
+# and restart container to ensure we are up to date
+
+cd "{{ homeassistant_compose_dir }}"
+/usr/bin/docker compose pull
+/usr/bin/docker compose up -d --remove-orphans
