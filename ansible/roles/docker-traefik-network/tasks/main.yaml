@@ -1,0 +1,13 @@
+- name: Create docker traefik network
+  community.docker.docker_network:
+    name: "{{ docker_traefik_network_name }}"
+    state: present
+    driver: bridge
+    ipam_config:
+      - subnet: "{{ docker_traefik_network_cidr }}"
+  register: traefik_network_raw
+
+- name: Set traefik network facts
+  set_fact:
+    traefik_network_name: "{{ traefik_network_raw.network.Name }}"
+    traefik_network_cidr: "{{ traefik_network_raw.network.IPAM.Config[0].Subnet }}"

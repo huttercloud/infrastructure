@@ -24,5 +24,5 @@ services:
     restart: unless-stopped
 networks:
   bridge:
-    name: "{{ homeassistant_compose_network_name }}"
+    name: "{{ network }}"
     external: true

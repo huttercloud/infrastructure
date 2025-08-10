@@ -5,11 +5,8 @@
     state: directory
     mode: "0755"
 
-- name: Ensure docker network exists
-  community.docker.docker_network:
-    name: "{{ homeassistant_compose_network_name }}"
-    state: present
-    driver: bridge
+- debug:
+    var: traefik_network
 
 - name: Copy docker-compose template
   ansible.builtin.template:
@@ -19,6 +16,7 @@
     group: root
     mode: "0644"
   vars:
+    network: "{{ traefik_network_name }}"
     compose_file_reference: "{{ homeassistant_compose_dir }}/docker-compose.yml"
     image: "{{ homeassistant_image }}"
     bind_dir_config: "{{ homeassistant_compose_bind_dir_config }}"
@@ -42,3 +40,23 @@
     job: "/usr/local/bin/homeassistant-update.sh > /tmp/homeassistant-update.log 2>&1"
     user: root
     cron_file: homeassistant-update
+
+- name: Copy homeassistant configuration template
+  ansible.builtin.template:
+    src: configuration.yaml.j2
+    dest: "{{ homeassistant_compose_bind_dir_config }}/configuration.yaml"
+    owner: root
+    group: root
+    mode: "0644"
+  register: configuration_template
+
+- name: Restart homeassistant if configuration template changed
+  community.docker.docker_compose_v2:
+    project_src: "{{ homeassistant_compose_dir }}"
+    state: restarted
+  when: configuration_template.changed
+
+# proint traefik network form dependency
+- name: Print traefik network
+  ansible.builtin.debug:
+    var: traefik_network

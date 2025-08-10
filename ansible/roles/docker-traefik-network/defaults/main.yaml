@@ -1,0 +1,2 @@
+docker_traefik_network_name: traefik
+docker_traefik_network_cidr: 172.128.0.0/16

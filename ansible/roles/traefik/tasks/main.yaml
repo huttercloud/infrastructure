@@ -5,12 +5,6 @@
     state: directory
     mode: "0755"
 
-- name: Ensure docker network exists
-  community.docker.docker_network:
-    name: "{{ traefik_compose_network_name }}"
-    state: present
-    driver: bridge
-
 - name: Copy docker-compose template
   ansible.builtin.template:
     src: docker-compose.yml.j2
@@ -19,6 +13,7 @@
     group: root
     mode: "0644"
   vars:
+    network: "{{ traefik_network_name }}"
     compose_file_reference: "{{ traefik_compose_dir }}/docker-compose.yml"
     image: "{{ traefik_image }}"
     bind_dir_letsencrypt: "{{ traefik_compose_bind_dir_letsencrypt }}"

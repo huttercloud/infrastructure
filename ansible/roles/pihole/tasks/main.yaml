@@ -4,12 +4,6 @@
     state: directory
     mode: "0755"
 
-- name: Ensure docker network exists
-  community.docker.docker_network:
-    name: "{{ pihole_compose_network_name }}"
-    state: present
-    driver: bridge
-
 - name: Copy docker-compose template
   ansible.builtin.template:
     src: docker-compose.yml.j2
@@ -18,6 +12,7 @@
     group: root
     mode: "0600"
   vars:
+    network: "{{ traefik_network_name }}"
     compose_file_reference: "{{ pihole_compose_dir }}/docker-compose.yml"
     admin_password: "{{ pihole_admin_password }}"
     image: "{{ pihole_image }}"

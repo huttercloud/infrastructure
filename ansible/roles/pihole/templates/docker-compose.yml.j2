@@ -32,5 +32,5 @@ services:
     restart: unless-stopped
 networks:
   bridge:
-    name: "{{ pihole_compose_network_name }}"
+    name: "{{ network }}"
     external: true
