@@ -11,3 +11,4 @@
   set_fact:
     traefik_network_name: "{{ traefik_network_raw.network.Name }}"
     traefik_network_cidr: "{{ traefik_network_raw.network.IPAM.Config[0].Subnet }}"
+    traefik_ip: "{{ docker_traefik_network_traefik_ip }}"

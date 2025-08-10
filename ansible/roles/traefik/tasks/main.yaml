@@ -14,6 +14,7 @@
     mode: "0644"
   vars:
     network: "{{ traefik_network_name }}"
+    container_ip: "{{ traefik_ip }}"
     compose_file_reference: "{{ traefik_compose_dir }}/docker-compose.yml"
     image: "{{ traefik_image }}"
     bind_dir_letsencrypt: "{{ traefik_compose_bind_dir_letsencrypt }}"

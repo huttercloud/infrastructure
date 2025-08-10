@@ -31,7 +31,8 @@ services:
       AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
       AWS_REGION: "{{ aws_region }}"
     networks:
-      - bridge
+      bridge:
+        ipv4_address: "{{ container_ip }}"
     ports:
       - "8080:8080/tcp"
       - "80:80/tcp"
