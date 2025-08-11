@@ -16,7 +16,7 @@ services:
     networks:
       - bridge
     ports:
-      - "8123:8123/tcp"
+      - "8123/tcp"
     volumes:
       - "{{ bind_dir_config }}:/config"
       - "/run/dbus:/run/dbus"

@@ -48,6 +48,8 @@
     owner: root
     group: root
     mode: "0644"
+  vars:
+    trusted_proxy_ip: "{{ traefik_ip }}"
   register: configuration_template
 
 - name: Restart homeassistant if configuration template changed
@@ -55,8 +57,3 @@
     project_src: "{{ homeassistant_compose_dir }}"
     state: restarted
   when: configuration_template.changed
-
-# proint traefik network form dependency
-- name: Print traefik network
-  ansible.builtin.debug:
-    var: traefik_network

@@ -1,0 +1,48 @@
+#
+# based on homeassistant default configuration in docker
+# homeassistant/home-assistant:2025.8.0
+#
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+
+# reverse proxy setup
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - {{ trusted_proxy_ip }}
+
+
+# allow local access without login
+homeassistant:
+  auth_providers:
+    - type: trusted_networks
+      allow_bypass_login: true
+      trusted_networks:
+        - 192.168.30.0/24
+
+logger:
+  default: info
+  logs:
+    # log level for HA core
+    homeassistant.core: fatal
+    # used for auth flow debugging
+    homeassistant.helpers: debug
+    # log level for all python scripts
+    homeassistant.components.python_script: warning
+    # individual log level for this python script
+    # homeassistant.components.python_script.my_new_script.py: debug #}
+    # log level for SmartThings lights
+    # homeassistant.components.smartthings.light: info
+    # log level for the `aiohttp` Python package
+    aiohttp: info
+
