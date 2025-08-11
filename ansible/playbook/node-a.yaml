@@ -218,5 +218,6 @@
         homeassistant_compose_network_name: node
         homeassistant_compose_bind_dir_backup: "{{ mountpoint }}/homeassistant-backup"
         homeassistant_compose_bind_dir_config: "{{ mountpoint }}/homeassistant-config"
+        homeassistant_compose_bind_dir_scripts: "{{ mountpoint }}/homeassistant-scripts"
       tags:
         - homeassistant

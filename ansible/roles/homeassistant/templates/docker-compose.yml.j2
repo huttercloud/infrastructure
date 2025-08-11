@@ -19,6 +19,7 @@ services:
       - "8123/tcp"
     volumes:
       - "{{ bind_dir_config }}:/config"
+      - "{{ bind_dir_scripts }}:/scripts"
       - "/run/dbus:/run/dbus"
     privileged: true
     restart: unless-stopped

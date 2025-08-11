@@ -5,8 +5,21 @@
     state: directory
     mode: "0755"
 
-- debug:
-    var: traefik_network
+- name: Ensure scripts dir exists
+  ansible.builtin.file:
+    path: "{{ homeassistant_compose_bind_dir_scripts }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy all scripts to homeassistant scripts dir
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "{{ homeassistant_compose_bind_dir_scripts }}"
+    owner: root
+    group: root
+    mode: "0755"
+  with_fileglob:
+    - scripts/*
 
 - name: Copy docker-compose template
   ansible.builtin.template:
