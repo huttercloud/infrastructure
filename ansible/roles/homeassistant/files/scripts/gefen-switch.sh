@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-switch_alias = "$1"
-switch_channel = "$2"
+switch_alias="${1}"
+switch_channel="${2}"
 
 if [ -z "$switch_alias" ] || [ -z "$switch_channel" ]; then
   echo "Usage: $0 <switch_alias> <switch_channel>"

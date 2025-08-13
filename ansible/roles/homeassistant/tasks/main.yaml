@@ -33,6 +33,7 @@
     compose_file_reference: "{{ homeassistant_compose_dir }}/docker-compose.yml"
     image: "{{ homeassistant_image }}"
     bind_dir_config: "{{ homeassistant_compose_bind_dir_config }}"
+    bind_dir_scripts: "{{ homeassistant_compose_bind_dir_scripts }}"
 
 - name: Start homeassistant container
   community.docker.docker_compose_v2:
