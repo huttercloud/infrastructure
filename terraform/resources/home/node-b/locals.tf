@@ -1,8 +1,8 @@
 locals {
   # application versions
   external_dns_version           = "v0.13.5"
-  external_secrets_version       = "0.19.1"
-  argo_cd_version                = "8.2.7"
+  external_secrets_version       = "0.19.2"
+  argo_cd_version                = "8.3.0"
 
   # cert manager configuration
   cert_manager_email = "huttersebastian@gmail.com"
