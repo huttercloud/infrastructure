@@ -1,11 +1,11 @@
 locals {
   # application versions
   external_dns_version           = "v0.13.5"
-  external_secrets_version       = "1.2.1"
+  external_secrets_version       = "1.3.1"
   pi_hole_version                = "2025.02.6"
   wireguard_version              = "1.0.20210914"
   unifi_version                  = "8.0.24"
-  onepassword_connect_version    = "2.2.0"
+  onepassword_connect_version    = "2.2.1"
 
   # cert manager configuration
   cert_manager_email = "huttersebastian@gmail.com"
