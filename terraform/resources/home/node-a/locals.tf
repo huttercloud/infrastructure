@@ -5,7 +5,7 @@ locals {
   pi_hole_version                = "2025.02.6"
   wireguard_version              = "1.0.20210914"
   unifi_version                  = "8.0.24"
-  onepassword_connect_version    = "2.2.1"
+  onepassword_connect_version    = "2.3.0"
 
   # cert manager configuration
   cert_manager_email = "huttersebastian@gmail.com"
