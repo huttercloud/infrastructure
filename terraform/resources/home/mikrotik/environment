@@ -1,5 +1,0 @@
-# environment variables 
-
-## terraform/home/mikrotik
-MIKROTIK_USER="op://hutter.cloud/mikrotik user terraform/username"
-MIKROTIK_PASSWORD="op://hutter.cloud/mikrotik user terraform/password"
