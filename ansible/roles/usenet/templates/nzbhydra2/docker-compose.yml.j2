@@ -1,0 +1,26 @@
+services:
+  nzbhydra2:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.nzbhydra2.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/nzbhydra2`)"
+      - "traefik.http.routers.nzbhydra2.entrypoints=websecure"
+      - "traefik.http.routers.nzbhydra2.service=nzbhydra2"
+      - "traefik.http.routers.nzbhydra2.tls=true"
+      - "traefik.http.routers.nzbhydra2.tls.certresolver=r53"
+      - "traefik.http.routers.nzbhydra2.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.nzbhydra2.loadbalancer.server.port=5076"
+    container_name: usenet-nzbhydra2
+    image: {{ usenet_nzbhydra2_image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/nzbhydra2:/config"
+      - "{{ usenet_downloads_dir }}:/downloads"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

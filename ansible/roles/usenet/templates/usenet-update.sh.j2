@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# download the latest available images
+# and restart containers to ensure we are up to date
+
+for service_dir in "{{ usenet_compose_dir }}"/*/; do
+    cd "${service_dir}"
+    /usr/bin/docker compose pull
+    /usr/bin/docker compose up -d --remove-orphans
+done

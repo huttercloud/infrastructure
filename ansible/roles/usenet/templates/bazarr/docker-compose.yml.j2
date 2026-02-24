@@ -1,0 +1,27 @@
+services:
+  bazarr:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/bazarr`)"
+      - "traefik.http.routers.bazarr.entrypoints=websecure"
+      - "traefik.http.routers.bazarr.service=bazarr"
+      - "traefik.http.routers.bazarr.tls=true"
+      - "traefik.http.routers.bazarr.tls.certresolver=r53"
+      - "traefik.http.routers.bazarr.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+    container_name: usenet-bazarr
+    image: {{ usenet_bazarr_image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/bazarr:/config"
+      - "{{ usenet_nfs_tv }}:/tv"
+      - "{{ usenet_nfs_movies }}:/movies"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

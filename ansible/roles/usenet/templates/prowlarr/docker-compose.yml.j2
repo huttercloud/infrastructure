@@ -1,0 +1,27 @@
+services:
+  prowlarr:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/prowlarr`)"
+      - "traefik.http.routers.prowlarr.entrypoints=websecure"
+      - "traefik.http.routers.prowlarr.service=prowlarr"
+      - "traefik.http.routers.prowlarr.tls=true"
+      - "traefik.http.routers.prowlarr.tls.certresolver=r53"
+      - "traefik.http.routers.prowlarr.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+    container_name: usenet-prowlarr
+    image: {{ usenet_prowlarr_image }}
+    environment:
+      TZ: "Europe/Zurich"
+      PUID: "0"
+      PGID: "0"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/prowlarr:/config"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

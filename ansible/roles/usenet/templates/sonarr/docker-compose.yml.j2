@@ -1,0 +1,29 @@
+services:
+  sonarr:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/sonarr`)"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.service=sonarr"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.tls.certresolver=r53"
+      - "traefik.http.routers.sonarr.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+    container_name: usenet-sonarr
+    image: {{ usenet_sonarr_image }}
+    environment:
+      TZ: "Europe/Zurich"
+      PUID: "0"
+      PGID: "0"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/sonarr:/config"
+      - "{{ usenet_nfs_tv }}:/tv"
+      - "{{ usenet_downloads_dir }}:/downloads"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

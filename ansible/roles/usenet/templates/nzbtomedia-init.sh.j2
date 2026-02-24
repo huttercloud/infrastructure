@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+NZBTOMEDIA_DIR="{{ usenet_data_dir }}/nzbtomedia"
+
+# check if there is already a checkout for nzbToMedia
+if [ ! -d "${NZBTOMEDIA_DIR}/nzbToMedia" ]; then
+    cd "${NZBTOMEDIA_DIR}"
+    git clone https://github.com/clinton-hall/nzbToMedia.git
+fi
+
+# setup specified version
+cd "${NZBTOMEDIA_DIR}/nzbToMedia"
+git fetch -a
+git checkout {{ usenet_nzbtomedia_version }}
+
+# copy configuration file if one exists in volume
+if [ -f "${NZBTOMEDIA_DIR}/autoProcessMedia.cfg" ]; then
+    cp -f "${NZBTOMEDIA_DIR}/autoProcessMedia.cfg" "${NZBTOMEDIA_DIR}/nzbToMedia/autoProcessMedia.cfg"
+fi
+
+# ensure download folders arent included in backup
+touch "{{ usenet_incomplete_downloads_dir }}/.nobackup"
+touch "{{ usenet_downloads_dir }}/.nobackup"

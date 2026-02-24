@@ -1,0 +1,23 @@
+services:
+  homepage:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.usenet-homepage.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/`)"
+      - "traefik.http.routers.usenet-homepage.entrypoints=websecure"
+      - "traefik.http.routers.usenet-homepage.service=usenet-homepage"
+      - "traefik.http.routers.usenet-homepage.tls=true"
+      - "traefik.http.routers.usenet-homepage.tls.certresolver=r53"
+      - "traefik.http.routers.usenet-homepage.priority=1"
+      - "traefik.http.services.usenet-homepage.loadbalancer.server.port=80"
+    container_name: usenet-homepage
+    image: {{ usenet_homepage_image }}
+    networks:
+      - bridge
+    volumes:
+      - "{{ compose_dir }}/usenet-index.html:/usr/share/nginx/html/index.html:ro"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

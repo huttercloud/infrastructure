@@ -1,0 +1,31 @@
+services:
+  lazylibrarian:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.lazylibrarian.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/lazylibrarian`)"
+      - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
+      - "traefik.http.routers.lazylibrarian.service=lazylibrarian"
+      - "traefik.http.routers.lazylibrarian.tls=true"
+      - "traefik.http.routers.lazylibrarian.tls.certresolver=r53"
+      - "traefik.http.routers.lazylibrarian.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
+    container_name: usenet-lazylibrarian
+    image: {{ usenet_lazylibrarian_image }}
+    environment:
+      TZ: "Europe/Zurich"
+      PUID: "0"
+      PGID: "0"
+      DOCKER_MODS: "linuxserver/mods:lazylibrarian-ffmpeg|linuxserver/mods:universal-calibre"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/lazylibrarian:/config"
+      - "{{ usenet_nfs_ebooks }}:/books"
+      - "{{ usenet_nfs_audiobooks }}:/audiobooks"
+      - "{{ usenet_downloads_dir }}:/downloads"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

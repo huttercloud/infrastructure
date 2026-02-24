@@ -1,0 +1,105 @@
+---
+- name: Define usenet services
+  ansible.builtin.set_fact:
+    usenet_services:
+      - sabnzbd
+      - sonarr
+      - radarr
+      - bazarr
+      - nzbhydra2
+      - prowlarr
+      - filebrowser
+      - homepage
+      - lazylibrarian
+
+- name: Ensure usenet compose directories exist
+  ansible.builtin.file:
+    path: "{{ usenet_compose_dir }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ usenet_services }}"
+
+- name: Ensure usenet data directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ usenet_data_dir }}/sabnzbd"
+    - "{{ usenet_data_dir }}/sonarr"
+    - "{{ usenet_data_dir }}/radarr"
+    - "{{ usenet_data_dir }}/bazarr"
+    - "{{ usenet_data_dir }}/nzbhydra2"
+    - "{{ usenet_data_dir }}/prowlarr"
+    - "{{ usenet_data_dir }}/nzbtomedia"
+    - "{{ usenet_data_dir }}/lazylibrarian"
+    - "{{ usenet_downloads_dir }}"
+    - "{{ usenet_incomplete_downloads_dir }}"
+
+- name: Copy homepage index.html
+  ansible.builtin.copy:
+    src: usenet-index.html
+    dest: "{{ usenet_compose_dir }}/homepage/usenet-index.html"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy docker-compose templates
+  ansible.builtin.template:
+    src: "{{ item }}/docker-compose.yml.j2"
+    dest: "{{ usenet_compose_dir }}/{{ item }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ usenet_compose_dir }}/{{ item }}/docker-compose.yml"
+    compose_dir: "{{ usenet_compose_dir }}/{{ item }}"
+  loop: "{{ usenet_services }}"
+
+- name: Copy nzbtomedia init script
+  ansible.builtin.template:
+    src: nzbtomedia-init.sh.j2
+    dest: /usr/local/bin/usenet-nzbtomedia-init.sh
+    mode: "0750"
+
+- name: Run nzbtomedia init
+  ansible.builtin.command: /usr/local/bin/usenet-nzbtomedia-init.sh
+  changed_when: true
+
+- name: Start usenet containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ usenet_compose_dir }}/{{ item }}"
+  loop: "{{ usenet_services }}"
+
+- name: Copy sabnzbd cleanup script
+  ansible.builtin.template:
+    src: sabnzbd-cleanup.sh.j2
+    dest: /usr/local/bin/usenet-sabnzbd-cleanup.sh
+    mode: "0750"
+
+- name: Ensure sabnzbd cleanup cronjob is set
+  ansible.builtin.cron:
+    name: "usenet sabnzbd cleanup"
+    weekday: "*"
+    minute: "0"
+    hour: "3"
+    job: "/usr/local/bin/usenet-sabnzbd-cleanup.sh > /tmp/usenet-sabnzbd-cleanup.log 2>&1"
+    user: root
+    cron_file: usenet-sabnzbd-cleanup
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: usenet-update.sh.j2
+    dest: /usr/local/bin/usenet-update.sh
+    mode: "0750"
+
+- name: Ensure usenet update cronjob is set
+  ansible.builtin.cron:
+    name: "usenet update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/usenet-update.sh > /tmp/usenet-update.log 2>&1"
+    user: root
+    cron_file: usenet-update

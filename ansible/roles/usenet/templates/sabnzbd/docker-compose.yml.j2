@@ -1,0 +1,33 @@
+services:
+  sabnzbd:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.sabnzbd.rule=Host(`usenet.hutter.cloud`) && PathPrefix(`/sabnzbd`)"
+      - "traefik.http.routers.sabnzbd.entrypoints=websecure"
+      - "traefik.http.routers.sabnzbd.service=sabnzbd"
+      - "traefik.http.routers.sabnzbd.tls=true"
+      - "traefik.http.routers.sabnzbd.tls.certresolver=r53"
+      - "traefik.http.routers.sabnzbd.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.sabnzbd.loadbalancer.server.port=8080"
+    container_name: usenet-sabnzbd
+    image: {{ usenet_sabnzbd_image }}
+    entrypoint: /bin/sh -c "apk add --no-cache ffmpeg git && cp -f /nzbtomedia-config/autoProcessMedia.cfg /nzbToMedia/autoProcessMedia.cfg 2>/dev/null; exec /init"
+    environment:
+      TZ: "Europe/Zurich"
+      PUID: "0"
+      PGID: "0"
+    networks:
+      - bridge
+    volumes:
+      - "{{ usenet_data_dir }}/sabnzbd:/config"
+      - "{{ usenet_downloads_dir }}:/downloads"
+      - "{{ usenet_incomplete_downloads_dir }}:/incomplete-downloads"
+      - "{{ usenet_data_dir }}/nzbtomedia/nzbToMedia:/nzbToMedia"
+      - "{{ usenet_data_dir }}/nzbtomedia/autoProcessMedia.cfg:/nzbtomedia-config/autoProcessMedia.cfg:ro"
+    privileged: true
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

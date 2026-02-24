@@ -1,0 +1,22 @@
+usenet_compose_dir: /opt/docker-compose/usenet
+usenet_data_dir: /data/usenet
+usenet_downloads_dir: /data2/usenet/downloads
+usenet_incomplete_downloads_dir: /data2/usenet/incomplete-downloads
+
+# NFS mount paths on host
+usenet_nfs_movies: /mnt/nas/movies
+usenet_nfs_tv: /mnt/nas/tv
+usenet_nfs_audiobooks: /mnt/nas/audiobooks
+usenet_nfs_ebooks: /mnt/nas/ebooks
+
+# container images
+usenet_sabnzbd_image: lscr.io/linuxserver/sabnzbd:latest
+usenet_sonarr_image: lscr.io/linuxserver/sonarr:latest
+usenet_radarr_image: lscr.io/linuxserver/radarr:latest
+usenet_bazarr_image: lscr.io/linuxserver/bazarr:latest
+usenet_nzbhydra2_image: lscr.io/linuxserver/nzbhydra2:latest
+usenet_prowlarr_image: lscr.io/linuxserver/prowlarr:latest
+usenet_lazylibrarian_image: lscr.io/linuxserver/lazylibrarian:latest
+usenet_filebrowser_image: filebrowser/filebrowser:latest
+usenet_homepage_image: nginx:latest
+usenet_nzbtomedia_version: "12.1.13"
