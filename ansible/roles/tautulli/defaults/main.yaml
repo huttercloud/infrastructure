@@ -1,0 +1,3 @@
+tautulli_compose_dir: /opt/docker-compose/tautulli
+tautulli_image: tautulli/tautulli:latest
+tautulli_compose_bind_dir_config: /data/tautulli

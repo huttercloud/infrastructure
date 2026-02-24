@@ -1,0 +1,42 @@
+---
+- name: Ensure pureftpd compose directory exists
+  ansible.builtin.file:
+    path: "{{ pureftpd_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure pureftpd data directory exists
+  ansible.builtin.file:
+    path: "{{ pureftpd_data_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy init script
+  ansible.builtin.template:
+    src: init.sh.j2
+    dest: "{{ pureftpd_compose_dir }}/init.sh"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy authenticate script
+  ansible.builtin.copy:
+    src: authenticate.py
+    dest: "{{ pureftpd_compose_dir }}/authenticate.py"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ pureftpd_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0600"
+  vars:
+    compose_file_reference: "{{ pureftpd_compose_dir }}/docker-compose.yml"
+
+- name: Start pureftpd container
+  community.docker.docker_compose_v2:
+    project_src: "{{ pureftpd_compose_dir }}"

@@ -1,0 +1,15 @@
+pureftpd_compose_dir: /opt/docker-compose/pureftpd
+pureftpd_data_dir: /data/pureftpd
+pureftpd_image: debian:latest
+pureftpd_auth0_client_id: ""
+pureftpd_auth0_client_secret: ""
+pureftpd_auth0_audience: ""
+pureftpd_auth0_domain: hutter-cloud.eu.auth0.com
+pureftpd_auth0_scope: "openid email profile"
+
+# NFS mount paths on host
+pureftpd_nfs_ebooks: /mnt/nas/ebooks
+pureftpd_nfs_movies: /mnt/nas/movies
+pureftpd_nfs_tv: /mnt/nas/tv
+pureftpd_nfs_audiobooks: /mnt/nas/audiobooks
+pureftpd_downloads_dir: /data2/usenet/downloads

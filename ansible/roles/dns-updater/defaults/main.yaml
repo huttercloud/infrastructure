@@ -1,0 +1,5 @@
+dns_updater_public_name: infra.hutter.cloud
+dns_updater_hosted_zone_id: ""
+dns_updater_aws_access_key_id: ""
+dns_updater_aws_secret_access_key: ""
+dns_updater_aws_region: eu-central-1

@@ -1,0 +1,3 @@
+overseerr_compose_dir: /opt/docker-compose/overseerr
+overseerr_image: lscr.io/linuxserver/overseerr:latest
+overseerr_compose_bind_dir_config: /data/overseerr

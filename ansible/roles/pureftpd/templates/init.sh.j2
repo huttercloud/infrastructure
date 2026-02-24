@@ -1,0 +1,41 @@
+#!/bin/sh
+set -e
+
+apt-get update
+apt-get install -y python3 python3-pip pure-ftpd rsyslog
+pip install --upgrade requests email-validator --break-system-packages
+
+# combine key and cert into PEM for pure-ftpd
+if [ -f /certificate/pure-ftpd.pem ]; then
+    cp /certificate/pure-ftpd.pem /etc/ssl/private/pure-ftpd.pem
+    chmod 600 /etc/ssl/private/pure-ftpd.pem
+fi
+
+# create user and group
+groupadd -g 999 ftp || true
+useradd -M -u 999 -g 999 ftp || true
+
+# start rsyslogd
+rsyslogd
+
+# start authd daemon
+/usr/sbin/pure-authd \
+    --run /authenticate.py \
+    --socket /var/run/ftpd.sock \
+    --daemonize
+
+# start pure ftpd daemon
+/usr/sbin/pure-ftpd \
+    --tls=1 \
+    --dontresolve \
+    --passiveportrange 30000:30050 \
+    --maxclientsnumber 12 \
+    --noanonymous \
+    --nochmod \
+    --antiwarez \
+    --forcepassiveip infra.hutter.cloud \
+    -lextauth:/var/run/ftpd.sock \
+    --daemonize
+
+# tail messages
+tail -F /var/log/messages

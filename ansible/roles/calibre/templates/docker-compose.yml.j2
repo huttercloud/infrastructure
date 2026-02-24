@@ -1,0 +1,64 @@
+services:
+  ##
+  # calibre content server
+  ##
+  calibre:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.calibre-content.rule=Host(`calibre-content.hutter.cloud`)"
+      - "traefik.http.routers.calibre-content.entrypoints=websecure"
+      - "traefik.http.routers.calibre-content.service=calibre-content"
+      - "traefik.http.routers.calibre-content.tls=true"
+      - "traefik.http.routers.calibre-content.tls.certresolver=r53"
+      - "traefik.http.routers.calibre-content.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.calibre-content.loadbalancer.server.port=8080"
+    container_name: calibre
+    image: {{ calibre_image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    volumes:
+      - "{{ calibre_data_dir }}/calibre:/config"
+      - "{{ calibre_nfs_ebooks }}:/books"
+    restart: unless-stopped
+
+  ##
+  # calibre-web
+  ##
+  calibre-web:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      # calibre-web with OAuth2
+      - "traefik.http.routers.calibre-web.rule=Host(`calibre.hutter.cloud`)"
+      - "traefik.http.routers.calibre-web.entrypoints=websecure"
+      - "traefik.http.routers.calibre-web.service=calibre-web"
+      - "traefik.http.routers.calibre-web.tls=true"
+      - "traefik.http.routers.calibre-web.tls.certresolver=r53"
+      - "traefik.http.routers.calibre-web.middlewares=oauth-errors@docker,oauth@docker"
+      - "traefik.http.services.calibre-web.loadbalancer.server.port=8083"
+      # OPDS endpoint with basic auth
+      - "traefik.http.routers.calibre-opds.rule=Host(`calibre-opds.hutter.cloud`)"
+      - "traefik.http.routers.calibre-opds.entrypoints=websecure"
+      - "traefik.http.routers.calibre-opds.service=calibre-web"
+      - "traefik.http.routers.calibre-opds.tls=true"
+      - "traefik.http.routers.calibre-opds.tls.certresolver=r53"
+      - "traefik.http.routers.calibre-opds.middlewares=opds-basicauth@docker"
+      - "traefik.http.middlewares.opds-basicauth.basicauth.users={{ calibre_opds_basic_auth_users }}"
+    container_name: calibre-web
+    image: {{ calibre_web_image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    volumes:
+      - "{{ calibre_data_dir }}/calibre-web:/config"
+      - "{{ calibre_nfs_ebooks }}:/books"
+    restart: unless-stopped
+
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

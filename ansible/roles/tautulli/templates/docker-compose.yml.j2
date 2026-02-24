@@ -1,0 +1,24 @@
+services:
+  tautulli:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.tautulli.rule=Host(`tautulli.hutter.cloud`)"
+      - "traefik.http.routers.tautulli.entrypoints=websecure"
+      - "traefik.http.routers.tautulli.service=tautulli"
+      - "traefik.http.routers.tautulli.tls=true"
+      - "traefik.http.routers.tautulli.tls.certresolver=r53"
+      - "traefik.http.services.tautulli.loadbalancer.server.port=8181"
+    container_name: tautulli
+    image: {{ image }}
+    environment:
+      TZ: "Europe/Zurich"
+    networks:
+      - bridge
+    volumes:
+      - "{{ bind_dir_config }}:/config"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# combine key and cert into single PEM for pure-ftpd
+cat /etc/letsencrypt/live/{{ certbot_ftp_domain }}/privkey.pem \
+    /etc/letsencrypt/live/{{ certbot_ftp_domain }}/fullchain.pem \
+    > {{ certbot_ftp_cert_dir }}/pure-ftpd.pem
+chmod 600 {{ certbot_ftp_cert_dir }}/pure-ftpd.pem
+
+# restart pureftpd container to pick up new certificate
+/usr/bin/docker restart pureftpd || true

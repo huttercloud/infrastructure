@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+export AWS_ACCESS_KEY_ID="{{ dns_updater_aws_access_key_id }}"
+export AWS_SECRET_ACCESS_KEY="{{ dns_updater_aws_secret_access_key }}"
+export AWS_DEFAULT_REGION="{{ dns_updater_aws_region }}"
+
+public_ip=$(curl --silent ifconfig.co)
+
+if [ -z "${public_ip}" ]; then
+    echo "unable to retrieve ip, aborting."
+    exit 1
+fi
+
+echo "upsert entry for {{ dns_updater_public_name }} to ${public_ip}"
+
+aws route53 change-resource-record-sets \
+    --hosted-zone-id "{{ dns_updater_hosted_zone_id }}" \
+    --change-batch "{
+        \"Comment\": \"Set public ip\",
+        \"Changes\": [
+            {
+                \"Action\": \"UPSERT\",
+                \"ResourceRecordSet\": {
+                    \"Name\": \"{{ dns_updater_public_name }}\",
+                    \"Type\": \"A\",
+                    \"TTL\": 300,
+                    \"ResourceRecords\": [
+                        {
+                            \"Value\": \"${public_ip}\"
+                        }
+                    ]
+                }
+            }
+        ]
+    }"

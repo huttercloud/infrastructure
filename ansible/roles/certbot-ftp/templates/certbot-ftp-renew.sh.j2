@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+export AWS_ACCESS_KEY_ID="{{ certbot_ftp_aws_access_key_id }}"
+export AWS_SECRET_ACCESS_KEY="{{ certbot_ftp_aws_secret_access_key }}"
+export AWS_DEFAULT_REGION="{{ certbot_ftp_aws_region }}"
+
+certbot certonly \
+    --dns-route53 \
+    --non-interactive \
+    --agree-tos \
+    --email "{{ certbot_ftp_email }}" \
+    --domain "{{ certbot_ftp_domain }}" \
+    --deploy-hook /usr/local/bin/certbot-ftp-deploy-hook.sh \
+    --keep-until-expiring

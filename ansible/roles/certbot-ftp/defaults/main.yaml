@@ -1,0 +1,6 @@
+certbot_ftp_domain: ftp.hutter.cloud
+certbot_ftp_email: me@sebastian-hutter.dev
+certbot_ftp_cert_dir: /data/pureftpd/certificate
+certbot_ftp_aws_access_key_id: ""
+certbot_ftp_aws_secret_access_key: ""
+certbot_ftp_aws_region: eu-central-1

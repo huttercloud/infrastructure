@@ -1,0 +1,28 @@
+services:
+  pureftpd:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+    container_name: pureftpd
+    image: {{ pureftpd_image }}
+    command: /bin/sh /init.sh
+    environment:
+      TZ: "Europe/Zurich"
+      AUTH0_CLIENT_ID: "{{ pureftpd_auth0_client_id }}"
+      AUTH0_CLIENT_SECRET: "{{ pureftpd_auth0_client_secret }}"
+      AUTH0_AUDIENCE: "{{ pureftpd_auth0_audience }}"
+      AUTH0_DOMAIN: "{{ pureftpd_auth0_domain }}"
+      AUTH0_SCOPE: "{{ pureftpd_auth0_scope }}"
+    ports:
+      - "21:21/tcp"
+      - "30000-30050:30000-30050/tcp"
+    volumes:
+      - "{{ pureftpd_compose_dir }}/init.sh:/init.sh:ro"
+      - "{{ pureftpd_compose_dir }}/authenticate.py:/authenticate.py:ro"
+      - "{{ pureftpd_data_dir }}/certificate:/certificate:ro"
+      - "{{ pureftpd_nfs_ebooks }}:/ftp/library/ebooks"
+      - "{{ pureftpd_nfs_movies }}:/ftp/library/movies"
+      - "{{ pureftpd_nfs_tv }}:/ftp/library/tv"
+      - "{{ pureftpd_nfs_audiobooks }}:/ftp/library/audiobooks"
+      - "{{ pureftpd_downloads_dir }}:/ftp/downloads"
+    privileged: true
+    restart: unless-stopped

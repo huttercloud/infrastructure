@@ -1,0 +1,39 @@
+---
+- name: Ensure tautulli compose directory exists
+  ansible.builtin.file:
+    path: "{{ tautulli_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ tautulli_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ tautulli_compose_dir }}/docker-compose.yml"
+    image: "{{ tautulli_image }}"
+    bind_dir_config: "{{ tautulli_compose_bind_dir_config }}"
+
+- name: Start tautulli container
+  community.docker.docker_compose_v2:
+    project_src: "{{ tautulli_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: tautulli-update.sh.j2
+    dest: /usr/local/bin/tautulli-update.sh
+    mode: "0750"
+
+- name: Ensure tautulli update cronjob is set
+  ansible.builtin.cron:
+    name: "tautulli update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/tautulli-update.sh > /tmp/tautulli-update.log 2>&1"
+    user: root
+    cron_file: tautulli-update

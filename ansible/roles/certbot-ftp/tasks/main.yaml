@@ -1,0 +1,52 @@
+---
+- name: Install certbot and Route53 DNS plugin
+  ansible.builtin.apt:
+    name:
+      - certbot
+      - python3-certbot-dns-route53
+    state: present
+
+- name: Ensure certificate directory exists
+  ansible.builtin.file:
+    path: "{{ certbot_ftp_cert_dir }}"
+    state: directory
+    mode: "0700"
+
+- name: Copy certbot renewal hook
+  ansible.builtin.template:
+    src: certbot-ftp-deploy-hook.sh.j2
+    dest: /usr/local/bin/certbot-ftp-deploy-hook.sh
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Copy certbot credentials script
+  ansible.builtin.template:
+    src: certbot-ftp-renew.sh.j2
+    dest: /usr/local/bin/certbot-ftp-renew.sh
+    owner: root
+    group: root
+    mode: "0750"
+
+- name: Obtain certificate (if not already present)
+  ansible.builtin.command: /usr/local/bin/certbot-ftp-renew.sh
+  args:
+    creates: "/etc/letsencrypt/live/{{ certbot_ftp_domain }}/fullchain.pem"
+
+- name: Copy certificate files to pureftpd cert dir
+  ansible.builtin.shell: |
+    cat /etc/letsencrypt/live/{{ certbot_ftp_domain }}/privkey.pem \
+        /etc/letsencrypt/live/{{ certbot_ftp_domain }}/fullchain.pem \
+        > {{ certbot_ftp_cert_dir }}/pure-ftpd.pem
+    chmod 600 {{ certbot_ftp_cert_dir }}/pure-ftpd.pem
+  changed_when: true
+
+- name: Ensure certbot renewal cronjob is set
+  ansible.builtin.cron:
+    name: "certbot ftp renewal"
+    weekday: "*"
+    minute: "0"
+    hour: "5"
+    job: "/usr/local/bin/certbot-ftp-renew.sh > /tmp/certbot-ftp-renew.log 2>&1"
+    user: root
+    cron_file: certbot-ftp-renewal

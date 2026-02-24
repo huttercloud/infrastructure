@@ -1,0 +1,3 @@
+freshrss_compose_dir: /opt/docker-compose/freshrss
+freshrss_image: lscr.io/linuxserver/freshrss:latest
+freshrss_compose_bind_dir_config: /data/freshrss

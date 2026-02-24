@@ -1,0 +1,39 @@
+---
+- name: Ensure overseerr compose directory exists
+  ansible.builtin.file:
+    path: "{{ overseerr_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ overseerr_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ overseerr_compose_dir }}/docker-compose.yml"
+    image: "{{ overseerr_image }}"
+    bind_dir_config: "{{ overseerr_compose_bind_dir_config }}"
+
+- name: Start overseerr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ overseerr_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: overseerr-update.sh.j2
+    dest: /usr/local/bin/overseerr-update.sh
+    mode: "0750"
+
+- name: Ensure overseerr update cronjob is set
+  ansible.builtin.cron:
+    name: "overseerr update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/overseerr-update.sh > /tmp/overseerr-update.log 2>&1"
+    user: root
+    cron_file: overseerr-update

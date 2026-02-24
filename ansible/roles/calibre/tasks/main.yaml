@@ -1,0 +1,46 @@
+---
+- name: Ensure calibre compose directory exists
+  ansible.builtin.file:
+    path: "{{ calibre_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure calibre data directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ calibre_data_dir }}/calibre"
+    - "{{ calibre_data_dir }}/calibre-web"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ calibre_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ calibre_compose_dir }}/docker-compose.yml"
+
+- name: Start calibre containers
+  community.docker.docker_compose_v2:
+    project_src: "{{ calibre_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: calibre-update.sh.j2
+    dest: /usr/local/bin/calibre-update.sh
+    mode: "0750"
+
+- name: Ensure calibre update cronjob is set
+  ansible.builtin.cron:
+    name: "calibre update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/calibre-update.sh > /tmp/calibre-update.log 2>&1"
+    user: root
+    cron_file: calibre-update

@@ -1,0 +1,8 @@
+calibre_compose_dir: /opt/docker-compose/calibre
+calibre_data_dir: /data/calibre
+calibre_image: lscr.io/linuxserver/calibre:latest
+calibre_web_image: lscr.io/linuxserver/calibre-web:latest
+calibre_nfs_ebooks: /mnt/nas/ebooks
+
+# basic auth for OPDS (htpasswd format)
+calibre_opds_basic_auth_users: ""
