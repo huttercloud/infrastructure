@@ -1,0 +1,52 @@
+---
+- name: Ensure oauth2-proxy compose directory exists
+  ansible.builtin.file:
+    path: "{{ oauth2_proxy_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy oauth2 redirect page
+  ansible.builtin.copy:
+    src: ../templates/oauth2-redirect.html
+    dest: "{{ oauth2_proxy_compose_dir }}/oauth2-redirect.html"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ oauth2_proxy_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0600"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ oauth2_proxy_compose_dir }}/docker-compose.yml"
+    compose_dir: "{{ oauth2_proxy_compose_dir }}"
+    image: "{{ oauth2_proxy_image }}"
+    client_id: "{{ oauth2_proxy_client_id }}"
+    client_secret: "{{ oauth2_proxy_client_secret }}"
+    cookie_secret: "{{ oauth2_proxy_cookie_secret }}"
+    oidc_issuer_url: "{{ oauth2_proxy_oidc_issuer_url }}"
+    cookie_domain: "{{ oauth2_proxy_cookie_domain }}"
+
+- name: Start oauth2-proxy container
+  community.docker.docker_compose_v2:
+    project_src: "{{ oauth2_proxy_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: oauth2-proxy-update.sh.j2
+    dest: /usr/local/bin/oauth2-proxy-update.sh
+    mode: "0750"
+
+- name: Ensure oauth2-proxy update cronjob is set
+  ansible.builtin.cron:
+    name: "oauth2-proxy update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/oauth2-proxy-update.sh > /tmp/oauth2-proxy-update.log 2>&1"
+    user: root
+    cron_file: oauth2-proxy-update

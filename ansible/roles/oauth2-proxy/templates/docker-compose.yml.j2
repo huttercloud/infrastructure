@@ -1,0 +1,71 @@
+services:
+  oauth2-proxy:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      # oauth2 callback/sign-in endpoint — high priority so /oauth2/* is
+      # always routed here regardless of Host-based service routers
+      - "traefik.http.routers.oauth2-proxy.rule=PathPrefix(`/oauth2`)"
+      - "traefik.http.routers.oauth2-proxy.priority=1000"
+      - "traefik.http.routers.oauth2-proxy.entrypoints=websecure"
+      - "traefik.http.routers.oauth2-proxy.service=oauth2-proxy"
+      - "traefik.http.routers.oauth2-proxy.tls=true"
+      - "traefik.http.routers.oauth2-proxy.tls.certresolver=r53"
+      - "traefik.http.services.oauth2-proxy.loadbalancer.server.port=4180"
+      # forwardAuth middleware for other services to use
+      - "traefik.http.middlewares.oauth.forwardauth.address=http://oauth2-proxy:4180/oauth2/auth"
+      - "traefik.http.middlewares.oauth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.oauth.forwardauth.authResponseHeaders=X-Auth-Request-User,X-Auth-Request-Email,X-Auth-Request-Access-Token,Authorization"
+      # errors middleware — on 401 serve a JS redirect page that sends
+      # the browser to /oauth2/sign_in with the original URL as rd param
+      - "traefik.http.middlewares.oauth-errors.errors.status=401"
+      - "traefik.http.middlewares.oauth-errors.errors.service=oauth2-redirect"
+      - "traefik.http.middlewares.oauth-errors.errors.query=/"
+    container_name: oauth2-proxy
+    image: {{ image }}
+    command:
+      - "--http-address=0.0.0.0:4180"
+      - "--email-domain=*"
+      - "--upstream=file:///dev/null"
+      - "--pass-basic-auth=false"
+      - "--pass-access-token=true"
+      - "--set-xauthrequest=true"
+      - "--set-authorization-header=true"
+      - "--pass-authorization-header=true"
+      - "--skip-provider-button=true"
+      - "--skip-auth-preflight=true"
+      - "--pass-host-header=true"
+      - "--skip-jwt-bearer-tokens=true"
+      - "--reverse-proxy=true"
+      - "--provider=oidc"
+      - "--skip-oidc-discovery=false"
+      - "--oidc-issuer-url={{ oidc_issuer_url }}"
+      - "--scope=openid profile email"
+      - "--cookie-domain={{ cookie_domain }}"
+      - "--whitelist-domain={{ cookie_domain }}"
+    environment:
+      OAUTH2_PROXY_CLIENT_ID: "{{ client_id }}"
+      OAUTH2_PROXY_CLIENT_SECRET: "{{ client_secret }}"
+      OAUTH2_PROXY_COOKIE_SECRET: "{{ cookie_secret }}"
+    networks:
+      - bridge
+    restart: unless-stopped
+
+  # tiny nginx that serves a JS redirect page — used by the oauth-errors
+  # middleware so the browser auto-redirects to /oauth2/sign_in on 401
+  oauth2-redirect:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.oauth2-redirect.loadbalancer.server.port=80"
+    container_name: oauth2-redirect
+    image: nginx:alpine
+    volumes:
+      - "{{ compose_dir }}/oauth2-redirect.html:/usr/share/nginx/html/index.html:ro"
+    networks:
+      - bridge
+    restart: unless-stopped
+
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true
