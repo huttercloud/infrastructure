@@ -20,7 +20,6 @@ pipeline {
     booleanParam(defaultValue: true, name: 'HOME_MIKROTIK', description: 'Run terraform for terraform/resources/home/mikrotik')
     booleanParam(defaultValue: true, name: 'HOME_PI_HOLE', description: 'Run terraform for terraform/resources/home/pi-hole')
     booleanParam(defaultValue: true, name: 'HOME_NODE_A', description: 'Run terraform for terraform/resources/home/node-a')
-    booleanParam(defaultValue: true, name: 'HOME_NODE_B', description: 'Run terraform for terraform/resources/home/node-b')
   }
   stages {
     stage('auth0') {
@@ -124,20 +123,6 @@ pipeline {
         )
       }
     }
-    stage('home node-b') {
-      when {
-        expression { params.HOME_NODE_B }
-      }
-      steps {
-        sh(
-          script: """
-            cd terraform/resources/home/node-b
-            op run --env-file="./environment" -- terraform init
-            op run --env-file="./environment" -- terraform apply -auto-approve
-          """
-        )
-      }
-    }
   }
   post {
     always {
@@ -145,4 +130,3 @@ pipeline {
     }
   }
 }
-

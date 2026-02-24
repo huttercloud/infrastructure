@@ -11,11 +11,12 @@
     lv: data
     mountpoint: /data
 
-    # add second disk to the mix for prometheus data
-    # directly formated and mounted, no vg!
-    # disk was formatted manually!
+    # second disk for usenet downloads
     second_disk_uuid: 1d25ce93-834d-418c-bef7-2c788871e6bd
     second_disk_mountpoint: /data2
+
+    # NFS server (Synology NAS)
+    nfs_server: 192.168.30.17
 
     # ssh key used by jenkins for ssh connection
     jenkins_public_ssh_key: "{{ lookup('ansible.builtin.env', 'JENKINS_SSH_PPUBLIC_KEY') }}"
@@ -43,84 +44,153 @@
         before_backup: []
 
   pre_tasks:
-  - name: ensure lvm is setup
-    community.general.lvol:
-      vg: "{{ vg }}"
-      lv: "{{ lv }}"
-      size: 828g #100%FREE only worked once, so lv size is just hardcoded to the available space
+    - name: ensure lvm is setup
+      community.general.lvol:
+        vg: "{{ vg }}"
+        lv: "{{ lv }}"
+        size: 828g #100%FREE only worked once, so lv size is just hardcoded to the available space
 
-  - name: ensure partition is around
-    community.general.filesystem:
-      fstype: ext4
-      dev: "/dev/{{ vg }}/{{ lv }}"
+    - name: ensure partition is around
+      community.general.filesystem:
+        fstype: ext4
+        dev: "/dev/{{ vg }}/{{ lv }}"
 
-  - name: create mountpoint for data partition
-    ansible.builtin.file:
-      path: "{{ mountpoint }}"
-      state: directory
-      mode: 0755
+    - name: create mountpoint for data partition
+      ansible.builtin.file:
+        path: "{{ mountpoint }}"
+        state: directory
+        mode: 0755
 
-  - name: Mount up device by label
-    ansible.posix.mount:
-      path: "{{ mountpoint }}"
-      src: "/dev/{{ vg }}/{{ lv }}"
-      fstype: ext4
-      state: mounted
+    - name: Mount up device by label
+      ansible.posix.mount:
+        path: "{{ mountpoint }}"
+        src: "/dev/{{ vg }}/{{ lv }}"
+        fstype: ext4
+        state: mounted
 
-  - name: create mountpoint for second data disk
-    ansible.builtin.file:
-      path: "{{ second_disk_mountpoint }}"
-      state: directory
-      mode: 0755
+    - name: create mountpoint for second data disk
+      ansible.builtin.file:
+        path: "{{ second_disk_mountpoint }}"
+        state: directory
+        mode: 0755
 
-  - name: Mount second disk by id
-    ansible.posix.mount:
-      path: "{{ second_disk_mountpoint }}"
-      src: "UUID={{ second_disk_uuid }}"
-      fstype: ext4
-      state: mounted
+    - name: Mount second disk by id
+      ansible.posix.mount:
+        path: "{{ second_disk_mountpoint }}"
+        src: "UUID={{ second_disk_uuid }}"
+        fstype: ext4
+        state: mounted
 
-  # the host-path plugin for microk8s can be used afterall!
-  # one needs to set the pvc to readwritemany ....
-  # - name: create root folder for usenet service
-  #   ansible.builtin.file:
-  #     path: "{{ mountpoint }}/usenet"
-  #     state: directory
-  #     owner: 1000
-  #     group: 1000
-  #     mode: 0755
+    - name: Install nfs-common
+      ansible.builtin.apt:
+        name: nfs-common
+        state: present
 
-  # - name: create folder structure for usenet services
-  #   ansible.builtin.file:
-  #     path: "{{ mountpoint }}/usenet/{{ item }}"
-  #     state: directory
-  #     owner: 1000
-  #     group: 1000
-  #     mode: 0755
-  #   loop:
-  #     - downloads
-  #     - incomplete-downloads
-  #     - sabnzbd
-  #     - radarr
-  #     - sonarr
-  #     - bazarr
-  #     - nzbhydra
+    - name: Create NFS mount directories
+      ansible.builtin.file:
+        path: "/mnt/nas/{{ item }}"
+        state: directory
+        mode: 0755
+      loop:
+        - movies
+        - tv
+        - audiobooks
+        - ebooks
+
+    - name: Mount NFS shares
+      ansible.posix.mount:
+        path: "/mnt/nas/{{ item.name }}"
+        src: "{{ nfs_server }}:{{ item.path }}"
+        fstype: nfs
+        opts: defaults
+        state: mounted
+      loop:
+        - { name: movies, path: /volume1/movies }
+        - { name: tv, path: /volume2/tv }
+        - { name: audiobooks, path: /volume2/audiobooks }
+        - { name: ebooks, path: /volume1/ebooks }
 
   roles:
-  - role: microk8s
-    tags:
-      - services
-      - microk8s
-  - role: borgbase
-    tags:
-      - services
-      - borgbase
-  - role: jenkins-ssh-access
-    tags:
-      - jenkins
-  - role: 1password-cli
-    tags:
-      - jenkins
-  - role: terraform-cli
-    tags:
-      - jenkins
+    - role: borgbase
+      tags:
+        - services
+        - borgbase
+    - role: jenkins-ssh-access
+      tags:
+        - jenkins
+    - role: 1password-cli
+      tags:
+        - jenkins
+    - role: terraform-cli
+      tags:
+        - jenkins
+    - role: docker
+      tags:
+        - docker
+    - role: traefik
+      vars:
+        traefik_compose_dir: /opt/docker-compose/traefik
+        traefik_compose_network_name: node
+        traefik_compose_bind_dir_letsencrypt: "{{ mountpoint }}/traefik-letsencrypt"
+        traefik_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_ACCESS_KEY_ID') }}"
+        traefik_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_SECRET_ACCESS_KEY') }}"
+      tags:
+        - traefik
+    - role: oauth2-proxy
+      vars:
+        oauth2_proxy_compose_dir: /opt/docker-compose/oauth2-proxy
+        oauth2_proxy_client_id: "{{ lookup('ansible.builtin.env', 'OAUTH2_PROXY_CLIENT_ID') }}"
+        oauth2_proxy_client_secret: "{{ lookup('ansible.builtin.env', 'OAUTH2_PROXY_CLIENT_SECRET') }}"
+        oauth2_proxy_cookie_secret: "{{ lookup('ansible.builtin.env', 'OAUTH2_PROXY_COOKIE_SECRET') }}"
+      tags:
+        - oauth2-proxy
+    - role: usenet
+      vars:
+        usenet_data_dir: "{{ mountpoint }}/usenet"
+        usenet_downloads_dir: "{{ second_disk_mountpoint }}/usenet/downloads"
+        usenet_incomplete_downloads_dir: "{{ second_disk_mountpoint }}/usenet/incomplete-downloads"
+      tags:
+        - usenet
+    - role: calibre
+      vars:
+        calibre_data_dir: "{{ mountpoint }}/calibre"
+        calibre_opds_basic_auth_users: "{{ lookup('ansible.builtin.env', 'CALIBRE_OPDS_BASIC_AUTH_USERS') }}"
+      tags:
+        - calibre
+    - role: freshrss
+      vars:
+        freshrss_compose_bind_dir_config: "{{ mountpoint }}/freshrss"
+      tags:
+        - freshrss
+    - role: overseerr
+      vars:
+        overseerr_compose_bind_dir_config: "{{ mountpoint }}/overseerr"
+      tags:
+        - overseerr
+    - role: tautulli
+      vars:
+        tautulli_compose_bind_dir_config: "{{ mountpoint }}/tautulli"
+      tags:
+        - tautulli
+    - role: certbot-ftp
+      vars:
+        certbot_ftp_cert_dir: "{{ mountpoint }}/pureftpd/certificate"
+        certbot_ftp_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_ACCESS_KEY_ID') }}"
+        certbot_ftp_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_SECRET_ACCESS_KEY') }}"
+      tags:
+        - certbot-ftp
+    - role: pureftpd
+      vars:
+        pureftpd_data_dir: "{{ mountpoint }}/pureftpd"
+        pureftpd_auth0_client_id: "{{ lookup('ansible.builtin.env', 'PUREFTPD_AUTH0_CLIENT_ID') }}"
+        pureftpd_auth0_client_secret: "{{ lookup('ansible.builtin.env', 'PUREFTPD_AUTH0_CLIENT_SECRET') }}"
+        pureftpd_auth0_audience: "{{ lookup('ansible.builtin.env', 'PUREFTPD_AUTH0_AUDIENCE') }}"
+      tags:
+        - pureftpd
+    - role: dns-updater
+      vars:
+        dns_updater_hosted_zone_id: "{{ lookup('ansible.builtin.env', 'DNS_UPDATER_HOSTED_ZONE_ID') }}"
+        dns_updater_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_ACCESS_KEY_ID') }}"
+        dns_updater_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'TRAEFIK_AWS_SECRET_ACCESS_KEY') }}"
+      tags:
+        - dns-updater

@@ -12,7 +12,6 @@ pipeline {
   parameters {
     booleanParam(defaultValue: true, name: 'NODE_A', description: 'Patch node-a')
     booleanParam(defaultValue: true, name: 'NODE_B', description: 'Patch node-b')
-    booleanParam(defaultValue: true, name: 'NODE_C', description: 'Patch node-c')
     booleanParam(defaultValue: true, name: 'PLEX', description: 'Patch plex')
   }
   stages {
@@ -31,16 +30,13 @@ pipeline {
               ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-a.hutter.cloud playbook/upgrade-systems.yaml
             """
           )
-          // wait a little while to ensure k8s services on node a are back
+          // wait a little while to ensure services on node-a are back
           sleep(time: 60)
         }
       }
     }
     stage('Patch node-b.hutter.cloud') {
       agent {
-        // patch node-b not from node-c
-        // as node-b may be rebooted during
-        // also not running on node-a due to dns requirements
         label 'node-a'
       }
       when {
@@ -57,24 +53,6 @@ pipeline {
         }
       }
     }
-    // stage('Patch node-c.hutter.cloud') {
-    //   agent {
-    //     label "node-b"
-    //   }
-    //   when {
-    //     expression { params.NODE_C }
-    //   }
-    //   steps {
-    //     sshagent(['jenkinsci-ssh-key']) {
-    //       sh(
-    //         script: """
-    //           cd ansible
-    //           ANSIBLE_HOST_KEY_CHECKING=False op run --env-file="./environment" -- ansible-playbook -i jenkins.ini --limit node-c.hutter.cloud playbook/upgrade-systems.yaml
-    //         """
-    //       )
-    //     }
-    //   }
-    // }
     stage('Patch plex.hutter.cloud') {
       agent {
         label "node-b"
@@ -95,4 +73,3 @@ pipeline {
     }
   }
 }
-

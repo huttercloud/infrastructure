@@ -32,3 +32,19 @@ PIHOLE_ADMIN_PASSWORD="op://Private/Pi-Hole Node A Webpassword/password"
 
 TRAEFIK_AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS route53 user for traefik/username"
 TRAEFIK_AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS route53 user for traefik/password"
+
+# ouath proxy
+OAUTH2_PROXY_CLIENT_ID="op://hutter.cloud/Oauth2 Client for auth proxy/username"
+OAUTH2_PROXY_CLIENT_SECRET="op://hutter.cloud/Oauth2 Client for auth proxy/password"
+OAUTH2_PROXY_COOKIE_SECRET="op://hutter.cloud/Oauth2 Client for auth proxy/cookie secret"
+
+# calibre configuration
+CALIBRE_OPDS_BASIC_AUTH_USERS="op://hutter.cloud/opds login calibre-web/htpasswd"
+
+# pureftp authenticatin
+PUREFTPD_AUTH0_CLIENT_ID="op://hutter.cloud/PureFTP Auth0 Client/username"
+PUREFTPD_AUTH0_CLIENT_SECRET="op://hutter.cloud/PureFTP Auth0 Client/password"
+PUREFTPD_AUTH0_AUDIENCE="op://hutter.cloud/PureFTP Auth0 Client/audience"
+
+# for dns cronjob
+DNS_UPDATER_HOSTED_ZONE_ID="op://hutter.cloud/AWS route53 user for traefik/hosted zone id"
