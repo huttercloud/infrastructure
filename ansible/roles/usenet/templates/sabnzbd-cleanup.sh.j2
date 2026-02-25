@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-# delete old files
-find "{{ usenet_downloads_dir }}" -mindepth 2 -type f -mtime +3 -delete
-find "{{ usenet_incomplete_downloads_dir }}" -mindepth 2 -type f -mtime +1 -delete
+# delete old files (exclude .keep files)
+find "{{ usenet_downloads_dir }}" -mindepth 2 -type f -mtime +3 ! -name ".keep" -delete
+find "{{ usenet_incomplete_downloads_dir }}" -mindepth 2 -type f -mtime +1 ! -name ".keep" -delete
 
-# delete empty directories in downloads
-find "{{ usenet_downloads_dir }}" -mindepth 2 -empty -type d -delete
+# delete empty directories in downloads (exclude dirs containing .keep)
+find "{{ usenet_downloads_dir }}" -mindepth 2 -type d -empty -delete
