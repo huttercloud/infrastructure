@@ -12,6 +12,18 @@
     version: main
     force: true
 
+- name: Patch default locale to use browser language with German fallback
+  ansible.builtin.replace:
+    path: "{{ mini_qr_build_dir }}/src/utils/i18n.ts"
+    regexp: "locale: 'en'"
+    replace: "locale: navigator.language.split('-')[0] || 'de'"
+
+- name: Patch includeBackground to default to false when preset background is transparent
+  ansible.builtin.replace:
+    path: "{{ mini_qr_build_dir }}/src/components/QRCodeCreate.vue"
+    regexp: "const includeBackground = ref\\(true\\)"
+    replace: "const includeBackground = ref(defaultPreset.style.background !== 'transparent')"
+
 - name: Copy docker-compose template
   ansible.builtin.template:
     src: docker-compose.yml.j2
