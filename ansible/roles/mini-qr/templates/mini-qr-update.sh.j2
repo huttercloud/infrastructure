@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# pull the latest source code and rebuild the container
+
+cd "{{ mini_qr_build_dir }}"
+/usr/bin/git pull
+
+cd "{{ mini_qr_compose_dir }}"
+/usr/bin/docker compose build --no-cache
+/usr/bin/docker compose up -d --remove-orphans

@@ -1,0 +1,45 @@
+---
+- name: Ensure mini-qr compose directory exists
+  ansible.builtin.file:
+    path: "{{ mini_qr_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Clone mini-qr repository
+  ansible.builtin.git:
+    repo: "{{ mini_qr_repo }}"
+    dest: "{{ mini_qr_build_dir }}"
+    version: main
+    force: true
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ mini_qr_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ mini_qr_compose_dir }}/docker-compose.yml"
+
+- name: Build and start mini-qr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ mini_qr_compose_dir }}"
+    build: always
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: mini-qr-update.sh.j2
+    dest: /usr/local/bin/mini-qr-update.sh
+    mode: "0750"
+
+- name: Ensure mini-qr update cronjob is set
+  ansible.builtin.cron:
+    name: "mini-qr update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/mini-qr-update.sh > /tmp/mini-qr-update.log 2>&1"
+    user: root
+    cron_file: mini-qr-update
