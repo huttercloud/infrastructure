@@ -1,3 +1,3 @@
 mini_qr_compose_dir: /opt/docker-compose/mini-qr
-mini_qr_build_dir: /opt/docker-compose/mini-qr/mini-qr
-mini_qr_repo: https://github.com/lyqht/mini-qr.git
+mini_qr_build_dir: /opt/docker-compose/mini-qr/flask-qrcode
+mini_qr_repo: https://github.com/mbarde/flask-qrcode.git

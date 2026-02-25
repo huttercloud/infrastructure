@@ -8,18 +8,11 @@ services:
       - "traefik.http.routers.mini-qr.service=mini-qr"
       - "traefik.http.routers.mini-qr.tls=true"
       - "traefik.http.routers.mini-qr.tls.certresolver=r53"
-      - "traefik.http.services.mini-qr.loadbalancer.server.port=8080"
+      - "traefik.http.services.mini-qr.loadbalancer.server.port=5000"
     container_name: mini-qr
     build:
       context: "{{ mini_qr_build_dir }}"
       dockerfile: Dockerfile
-      args:
-        BASE_PATH: "/"
-        VITE_HIDE_CREDITS: "true"
-        VITE_DEFAULT_DATA_TO_ENCODE: "https://frauenrundgang.ch"
-        VITE_DEFAULT_PRESET: "fsrg"
-        VITE_DISABLE_LOCAL_STORAGE: "true"
-        VITE_QR_CODE_PRESETS: '[{"name":"fsrg","data":"https://frauenrundgang.ch","image":"","width":200,"height":200,"margin":0,"type":"canvas","backgroundOptions":{"color":"#ffffff"},"dotsOptions":{},"cornersSquareOptions":{},"cornersDotOptions":{},"imageOptions":{"margin":0},"style":{"borderRadius":"0px","background":"transparent"}}]'
     networks:
       - bridge
     restart: unless-stopped

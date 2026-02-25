@@ -5,30 +5,26 @@
     state: directory
     mode: "0755"
 
-- name: Clone mini-qr repository
+- name: Clone flask-qrcode repository
   ansible.builtin.git:
     repo: "{{ mini_qr_repo }}"
     dest: "{{ mini_qr_build_dir }}"
     version: main
     force: true
 
-- name: Patch default locale to use browser language with German fallback
-  ansible.builtin.replace:
-    path: "{{ mini_qr_build_dir }}/src/utils/i18n.ts"
-    regexp: "locale: 'en'"
-    replace: "locale: 'de'"
+- name: Copy Dockerfile
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: "{{ mini_qr_build_dir }}/Dockerfile"
+    owner: root
+    group: root
+    mode: "0644"
 
-- name: Patch includeBackground to default to false when preset background is transparent
+- name: Patch error correction level to Highest (H)
   ansible.builtin.replace:
-    path: "{{ mini_qr_build_dir }}/src/components/QRCodeCreate.vue"
-    regexp: "const includeBackground = ref\\(true\\)"
-    replace: "const includeBackground = ref(defaultPreset.style.background !== 'transparent')"
-
-- name: Patch default error correction level to Highest (H)
-  ansible.builtin.replace:
-    path: "{{ mini_qr_build_dir }}/src/components/QRCodeCreate.vue"
-    regexp: "const errorCorrectionLevel = ref<ErrorCorrectionLevel>\\('Q'\\)"
-    replace: "const errorCorrectionLevel = ref<ErrorCorrectionLevel>('H')"
+    path: "{{ mini_qr_build_dir }}/server.py"
+    regexp: "error_correction=qrcode.constants.ERROR_CORRECT_L"
+    replace: "error_correction=qrcode.constants.ERROR_CORRECT_H"
 
 - name: Copy docker-compose template
   ansible.builtin.template:
