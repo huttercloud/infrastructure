@@ -19,7 +19,7 @@ services:
         VITE_DEFAULT_DATA_TO_ENCODE: "https://frauenrundgang.ch"
         VITE_DEFAULT_PRESET: "fsrg"
         VITE_DISABLE_LOCAL_STORAGE: "true"
-        VITE_QR_CODE_PRESETS: '[{"name":"fsrg","data":"https://frauenrundgang.ch","image":"","width":200,"height":200,"margin":0,"type":"svg","backgroundOptions":{"color":"transparent"},"dotsOptions":{"color":"#000000","type":"square"},"cornersSquareOptions":{"color":"#000000","type":"square"},"cornersDotOptions":{"color":"#000000","type":"square"},"imageOptions":{"margin":0},"style":{"borderRadius":"0px","background":"transparent"}}]'
+        VITE_QR_CODE_PRESETS: '[{"props":{"data":"https://frauenrundgang.ch","dotsOptions":{},"cornersSquareOptions":{},"cornersDotOptions":{},"imageOptions":{},"qrOptions":{"errorCorrectionLevel":"H"}},"style":{"borderRadius":"undefinedpx","background":"transparent"},"frame":null}]'
     networks:
       - bridge
     restart: unless-stopped
