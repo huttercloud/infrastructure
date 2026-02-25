@@ -16,13 +16,19 @@
   ansible.builtin.replace:
     path: "{{ mini_qr_build_dir }}/src/utils/i18n.ts"
     regexp: "locale: 'en'"
-    replace: "locale: navigator.language.split('-')[0] || 'de'"
+    replace: "locale: 'de'"
 
 - name: Patch includeBackground to default to false when preset background is transparent
   ansible.builtin.replace:
     path: "{{ mini_qr_build_dir }}/src/components/QRCodeCreate.vue"
     regexp: "const includeBackground = ref\\(true\\)"
     replace: "const includeBackground = ref(defaultPreset.style.background !== 'transparent')"
+
+- name: Patch default error correction level to Highest (H)
+  ansible.builtin.replace:
+    path: "{{ mini_qr_build_dir }}/src/components/QRCodeCreate.vue"
+    regexp: "const errorCorrectionLevel = ref<ErrorCorrectionLevel>\\('Q'\\)"
+    replace: "const errorCorrectionLevel = ref<ErrorCorrectionLevel>('H')"
 
 - name: Copy docker-compose template
   ansible.builtin.template:
