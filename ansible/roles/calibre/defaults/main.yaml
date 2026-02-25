@@ -3,6 +3,7 @@ calibre_data_dir: /data/calibre
 calibre_image: lscr.io/linuxserver/calibre:latest
 calibre_web_image: lscr.io/linuxserver/calibre-web:latest
 calibre_nfs_ebooks: /mnt/nas/ebooks
+calibre_import_dir: /data2/usenet/downloads/books
 
 # basic auth for OPDS (htpasswd format)
 calibre_opds_basic_auth_users: ""

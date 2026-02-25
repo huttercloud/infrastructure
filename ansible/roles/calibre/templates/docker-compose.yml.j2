@@ -22,6 +22,7 @@ services:
     volumes:
       - "{{ calibre_data_dir }}/calibre:/config"
       - "{{ calibre_nfs_ebooks }}:/books"
+      - "{{ calibre_import_dir }}:/import"
     restart: unless-stopped
 
   ##
