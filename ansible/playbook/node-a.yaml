@@ -54,6 +54,9 @@
       - name: ferdi
         path: /volume1/homes/ferdinand
         server: 192.168.30.33
+      - name: professional
+        path: /volume1/professional
+        server: 192.168.30.33
       - name: ebooks
         path: /volume1/ebooks
         server: 192.168.30.17
@@ -72,6 +75,8 @@
         key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_FERDI') }}"
       - name: "ebooks"
         key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_EBOOKS') }}"
+      - name: "professional"
+        key: "{{ lookup('ansible.builtin.env', 'BORGBASE_SSH_KEY_PROFESSIONAL') }}"
 
     # borgmatic backup definitions
     borgmatic_backup_jobs:
@@ -128,6 +133,15 @@
         before_backup:
           - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-ebooks.mount"
         backup_hour: 8
+      - name: professional
+        username: zc59qp38
+        host: zc59qp38.repo.borgbase.com
+        passphrase: "{{ lookup('ansible.builtin.env', 'BORGBASE_PASSPHRASE_PROFESSIONAL') }}"
+        source_directories:
+          - "{{ borgmatic_nfs_root }}/professional"
+        before_backup:
+          - "systemctl restart {{ borgmatic_nfs_root[1:] | replace ('/', '-' ) }}-professional.mount"
+        backup_hour: 3
 
   pre_tasks:
     - name: ensure lvm is setup
