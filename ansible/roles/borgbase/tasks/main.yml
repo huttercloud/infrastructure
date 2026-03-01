@@ -129,6 +129,14 @@
       group: root
       mode: 0700
 
+  - name: create borgmatic logs directory
+    ansible.builtin.file:
+      path: "{{ borgmatic_logs }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0700
+
   - name: create borgmatic job directories
     ansible.builtin.file:
       path: "{{ borgmatic_jobs }}/{{ item.name }}"
@@ -192,9 +200,21 @@
       minute: "0"
       hour: "{{ item.backup_hour }}"
       user: root
-      job: "{{ borgmatic_bin }}//borgmatic-{{ item.name }}.sh --verbosity 1"
+      job: "{{ borgmatic_bin }}//borgmatic-{{ item.name }}.sh --log-file {{ borgmatic_logs }}/borgmatic-{{ item.name }}.log --log-file-verbosity 1"
       cron_file: "borgmatic-{{ item.name }}"
     loop: "{{ borgmatic_backup_jobs }}"
+
+##
+# setup logrotate
+##
+
+  - name: Setup logrotate for borgmatic logs
+    ansible.builtin.template:
+      src: borgmatic-logrotate
+      dest: /etc/logrotate.d/borgmatic
+      owner: root
+      group: root
+      mode: 0644
 
 ##
 # setup alert script

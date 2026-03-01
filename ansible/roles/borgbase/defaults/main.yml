@@ -7,6 +7,7 @@ borgmatic_ssh: "{{ borgmatic_root }}/ssh"
 borgmatic_nfs_root: "{{ borgmatic_root }}/mounts"
 borgmatic_jobs: "{{ borgmatic_root }}/jobs"
 borgmatic_bin: "{{ borgmatic_root }}/bin"
+borgmatic_logs: "{{ borgmatic_root }}/logs"
 
 borgmatic_ssh_keys: []
 # example entry
