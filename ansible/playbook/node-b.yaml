@@ -108,7 +108,7 @@
         - { name: movies, path: /volume1/movies }
         - { name: tv, path: /volume2/tv }
         - { name: audiobooks, path: /volume2/audiobooks }
-        - { name: ebooks, path: /volume1/ebooks }
+        # - { name: ebooks, path: /volume1/ebooks }
 
   roles:
     - role: borgbase
@@ -151,12 +151,12 @@
         usenet_incomplete_downloads_dir: "{{ second_disk_mountpoint }}/usenet/incomplete-downloads"
       tags:
         - usenet
-    - role: calibre
-      vars:
-        calibre_data_dir: "{{ mountpoint }}/calibre"
-        calibre_opds_basic_auth_users: "{{ lookup('ansible.builtin.env', 'CALIBRE_OPDS_BASIC_AUTH_USERS') }}"
-      tags:
-        - calibre
+    # - role: calibre
+    #   vars:
+    #     calibre_data_dir: "{{ mountpoint }}/calibre"
+    #     calibre_opds_basic_auth_users: "{{ lookup('ansible.builtin.env', 'CALIBRE_OPDS_BASIC_AUTH_USERS') }}"
+    #   tags:
+    #     - calibre
     - role: freshrss
       vars:
         freshrss_compose_bind_dir_config: "{{ mountpoint }}/freshrss"

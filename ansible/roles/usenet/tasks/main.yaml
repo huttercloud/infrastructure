@@ -10,7 +10,8 @@
       - prowlarr
       - filebrowser
       - homepage
-      - lazylibrarian
+      # disabled as calibre is powred off
+      # - lazylibrarian
 
 - name: Ensure usenet compose directories exist
   ansible.builtin.file:
