@@ -7,7 +7,6 @@ services:
     environment:
       TZ: "Europe/Zurich"
       OLLAMA_HOST: "0.0.0.0"
-      OLLAMA_KEEP_ALIVE: "-1"
     ports:
       - "{{ ollama_host_port }}:11434"
     networks:
