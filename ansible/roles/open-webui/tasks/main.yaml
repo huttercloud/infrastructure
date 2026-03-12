@@ -1,0 +1,51 @@
+---
+- name: Ensure open-webui data directory exists
+  ansible.builtin.file:
+    path: "{{ open_webui_compose_bind_dir_data }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure open-webui compose directory exists
+  ansible.builtin.file:
+    path: "{{ open_webui_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ open_webui_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ open_webui_compose_dir }}/docker-compose.yml"
+    image: "{{ open_webui_image }}"
+    bind_dir_data: "{{ open_webui_compose_bind_dir_data }}"
+    domain: "{{ open_webui_domain }}"
+    oauth_client_id: "{{ open_webui_oauth_client_id }}"
+    oauth_client_secret: "{{ open_webui_oauth_client_secret }}"
+    openid_provider_url: "{{ open_webui_openid_provider_url }}"
+    oauth_provider_name: "{{ open_webui_oauth_provider_name }}"
+    oauth_scopes: "{{ open_webui_oauth_scopes }}"
+
+- name: Start open-webui container
+  community.docker.docker_compose_v2:
+    project_src: "{{ open_webui_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: open-webui-update.sh.j2
+    dest: /usr/local/bin/open-webui-update.sh
+    mode: "0750"
+
+- name: Ensure open-webui update cronjob is set
+  ansible.builtin.cron:
+    name: "open-webui update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/open-webui-update.sh > /tmp/open-webui-update.log 2>&1"
+    user: root
+    cron_file: open-webui-update

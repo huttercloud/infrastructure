@@ -1,0 +1,9 @@
+litellm_compose_dir: /opt/docker-compose/litellm
+litellm_image: ghcr.io/berriai/litellm:main-latest
+litellm_compose_bind_dir_config: /data/litellm
+litellm_host_port: 4000
+litellm_master_key: ""
+litellm_ollama_base_url: "http://ollama:11434"
+litellm_aws_access_key_id: ""
+litellm_aws_secret_access_key: ""
+litellm_aws_region: "eu-central-1"

@@ -1,0 +1,27 @@
+services:
+  ollama:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+    container_name: ollama
+    image: {{ image }}
+    environment:
+      TZ: "Europe/Zurich"
+      OLLAMA_HOST: "0.0.0.0"
+    ports:
+      - "{{ ollama_host_port }}:11434"
+    networks:
+      - bridge
+    volumes:
+      - "{{ bind_dir_data }}:/root/.ollama"
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

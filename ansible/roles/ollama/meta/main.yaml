@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: nvidia-container-toolkit
+  - role: docker-traefik-network

@@ -1,0 +1,7 @@
+ollama_compose_dir: /opt/docker-compose/ollama
+ollama_image: ollama/ollama:latest
+ollama_compose_bind_dir_data: /data/ollama
+ollama_host_port: 11434
+ollama_models:
+  - qwen3.5:9b
+  - qwen2.5-coder:7b

@@ -1,0 +1,20 @@
+services:
+  litellm:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+    container_name: litellm
+    image: {{ image }}
+    command: ["--config", "/app/config.yaml"]
+    environment:
+      TZ: "Europe/Zurich"
+    ports:
+      - "{{ litellm_host_port }}:4000"
+    networks:
+      - bridge
+    volumes:
+      - "{{ bind_dir_config }}/config.yaml:/app/config.yaml:ro"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

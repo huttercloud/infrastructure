@@ -1,0 +1,31 @@
+model_list:
+  # Local Ollama models
+  - model_name: qwen3.5-9b
+    litellm_params:
+      model: ollama/qwen3.5:9b
+      api_base: "{{ litellm_ollama_base_url }}"
+
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: ollama/qwen2.5-coder:7b
+      api_base: "{{ litellm_ollama_base_url }}"
+
+{% if litellm_aws_access_key_id | length > 0 %}
+  # AWS Bedrock models
+  - model_name: claude-sonnet
+    litellm_params:
+      model: bedrock/anthropic.claude-sonnet-4-20250514-v1:0
+      aws_access_key_id: "{{ litellm_aws_access_key_id }}"
+      aws_secret_access_key: "{{ litellm_aws_secret_access_key }}"
+      aws_region_name: "{{ litellm_aws_region }}"
+
+  - model_name: claude-haiku
+    litellm_params:
+      model: bedrock/anthropic.claude-haiku-4-5-20251001-v1:0
+      aws_access_key_id: "{{ litellm_aws_access_key_id }}"
+      aws_secret_access_key: "{{ litellm_aws_secret_access_key }}"
+      aws_region_name: "{{ litellm_aws_region }}"
+{% endif %}
+
+general_settings:
+  master_key: "{{ litellm_master_key }}"

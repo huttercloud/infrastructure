@@ -50,3 +50,11 @@ PUREFTPD_AUTH0_AUDIENCE="op://hutter.cloud/PureFTP Auth0 Client/audience"
 
 # for dns cronjob
 DNS_UPDATER_HOSTED_ZONE_ID="op://hutter.cloud/AWS route53 user for traefik/hosted zone id"
+
+# tailscale
+TAILSCALE_AUTH_KEY="op://hutter.cloud/Tailscale Auth Key for node-b/password"
+
+# litellm
+LITELLM_MASTER_KEY="op://hutter.cloud/litellm master key/password"
+# LITELLM_AWS_ACCESS_KEY_ID="op://hutter.cloud/AWS litellm bedrock user/username"
+# LITELLM_AWS_SECRET_ACCESS_KEY="op://hutter.cloud/AWS litellm bedrock user/password"

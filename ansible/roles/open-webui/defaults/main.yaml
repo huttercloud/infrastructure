@@ -1,0 +1,11 @@
+open_webui_compose_dir: /opt/docker-compose/open-webui
+open_webui_image: ghcr.io/open-webui/open-webui:main
+open_webui_compose_bind_dir_data: /data/open-webui
+open_webui_openai_api_base: "http://litellm:4000/v1"
+open_webui_openai_api_key: ""
+open_webui_oauth_client_id: ""
+open_webui_oauth_client_secret: ""
+open_webui_openid_provider_url: "https://hutter-cloud.eu.auth0.com/.well-known/openid-configuration"
+open_webui_oauth_provider_name: "Auth0"
+open_webui_oauth_scopes: "openid email profile"
+open_webui_domain: "ai.hutter.cloud"

@@ -1,0 +1,36 @@
+services:
+  open-webui:
+    labels:
+      - "cloud.hutter.docker-compose={{ compose_file_reference }}"
+      - "traefik.enable=true"
+      - "traefik.http.routers.open-webui.rule=Host(`{{ domain }}`)"
+      - "traefik.http.routers.open-webui.entrypoints=websecure"
+      - "traefik.http.routers.open-webui.service=open-webui"
+      - "traefik.http.routers.open-webui.tls=true"
+      - "traefik.http.routers.open-webui.tls.certresolver=r53"
+      - "traefik.http.services.open-webui.loadbalancer.server.port=8080"
+    container_name: open-webui
+    image: {{ image }}
+    environment:
+      TZ: "Europe/Zurich"
+      OPENAI_API_BASE_URL: "{{ open_webui_openai_api_base }}"
+      OPENAI_API_KEY: "{{ open_webui_openai_api_key }}"
+      OLLAMA_BASE_URL: ""
+      WEBUI_AUTH: "true"
+      ENABLE_OAUTH_SIGNUP: "true"
+      DEFAULT_USER_ROLE: "user"
+      OAUTH_CLIENT_ID: "{{ oauth_client_id }}"
+      OAUTH_CLIENT_SECRET: "{{ oauth_client_secret }}"
+      OPENID_PROVIDER_URL: "{{ openid_provider_url }}"
+      OAUTH_PROVIDER_NAME: "{{ oauth_provider_name }}"
+      OAUTH_SCOPES: "{{ oauth_scopes }}"
+      OPENID_REDIRECT_URI: "https://{{ domain }}/oauth/oidc/callback"
+    networks:
+      - bridge
+    volumes:
+      - "{{ bind_dir_data }}:/app/backend/data"
+    restart: unless-stopped
+networks:
+  bridge:
+    name: "{{ network }}"
+    external: true

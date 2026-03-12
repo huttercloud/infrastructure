@@ -1,0 +1,53 @@
+---
+- name: Ensure litellm config directory exists
+  ansible.builtin.file:
+    path: "{{ litellm_compose_bind_dir_config }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure litellm compose directory exists
+  ansible.builtin.file:
+    path: "{{ litellm_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy litellm config
+  ansible.builtin.template:
+    src: litellm-config.yaml.j2
+    dest: "{{ litellm_compose_bind_dir_config }}/config.yaml"
+    owner: root
+    group: root
+    mode: "0600"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ litellm_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ litellm_compose_dir }}/docker-compose.yml"
+    image: "{{ litellm_image }}"
+    bind_dir_config: "{{ litellm_compose_bind_dir_config }}"
+
+- name: Start litellm container
+  community.docker.docker_compose_v2:
+    project_src: "{{ litellm_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: litellm-update.sh.j2
+    dest: /usr/local/bin/litellm-update.sh
+    mode: "0750"
+
+- name: Ensure litellm update cronjob is set
+  ansible.builtin.cron:
+    name: "litellm update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/litellm-update.sh > /tmp/litellm-update.log 2>&1"
+    user: root
+    cron_file: litellm-update

@@ -42,6 +42,9 @@
           - /data
         backup_hour: 1
         before_backup: []
+        exclude_patterns:
+          - /data/ollama
+          - /data/litellm
 
   pre_tasks:
     - name: ensure lvm is setup
@@ -197,3 +200,29 @@
     - role: mini-qr
       tags:
         - mini-qr
+    - role: tailscale
+      vars:
+        tailscale_auth_key: "{{ lookup('ansible.builtin.env', 'TAILSCALE_AUTH_KEY') }}"
+      tags:
+        - tailscale
+    - role: ollama
+      vars:
+        ollama_compose_bind_dir_data: "{{ mountpoint }}/ollama"
+      tags:
+        - ollama
+    - role: litellm
+      vars:
+        litellm_compose_bind_dir_config: "{{ mountpoint }}/litellm"
+        litellm_master_key: "{{ lookup('ansible.builtin.env', 'LITELLM_MASTER_KEY') }}"
+        litellm_aws_access_key_id: "{{ lookup('ansible.builtin.env', 'LITELLM_AWS_ACCESS_KEY_ID') }}"
+        litellm_aws_secret_access_key: "{{ lookup('ansible.builtin.env', 'LITELLM_AWS_SECRET_ACCESS_KEY') }}"
+      tags:
+        - litellm
+    - role: open-webui
+      vars:
+        open_webui_compose_bind_dir_data: "{{ mountpoint }}/open-webui"
+        open_webui_openai_api_key: "{{ lookup('ansible.builtin.env', 'LITELLM_MASTER_KEY') }}"
+        open_webui_oauth_client_id: "{{ lookup('ansible.builtin.env', 'OAUTH2_PROXY_CLIENT_ID') }}"
+        open_webui_oauth_client_secret: "{{ lookup('ansible.builtin.env', 'OAUTH2_PROXY_CLIENT_SECRET') }}"
+      tags:
+        - open-webui
