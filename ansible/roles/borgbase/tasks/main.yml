@@ -162,6 +162,7 @@
       user_known_hosts_file: "{{ borgmatic_ssh }}/known_hosts"
       encryption_passphrase: "{{ item.passphrase }}"
       before_backup: "{{ item.before_backup }}"
+      exclude_patterns: "{{ item.exclude_patterns | default([]) }}"
       alert_script: "{{ borgmatic_bin }}/borgmatic-alert.sh"
       alert_subject: "Borgmatic backup failed for {{ item.name }}"
     loop: "{{ borgmatic_backup_jobs }}"

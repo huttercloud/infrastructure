@@ -103,6 +103,9 @@ location:
       - '*/@eaDir'
       - '*/#recycle'
       - '*/lost+found'
+{% for pattern in exclude_patterns %}
+      - '{{ pattern }}'
+{% endfor %}
 
 
     # Read exclude patterns from one or more separate named files,
