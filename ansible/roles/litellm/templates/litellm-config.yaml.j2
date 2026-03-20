@@ -1,8 +1,8 @@
 model_list:
   # Local Ollama models
-  - model_name: qwen3.5-9b
+  - model_name: qwen3-4b
     litellm_params:
-      model: ollama/qwen3.5:9b
+      model: ollama/qwen3:4b
       api_base: "{{ litellm_ollama_base_url }}"
 
   - model_name: qwen2.5-coder-7b
