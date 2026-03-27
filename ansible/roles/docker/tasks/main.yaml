@@ -45,3 +45,13 @@
     name: docker
     state: started
     enabled: true
+
+- name: Add prune commands to ensure disk usage is kept in check
+  ansible.builtin.cron:
+    name: "Docker system prune"
+    user: root
+    job: "docker system prune -af"
+    weekday: 0
+    minute: 0
+    hour: 0
+    cron_file: docker-prune
