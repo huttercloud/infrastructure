@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>512</string>
+	<string>533</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -71,10 +71,12 @@ NFS_ROOT=/Users/plex/nfs
 mkdir -p "${NFS_ROOT}/movies"
 mkdir -p "${NFS_ROOT}/tv"
 mkdir -p "${NFS_ROOT}/audiobooks"
+mkdir -p "${NFS_ROOT}/music"
 
 sudo mount -t nfs 192.168.30.17:/volume1/movies "${NFS_ROOT}/movies"
 sudo mount -t nfs 192.168.30.17:/volume2/tv "${NFS_ROOT}/tv"
 sudo mount -t nfs 192.168.30.17:/volume2/audiobooks "${NFS_ROOT}/audiobooks"
+sudo mount -t nfs 192.168.30.17:/volume2/music "${NFS_ROOT}/music"
 
 echo starting plex media server
 open -a /Applications/Plex\ Media\ Server.app
@@ -83,6 +85,8 @@ open -a /Applications/Plex\ Media\ Server.app
 					<true/>
 					<key>inputMethod</key>
 					<integer>0</integer>
+					<key>shell</key>
+					<string>/bin/sh</string>
 					<key>source</key>
 					<string></string>
 				</dict>
@@ -186,12 +190,10 @@ open -a /Applications/Plex\ Media\ Server.app
 						<string>4</string>
 					</dict>
 				</dict>
-				<key>conversionLabel</key>
-				<integer>0</integer>
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>309.000000:252.000000</string>
+				<string>309.000000:652.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>

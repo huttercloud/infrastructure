@@ -7,7 +7,7 @@
 	<key>AMStayOpen</key>
 	<false/>
 	<key>BuildMachineOSBuild</key>
-	<string>20A241133</string>
+	<string>23A344014</string>
 	<key>CFBundleAllowMixedLocalizations</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -33,6 +33,8 @@
 	<string>Automator Application Stub</string>
 	<key>CFBundleIconFile</key>
 	<string>ApplicationStub</string>
+	<key>CFBundleIconName</key>
+	<string>ApplicationStub</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.apple.automator.Mount-And-Start-Plex-Media-Server</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -52,23 +54,23 @@
 	<key>CFBundleURLTypes</key>
 	<array/>
 	<key>CFBundleVersion</key>
-	<string>512</string>
+	<string>533</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>13E6049a</string>
+	<string>25B70</string>
 	<key>DTPlatformName</key>
 	<string>macosx</string>
 	<key>DTPlatformVersion</key>
-	<string>12.6</string>
+	<string>26.1</string>
 	<key>DTSDKBuild</key>
-	<string>21G105</string>
+	<string>25B70</string>
 	<key>DTSDKName</key>
-	<string>macosx12.6.internal</string>
+	<string>macosx26.1.internal</string>
 	<key>DTXcode</key>
-	<string>1330</string>
+	<string>2600</string>
 	<key>DTXcodeBuild</key>
-	<string>13E6049a</string>
+	<string>17A6264l</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.9</string>
 	<key>LSUIElement</key>
