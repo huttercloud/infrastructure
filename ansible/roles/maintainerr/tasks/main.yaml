@@ -1,0 +1,47 @@
+---
+- name: Ensure maintainerr compose directory exists
+  ansible.builtin.file:
+    path: "{{ maintainerr_compose_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure maintainerr config directory exists
+  ansible.builtin.file:
+    path: "{{ maintainerr_compose_bind_dir_config }}"
+    state: directory
+    owner: "1000"
+    group: "1000"
+    mode: "0755"
+
+- name: Copy docker-compose template
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "{{ maintainerr_compose_dir }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: "0644"
+  vars:
+    network: "{{ traefik_network_name }}"
+    compose_file_reference: "{{ maintainerr_compose_dir }}/docker-compose.yml"
+    image: "{{ maintainerr_image }}"
+    bind_dir_config: "{{ maintainerr_compose_bind_dir_config }}"
+
+- name: Start maintainerr container
+  community.docker.docker_compose_v2:
+    project_src: "{{ maintainerr_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: maintainerr-update.sh.j2
+    dest: /usr/local/bin/maintainerr-update.sh
+    mode: "0750"
+
+- name: Ensure maintainerr update cronjob is set
+  ansible.builtin.cron:
+    name: "maintainerr update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/maintainerr-update.sh > /tmp/maintainerr-update.log 2>&1"
+    user: root
+    cron_file: maintainerr-update

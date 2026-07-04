@@ -1,0 +1,3 @@
+maintainerr_compose_dir: /opt/docker-compose/maintainerr
+maintainerr_image: ghcr.io/maintainerr/maintainerr:latest
+maintainerr_compose_bind_dir_config: /data/maintainerr

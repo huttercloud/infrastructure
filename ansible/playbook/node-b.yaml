@@ -175,6 +175,11 @@
         tautulli_compose_bind_dir_config: "{{ mountpoint }}/tautulli"
       tags:
         - tautulli
+    - role: maintainerr
+      vars:
+        maintainerr_compose_bind_dir_config: "{{ mountpoint }}/maintainerr"
+      tags:
+        - maintainerr
     - role: certbot-ftp
       vars:
         certbot_ftp_cert_dir: "{{ mountpoint }}/pureftpd/certificate"
