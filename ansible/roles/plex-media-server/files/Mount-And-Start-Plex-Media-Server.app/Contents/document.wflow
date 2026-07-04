@@ -73,10 +73,11 @@ mkdir -p "${NFS_ROOT}/tv"
 mkdir -p "${NFS_ROOT}/audiobooks"
 mkdir -p "${NFS_ROOT}/music"
 
+
 sudo mount -t nfs 192.168.30.17:/volume1/movies "${NFS_ROOT}/movies"
 sudo mount -t nfs 192.168.30.17:/volume2/tv "${NFS_ROOT}/tv"
 sudo mount -t nfs 192.168.30.17:/volume2/audiobooks "${NFS_ROOT}/audiobooks"
-sudo mount -t nfs 192.168.30.17:/volume2/music "${NFS_ROOT}/music"
+sudo mount -t nfs 192.168.30.17:/volume1/music "${NFS_ROOT}/music"
 
 echo starting plex media server
 open -a /Applications/Plex\ Media\ Server.app
@@ -193,7 +194,7 @@ open -a /Applications/Plex\ Media\ Server.app
 				<key>isViewVisible</key>
 				<integer>1</integer>
 				<key>location</key>
-				<string>309.000000:652.000000</string>
+				<string>646.500000:635.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
