@@ -19,4 +19,8 @@ usenet_prowlarr_image: lscr.io/linuxserver/prowlarr:latest
 usenet_lazylibrarian_image: lscr.io/linuxserver/lazylibrarian:latest
 usenet_filebrowser_image: filebrowser/filebrowser:latest
 usenet_homepage_image: nginx:latest
-usenet_nzbtomedia_version: "12.1.13"
+# Pinned to a master commit (not a stable tag): the latest release 12.1.13
+# crashes with `KeyError: (3, 14)` in eol.py under Python 3.14, which the
+# linuxserver sabnzbd image now ships. This commit adds the 3.14 EOL entry.
+# Revert to a stable tag once one > 12.1.13 is released.
+usenet_nzbtomedia_version: "2391767e8df041d82ae79a706a1536f79148a196"
