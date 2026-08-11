@@ -54,3 +54,19 @@
     job: "/usr/local/bin/pihole-update.sh > /tmp/pihole-update.log 2>&1"
     user: root
     cron_file: pihole-update
+
+- name: Prepare restart cronjob
+  ansible.builtin.template:
+    src: pihole-restart.sh.j2
+    dest: /usr/local/bin/pihole-restart.sh
+    mode: "0750"
+
+- name: Ensure pihole restart cronjob is set
+  ansible.builtin.cron:
+    name: "pihole restart"
+    weekday: "0"
+    minute: "0"
+    hour: "5"
+    job: "/usr/local/bin/pihole-restart.sh > /tmp/pihole-restart.log 2>&1"
+    user: root
+    cron_file: pihole-restart

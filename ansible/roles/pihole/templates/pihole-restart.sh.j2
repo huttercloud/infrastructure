@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+# periodically restart pihole to clear the sluggishness that builds up in
+# long-running FTL processes. runs weekly so the container never stays up
+# long enough to degrade.
+
+cd "{{ pihole_compose_dir }}"
+/usr/bin/docker compose restart
