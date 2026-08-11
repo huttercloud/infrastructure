@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# download the latest available image
+# and restart container to ensure we are up to date
+# note: pureftpd runs debian:latest and installs pure-ftpd via init.sh on
+# start, so recreating the container also refreshes pure-ftpd and the base os
+
+cd "{{ pureftpd_compose_dir }}"
+/usr/bin/docker compose pull
+/usr/bin/docker compose up -d --remove-orphans

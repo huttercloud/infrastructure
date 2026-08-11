@@ -40,3 +40,19 @@
 - name: Start pureftpd container
   community.docker.docker_compose_v2:
     project_src: "{{ pureftpd_compose_dir }}"
+
+- name: Prepare update cronjob
+  ansible.builtin.template:
+    src: pureftpd-update.sh.j2
+    dest: /usr/local/bin/pureftpd-update.sh
+    mode: "0750"
+
+- name: Ensure pureftpd update cronjob is set
+  ansible.builtin.cron:
+    name: "pureftpd update"
+    weekday: "*"
+    minute: "0"
+    hour: "2"
+    job: "/usr/local/bin/pureftpd-update.sh > /tmp/pureftpd-update.log 2>&1"
+    user: root
+    cron_file: pureftpd-update
