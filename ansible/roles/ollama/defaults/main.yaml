@@ -13,6 +13,19 @@ ollama_max_loaded_models: 1
 # memory use predictable and avoid swapping.
 ollama_num_parallel: 1
 
+# Default context window for every request that does not ask for one.
+#
+# opencode needs >= 64k, but num_ctx is an ollama-specific option with no
+# equivalent in the OpenAI-compatible /v1 API that opencode (and aider, and
+# third-opinion) speak -- so those clients cannot request it and would silently
+# fall back to ollama's 4k default. Setting it server side is the only way.
+#
+# ollama caps this at each model's own maximum, so smaller models are unharmed
+# (bge-m3 stays at 8k, qwen2.5-coder:7b at 32k). The cost is that qwen3-coder:30b
+# now always allocates its 64k KV cache, taking it from 19 GB to ~25 GB on a
+# 31 GB host.
+ollama_context_length: 65536
+
 ollama_models:
   # embeddings for local-rag
   - bge-m3
