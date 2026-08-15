@@ -2,6 +2,27 @@ ollama_compose_dir: /opt/docker-compose/ollama
 ollama_image: ollama/ollama:latest
 ollama_compose_bind_dir_data: /data/ollama
 ollama_host_port: 11434
+
+# Only ever keep one model resident. The RTX 2080 SUPER has 8 GB of VRAM and the
+# coding models already need ~6.7 GB of it, so a second resident model would not
+# fit alongside them. Embedding requests (local-rag / bge-m3) therefore evict the
+# coding model and vice versa, at the cost of a ~15-20s reload.
+ollama_max_loaded_models: 1
+# Ollama sizes the KV cache per parallel slot. qwen3-coder:30b already reaches
+# 25 GB at a 64k context on a 31 GB host, so pin this to a single slot to keep
+# memory use predictable and avoid swapping.
+ollama_num_parallel: 1
+
 ollama_models:
+  # embeddings for local-rag
+  - bge-m3
+  # small general purpose model
   - qwen3:4b
+  # fill-in-the-middle / editor autocomplete
   - qwen2.5-coder:7b
+  # vision
+  - qwen2.5vl:7b
+  # agentic coding: stays at 14 GB even at a 64k context
+  - gpt-oss:20b
+  # one-shot coding: best quality, but 25 GB at a 64k context
+  - qwen3-coder:30b

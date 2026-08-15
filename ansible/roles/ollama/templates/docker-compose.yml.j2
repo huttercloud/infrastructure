@@ -7,6 +7,8 @@ services:
     environment:
       TZ: "Europe/Zurich"
       OLLAMA_HOST: "0.0.0.0"
+      OLLAMA_MAX_LOADED_MODELS: "{{ ollama_max_loaded_models }}"
+      OLLAMA_NUM_PARALLEL: "{{ ollama_num_parallel }}"
     ports:
       - "{{ ollama_host_port }}:11434"
     networks:
