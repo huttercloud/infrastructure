@@ -30,6 +30,17 @@ calibre, freshrss, overseerr, tautulli, pureftpd, and oauth2-proxy for authentic
 /ip firewall nat add chain=dstnat action=dst-nat to-addresses=192.168.30.90 to-ports=443 protocol=tcp in-interface=bridge-vlan200 dst-port=443
 ```
 
+### plex
+
+mac mini running plex media server, serving the media from the synology nas.
+
+- hostname: plex.hutter.cloud
+- ip address: 192.168.30.27 (static lease in mikrotik)
+- username: plex
+
+the plex user is the auto logged in console user, which is what lets the
+github actions runner launch agent keep a session.
+
 ## ansible
 
 ansible is used to configure and upgrade the different physical nodes.
@@ -43,10 +54,35 @@ Afterwards the ansible playbooks for the nodes can be executed
 ```bash
 make ansible-node-a
 make ansible-node-b
+make ansible-plex
 
 # to upgrade all systems run
 make ansible-upgrade-systems
 ```
+
+## github self hosted runners
+
+node-b and plex run self hosted github actions runners for the `circleup-ai`
+organization, installed by the `github-runner` ansible role.
+
+| node | label | runs as | installed in |
+| --- | --- | --- | --- |
+| node-b | `self-hosted-linux` | `github-runner` (systemd) | `/opt/actions-runner` |
+| plex | `self-hosted-mac` | `plex` (launchd agent) | `/Users/plex/actions-runner` |
+
+registration tokens expire an hour after github creates them, so the token in
+1password is stale most of the time. that only matters when a runner is
+registered for the first time - afterwards the role skips registration and the
+token is never read. to add or re-register a runner:
+
+- open the organization runner settings, *new runner*, and copy the `--token`
+  value out of the instructions
+- update `op://circleup/circleup Github Organization Self Hosted Runner Token/password`
+- rerun the playbook within the hour, e.g.
+  `cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/node-b.yaml -t github-runner`
+
+see `ansible/roles/github-runner/README.md` for the role variables and for how
+runner upgrades are handled.
 ## terraform
 
 terraform is used to configure services like auth0, aws (route53, iam, ssm), mikrotik and pi-hole.

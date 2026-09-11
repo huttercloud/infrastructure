@@ -1,0 +1,30 @@
+---
+# sha256 sums published in the release notes of the runner release.
+# add a new block when bumping github_runner_version, the role refuses to
+# install a version it has no checksum for
+# https://github.com/actions/runner/releases
+github_runner_checksums:
+  "2.337.0":
+    linux-x64: "70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613"
+    linux-arm64: "9b1dc70626422526e3c94767cf024896beb15da5342a3f4819bf2feac13e0393"
+    osx-x64: "d383f505d7ed041b1873ab68c35dd766fc093f2252330f95bb427be8f2c6dcfc"
+    osx-arm64: "5a2cd92908a93d7276a194e1de6008099f3e7946f3f8e14aa7a1a7b4a31fdec2"
+
+github_runner_arch_map:
+  x86_64: x64
+  amd64: x64
+  aarch64: arm64
+  arm64: arm64
+
+github_runner_os: "{{ 'osx' if ansible_system == 'Darwin' else 'linux' }}"
+github_runner_arch: "{{ github_runner_arch_map[ansible_architecture] }}"
+github_runner_platform: "{{ github_runner_os }}-{{ github_runner_arch }}"
+
+github_runner_archive: "actions-runner-{{ github_runner_platform }}-{{ github_runner_version }}.tar.gz"
+github_runner_download_url: "https://github.com/actions/runner/releases/download/v{{ github_runner_version }}/{{ github_runner_archive }}"
+
+# holds the registration token for the duration of config.sh, see tasks/main.yaml
+github_runner_token_file: "{{ github_runner_dir }}/.registration-token"
+
+# written after a successful extract so a version bump re-extracts the archive
+github_runner_version_marker: "{{ github_runner_dir }}/.installed-{{ github_runner_version }}"

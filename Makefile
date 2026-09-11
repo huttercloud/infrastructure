@@ -26,6 +26,9 @@ ansible-node-a:
 ansible-node-b:
 	cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/node-b.yaml
 
+ansible-plex:
+	cd ansible; op run --env-file="./environment" -- ../venv/bin/ansible-playbook -i inventory.ini playbook/plex.yaml
+
 # terraform targes
 
 terraform: terraform-auth0 terraform-aws-root-global terraform-aws-root-eu-central-1

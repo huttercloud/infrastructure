@@ -1,0 +1,25 @@
+---
+
+- name: Configure plex
+  hosts: plex.hutter.cloud
+  become: true
+  become_user: root
+
+  roles:
+    - role: plex-media-server
+      tags:
+        - plex-media-server
+    - role: github-runner
+      vars:
+        github_runner_url: https://github.com/circleup-ai
+        github_runner_token: "{{ lookup('ansible.builtin.env', 'CIRCLEUP_GITHUB_RUNNER_TOKEN') }}"
+        github_runner_labels:
+          - self-hosted-mac
+        # the launch agent needs a login session, so the runner uses the
+        # auto logged in console user instead of a dedicated service account
+        github_runner_dir: /Users/plex/actions-runner
+        github_runner_user: plex
+        github_runner_user_group: staff
+        github_runner_create_user: false
+      tags:
+        - github-runner

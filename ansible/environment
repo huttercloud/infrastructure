@@ -53,3 +53,9 @@ DNS_UPDATER_HOSTED_ZONE_ID="op://hutter.cloud/AWS route53 user for traefik/hoste
 
 # tailscale
 TAILSCALE_AUTH_KEY="op://hutter.cloud/Tailscale Auth Key for node-b/password"
+
+# circleup self hosted github runners
+# registration token, expires an hour after it was created in github. only
+# needed when a runner is registered for the first time, see
+# ansible/roles/github-runner/README.md
+CIRCLEUP_GITHUB_RUNNER_TOKEN="op://circleup/circleup Github Organization Self Hosted Runner Token/password"

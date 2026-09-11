@@ -214,3 +214,13 @@
         ollama_compose_bind_dir_data: "{{ mountpoint }}/ollama"
       tags:
         - ollama
+    - role: github-runner
+      vars:
+        github_runner_url: https://github.com/circleup-ai
+        github_runner_token: "{{ lookup('ansible.builtin.env', 'CIRCLEUP_GITHUB_RUNNER_TOKEN') }}"
+        github_runner_labels:
+          - self-hosted-linux
+        # workflows on this runner build container images
+        github_runner_docker_access: true
+      tags:
+        - github-runner

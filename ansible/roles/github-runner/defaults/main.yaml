@@ -1,0 +1,40 @@
+---
+# github organization (or repository) the runner registers with,
+# e.g. https://github.com/circleup-ai
+github_runner_url: ""
+
+# short lived registration token. only needed the first time a runner is
+# registered, see the role README on how to refresh it
+github_runner_token: ""
+
+# https://github.com/actions/runner/releases
+# bumping this also needs the matching checksums in vars/main.yaml
+github_runner_version: "2.337.0"
+
+# installation directory, the runner unpacks and runs in here
+github_runner_dir: /opt/actions-runner
+
+# name the runner shows up with in the github ui
+github_runner_name: "{{ inventory_hostname_short }}"
+
+# extra labels for `runs-on`. github always adds self-hosted plus the
+# operating system and architecture on top of these
+github_runner_labels: []
+
+# github runner group, empty lets github pick the organization default
+github_runner_runner_group: ""
+
+# checkout directory, relative to github_runner_dir
+github_runner_work_dir: _work
+
+# local account the runner service runs as
+github_runner_user: github-runner
+github_runner_user_group: github-runner
+
+# create the account. false when an already existing user runs the runner
+# (the mac mini runs it as the console user so the launch agent has a session)
+github_runner_create_user: true
+
+# add the runner account to the docker group. required for workflows that
+# build or run containers, and equivalent to giving it root on the host
+github_runner_docker_access: false
