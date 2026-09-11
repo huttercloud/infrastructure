@@ -1,0 +1,63 @@
+---
+# launchd agent in the runner users ~/Library/LaunchAgents. svc.sh must not run
+# under sudo here and needs the users own HOME, so everything becomes the
+# runner user rather than root
+
+- name: Install the runner launch agent
+  ansible.builtin.command:
+    cmd: ./svc.sh install
+    chdir: "{{ github_runner_dir }}"
+    creates: "{{ github_runner_dir }}/.service"
+  become: true
+  become_user: "{{ github_runner_user }}"
+
+- name: Read the launch agent plist path
+  ansible.builtin.slurp:
+    src: "{{ github_runner_dir }}/.service"
+  become: true
+  become_user: root
+  register: github_runner_plist
+
+- name: Determine the launch agent label
+  ansible.builtin.set_fact:
+    github_runner_agent_label: >-
+      {{ github_runner_plist['content'] | b64decode | trim | basename | regex_replace('\.plist$', '') }}
+
+# first column of launchctl list is the pid, or - for an agent that is
+# registered but not running. an agent github never hears from looks exactly
+# like an offline runner in the web ui
+- name: Check the runner launch agent state
+  ansible.builtin.shell:
+    cmd: "launchctl list | awk -v label={{ github_runner_agent_label | quote }} '$3 == label { print $1 }'"
+  become: true
+  become_user: "{{ github_runner_user }}"
+  register: github_runner_agent
+  changed_when: false
+  failed_when: false
+
+- name: Register the runner launch agent
+  ansible.builtin.command:
+    cmd: ./svc.sh start
+    chdir: "{{ github_runner_dir }}"
+  become: true
+  become_user: "{{ github_runner_user }}"
+  when: github_runner_agent.stdout | trim | length == 0
+
+# svc.sh start is a launchctl load -w, which registers the agent and clears the
+# disabled flag but does not honour RunAtLoad when it runs from an ssh session.
+# without an explicit kickstart the runner stays registered and offline
+- name: Ensure the runner launch agent is running
+  ansible.builtin.shell:
+    cmd: "launchctl kickstart gui/$(id -u)/{{ github_runner_agent_label | quote }}"
+  become: true
+  become_user: "{{ github_runner_user }}"
+  when: github_runner_agent.stdout | trim is not match('^[0-9]+$')
+
+- name: Restart the runner launch agent after an upgrade
+  ansible.builtin.shell:
+    cmd: "launchctl kickstart -k gui/$(id -u)/{{ github_runner_agent_label | quote }}"
+  become: true
+  become_user: "{{ github_runner_user }}"
+  when:
+    - github_runner_extract is changed
+    - github_runner_agent.stdout | trim is match('^[0-9]+$')

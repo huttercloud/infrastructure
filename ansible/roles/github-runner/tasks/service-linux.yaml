@@ -1,0 +1,27 @@
+---
+# systemd unit, svc.sh install refuses to overwrite an existing unit so it is
+# guarded by the .service file it writes itself
+
+- name: Install the runner systemd service
+  ansible.builtin.command:
+    cmd: "./svc.sh install {{ github_runner_user }}"
+    chdir: "{{ github_runner_dir }}"
+    creates: "{{ github_runner_dir }}/.service"
+  become: true
+  become_user: root
+
+- name: Read the systemd unit name
+  ansible.builtin.slurp:
+    src: "{{ github_runner_dir }}/.service"
+  become: true
+  become_user: root
+  register: github_runner_unit
+
+- name: Ensure the runner service is running and enabled
+  ansible.builtin.systemd:
+    name: "{{ github_runner_unit['content'] | b64decode | trim }}"
+    state: "{{ 'restarted' if github_runner_extract is changed else 'started' }}"
+    enabled: true
+    daemon_reload: true
+  become: true
+  become_user: root

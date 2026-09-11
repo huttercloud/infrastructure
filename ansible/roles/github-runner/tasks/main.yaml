@@ -1,0 +1,192 @@
+---
+# tasks file for github-runner
+
+- name: sanity check the runner platform is supported
+  ansible.builtin.assert:
+    that:
+      - ansible_system in ['Linux', 'Darwin']
+      - ansible_architecture in github_runner_arch_map
+    fail_msg: >-
+      the github actions runner is not available for {{ ansible_system }}
+      on {{ ansible_architecture }}
+
+- name: sanity check a checksum is known for this runner release
+  ansible.builtin.assert:
+    that:
+      - github_runner_version in github_runner_checksums
+      - github_runner_platform in github_runner_checksums[github_runner_version]
+    fail_msg: >-
+      no sha256 checksum for actions-runner {{ github_runner_version }} on
+      {{ github_runner_platform }}. add it to roles/github-runner/vars/main.yaml
+      from https://github.com/actions/runner/releases/tag/v{{ github_runner_version }}
+
+- name: sanity check the github url
+  ansible.builtin.assert:
+    that:
+      - github_runner_url | length > 0
+    fail_msg: "github_runner_url is missing, e.g. https://github.com/circleup-ai"
+
+# ansible hands its temp files to a become user it did not connect as via
+# posix acls, and falls back to a chmod syntax that only exists on macos when
+# setfacl is missing. without this every task below that becomes the runner
+# user fails with "Failed to set permissions on the temporary files"
+- name: Install acl
+  ansible.builtin.apt:
+    name: acl
+    state: present
+  become: true
+  become_user: root
+  when: ansible_system == 'Linux'
+
+- name: Add runner group
+  ansible.builtin.group:
+    name: "{{ github_runner_user_group }}"
+  become: true
+  become_user: root
+  when: github_runner_create_user | bool
+
+- name: Add runner user
+  ansible.builtin.user:
+    name: "{{ github_runner_user }}"
+    group: "{{ github_runner_user_group }}"
+    home: "{{ github_runner_dir }}"
+    create_home: false
+    shell: /bin/bash
+    system: true
+  become: true
+  become_user: root
+  when: github_runner_create_user | bool
+
+# workflows that build images talk to the docker socket. this is root on the
+# host for everything the runner executes, so it stays opt in per node
+- name: Allow the runner user to use docker
+  ansible.builtin.user:
+    name: "{{ github_runner_user }}"
+    groups: docker
+    append: true
+  become: true
+  become_user: root
+  when: github_runner_docker_access | bool
+
+- name: Create runner directory
+  ansible.builtin.file:
+    path: "{{ github_runner_dir }}"
+    state: directory
+    owner: "{{ github_runner_user }}"
+    group: "{{ github_runner_user_group }}"
+    mode: "0755"
+  become: true
+  become_user: root
+
+- name: Download runner archive
+  ansible.builtin.get_url:
+    url: "{{ github_runner_download_url }}"
+    dest: "/tmp/{{ github_runner_archive }}"
+    checksum: "sha256:{{ github_runner_checksums[github_runner_version][github_runner_platform] }}"
+    mode: "0644"
+  become: true
+  become_user: root
+
+# plain tar rather than the unarchive module: unarchive rejects the bsdtar
+# that macos ships and demands gnu tar, and installing gnu-tar just to unpack
+# a tarball is not worth it. extracting as the runner user gets the ownership
+# unarchive would have set
+- name: Extract runner archive
+  ansible.builtin.command:
+    cmd: "tar xzf /tmp/{{ github_runner_archive }}"
+    chdir: "{{ github_runner_dir }}"
+    creates: "{{ github_runner_version_marker }}"
+  become: true
+  become_user: "{{ github_runner_user }}"
+  register: github_runner_extract
+
+# the runner ships a self contained dotnet but still needs libicu and friends
+- name: Install runner dependencies
+  ansible.builtin.command:
+    cmd: ./bin/installdependencies.sh
+    chdir: "{{ github_runner_dir }}"
+  become: true
+  become_user: root
+  when:
+    - ansible_system == 'Linux'
+    - github_runner_extract is changed
+
+- name: Mark the installed runner version
+  ansible.builtin.file:
+    path: "{{ github_runner_version_marker }}"
+    state: touch
+    owner: "{{ github_runner_user }}"
+    group: "{{ github_runner_user_group }}"
+    mode: "0644"
+  become: true
+  become_user: root
+  when: github_runner_extract is changed
+
+- name: Check if the runner is already registered
+  ansible.builtin.stat:
+    path: "{{ github_runner_dir }}/.runner"
+  become: true
+  become_user: root
+  register: github_runner_registration
+
+- name: sanity check the registration token
+  ansible.builtin.assert:
+    that:
+      - github_runner_token | length > 0
+    fail_msg: >-
+      {{ inventory_hostname }} has no runner registered yet and no registration
+      token was passed. registration tokens expire after an hour, refresh the
+      1password item from the github organization runner settings and rerun
+  when: not github_runner_registration.stat.exists
+
+# config.sh refuses to run as root and writes .runner once it succeeded, which
+# is what keeps this from asking for a token on every run.
+#
+# the token goes through a file rather than --token on the command line: an
+# argument is readable by any local user in /proc while config.sh runs, and it
+# would end up in the task output of a failed run. keeping it out of the
+# command also means this task needs no no_log, so a rejected or expired token
+# reports whatever config.sh actually said
+- name: Register the runner with github
+  when: not github_runner_registration.stat.exists
+  block:
+    - name: Write the registration token
+      ansible.builtin.copy:
+        content: "{{ github_runner_token }}"
+        dest: "{{ github_runner_token_file }}"
+        owner: "{{ github_runner_user }}"
+        group: "{{ github_runner_user_group }}"
+        mode: "0600"
+      become: true
+      become_user: root
+      no_log: true
+
+    - name: Run the runner configuration
+      ansible.builtin.shell:
+        cmd: >-
+          ./config.sh
+          --unattended
+          --replace
+          --url {{ github_runner_url }}
+          --token "$(cat {{ github_runner_token_file | quote }})"
+          --name {{ github_runner_name }}
+          --work {{ github_runner_work_dir }}
+          {% if github_runner_labels | length > 0 %}--labels {{ github_runner_labels | join(',') }}{% endif %}
+          {% if github_runner_runner_group | length > 0 %}--runnergroup {{ github_runner_runner_group }}{% endif %}
+        chdir: "{{ github_runner_dir }}"
+        creates: "{{ github_runner_dir }}/.runner"
+      become: true
+      become_user: "{{ github_runner_user }}"
+
+  always:
+    - name: Remove the registration token
+      ansible.builtin.file:
+        path: "{{ github_runner_token_file }}"
+        state: absent
+      become: true
+      become_user: root
+
+# config.sh generates svc.sh, so the service can only be set up afterwards
+- name: Setup the runner service
+  ansible.builtin.include_tasks:
+    file: "service-{{ 'macos' if ansible_system == 'Darwin' else 'linux' }}.yaml"
